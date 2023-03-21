@@ -1458,19 +1458,31 @@ std::pair <double,double> setABwithRelBound(double rel_bound,int configuration=0
 
 void setFixRates(QoZ::Config &conf,double rel_bound){
     if(conf.sperr>=1){
-        double em1=5e-5;
+       // double em1=5e-5;//old
+       // double em1=5e-5;//nf1
+        double em1=1e-5;//nf2
+
         double e0=1e-4;
         double e1=1e-3;
         double e2=1e-2;
         double e3=1e-1;
         double fm1=1;
-        double f0=conf.sampleBlockSize>=64?1:0.9;
+
+        //double f0=conf.sampleBlockSize>=64?1:0.9;//old
+        //double f0=conf.sampleBlockSize>=64?1:0.9;//nf1
+        double f0=conf.sampleBlockSize>=64?0.9:1;//nf2
+
         //double f1=conf.sampleBlockSize>=64?1:0.9;old
-        double f1=conf.sampleBlockSize>=64?0.9:0.8;
+        //double f1=conf.sampleBlockSize>=64?0.9:0.9;//nf1
+        double f1=conf.sampleBlockSize>=64?0.8:0.9;//nf2
+
         //double f2=conf.sampleBlockSize>=64?0.8:0.6;//just for hurricane old
-        double f2=conf.sampleBlockSize>=64?0.7:0.5;//just for hurricane
+       // double f2=conf.sampleBlockSize>=64?0.7:0.6;//just for hurricane nf1
+        double f2=conf.sampleBlockSize>=64?0.6:0.6;//just for hurricane nf2
+
         //double f3=conf.sampleBlockSize>=64?0.6:0.5;//just for hurricane old
-        double f3=conf.sampleBlockSize>=64?0.5:0.4;//just for hurricane
+        //double f3=conf.sampleBlockSize>=64?0.5:0.5;//just for hurricane nf1
+         double f3=conf.sampleBlockSize>=64?0.4:0.5;//just for hurricane nf2
         if(rel_bound<=em1)
             conf.waveletBrFix=fm1;
         else if(rel_bound<=e0)
