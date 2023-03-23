@@ -1471,12 +1471,12 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         //double f0=conf.sampleBlockSize>=64?1:0.9;//old
         //double f0=conf.sampleBlockSize>=64?1:0.9;//nf1
         //double f0=conf.sampleBlockSize>=64?0.9:1;//nf2
-        double f0=conf.sampleBlockSize>=64?0.95:0.9;//nf3
+        double f0=conf.sampleBlockSize>=64?0.95:0.95;//nf3
 
         //double f1=conf.sampleBlockSize>=64?1:0.9;old
         //double f1=conf.sampleBlockSize>=64?0.9:0.8;//nf1
        // double f1=conf.sampleBlockSize>=64?0.8:0.9;//nf2
-        double f1=conf.sampleBlockSize>=64?0.85:0.8;//nf3
+        double f1=conf.sampleBlockSize>=64?0.85:0.85;//nf3
 
         //double f2=conf.sampleBlockSize>=64?0.8:0.6;//just for hurricane old
        // double f2=conf.sampleBlockSize>=64?0.7:0.6;//just for hurricane nf1
