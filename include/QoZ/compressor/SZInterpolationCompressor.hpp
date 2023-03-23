@@ -533,6 +533,8 @@ namespace QoZ {
 
 
 
+
+
             std::vector<uint8_t>interp_ops;
             std::vector<uint8_t>interp_dirs;
             size_t cross_block=conf.crossBlock;
@@ -560,6 +562,12 @@ namespace QoZ {
             size_t interp_compressed_size = 0;
 
             double eb = quantizer.get_eb();
+
+            if(anchor and conf.anchorThreshold>0){
+                anchor_threshold=eb*conf.anchorThreshold;
+                min_anchor_level=conf.minAnchorLevel;
+            }
+
 
 //            printf("Absolute error bound = %.5f\n", eb);
 
@@ -600,6 +608,7 @@ namespace QoZ {
             for (uint level = start_level; level > end_level && level <= start_level; level--) {
 
                 //std::cout<<level<<std::endl;
+                cur_level=level;
 
                 
 
@@ -1597,7 +1606,14 @@ namespace QoZ {
 //            preds[idx] = pred;
 //            quant_inds[idx] = quantizer.quantize_and_overwrite(d, pred);
             //T orig=d;
-            quant_inds.push_back(quantizer.quantize_and_overwrite(d, pred));
+
+            if(anchor and anchor_threshold>0 and cur_level>=min_anchor_level and fabs(d-pred)>=anchor_threshold){
+                quantizer.insert_unpred(d);
+                quant_inds.push_back(0);
+
+            }
+            else
+                quant_inds.push_back(quantizer.quantize_and_overwrite(d, pred));
             //return fabs(d-orig);
         }
 
@@ -3503,6 +3519,12 @@ namespace QoZ {
 
         std::vector<float> prediction_errors;//for test, to delete in final version
         int peTracking=0;//for test, to delete in final version
+
+        size_t cur_level; //temp for "adaptive anchor stride";
+        size_t min_anchor_level;//temp for "adaptive anchor stride";
+        double anchor_threshold=0.0;//temp for "adaptive anchor stride";
+
+
 
     };
 
