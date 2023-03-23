@@ -1470,19 +1470,23 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
 
         //double f0=conf.sampleBlockSize>=64?1:0.9;//old
         //double f0=conf.sampleBlockSize>=64?1:0.9;//nf1
-        double f0=conf.sampleBlockSize>=64?0.9:1;//nf2
+        //double f0=conf.sampleBlockSize>=64?0.9:1;//nf2
+        double f0=conf.sampleBlockSize>=64?0.95:0.9;//nf3
 
         //double f1=conf.sampleBlockSize>=64?1:0.9;old
-        //double f1=conf.sampleBlockSize>=64?0.9:0.9;//nf1
-        double f1=conf.sampleBlockSize>=64?0.8:0.9;//nf2
+        //double f1=conf.sampleBlockSize>=64?0.9:0.8;//nf1
+       // double f1=conf.sampleBlockSize>=64?0.8:0.9;//nf2
+        double f1=conf.sampleBlockSize>=64?0.85:0.8;//nf3
 
         //double f2=conf.sampleBlockSize>=64?0.8:0.6;//just for hurricane old
        // double f2=conf.sampleBlockSize>=64?0.7:0.6;//just for hurricane nf1
-        double f2=conf.sampleBlockSize>=64?0.6:0.6;//just for hurricane nf2
+        //double f2=conf.sampleBlockSize>=64?0.6:0.6;//just for hurricane nf2
+        double f2=conf.sampleBlockSize>=64?0.65:0.55;//just for hurricane nf3
 
         //double f3=conf.sampleBlockSize>=64?0.6:0.5;//just for hurricane old
-        //double f3=conf.sampleBlockSize>=64?0.5:0.5;//just for hurricane nf1
-         double f3=conf.sampleBlockSize>=64?0.4:0.5;//just for hurricane nf2
+        //double f3=conf.sampleBlockSize>=64?0.5:0.4;//just for hurricane nf1
+        //double f3=conf.sampleBlockSize>=64?0.4:0.5;//just for hurricane nf2
+        double f3=conf.sampleBlockSize>=64?0.45:0.45;//just for hurricane nf3
         if(rel_bound<=em1)
             conf.waveletBrFix=fm1;
         else if(rel_bound<=e0)
