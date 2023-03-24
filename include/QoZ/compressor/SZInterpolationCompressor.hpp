@@ -947,6 +947,10 @@ namespace QoZ {
                 
                 return buffer;
             }
+            if(peTracking){
+                QoZ::writefile<T>("interp_pred.errors", prediction_errors.data(),prediction_errors.size());//added.
+
+            }
             //std::cout<<"predict_ended"<<std::endl;
             if(conf.verbose)
                 timer.stop("prediction");
@@ -1531,7 +1535,8 @@ namespace QoZ {
 
                         quantizer.insert_unpred(*(data+x*conf.dims[1]+y));
                         if(peTracking){
-                            prediction_errors[x*dimension_offsets[0]+y]=*(data+x*dimension_offsets[0]+y);
+                           // prediction_errors[x*dimension_offsets[0]+y]=*(data+x*dimension_offsets[0]+y);
+                            prediction_errors[x*dimension_offsets[0]+y]=0;
                         }
                         quant_inds.push_back(0);
                     }
@@ -1543,7 +1548,8 @@ namespace QoZ {
                         for(size_t z=maxStep*(tuning==1);z<conf.dims[2];z+=maxStep){
                             quantizer.insert_unpred(*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z) );
                             if(peTracking){
-                                prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z);
+                               // prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z);
+                                prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=0;
                             }
                             //if(tuning==0)
                                 //mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
