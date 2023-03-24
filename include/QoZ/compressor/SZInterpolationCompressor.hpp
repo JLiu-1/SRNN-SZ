@@ -1534,10 +1534,11 @@ namespace QoZ {
                     for (size_t y=maxStep*(tuning==1);y<conf.dims[1];y+=maxStep){
 
                         quantizer.insert_unpred(*(data+x*conf.dims[1]+y));
+                        /*
                         if(peTracking){
                            // prediction_errors[x*dimension_offsets[0]+y]=*(data+x*dimension_offsets[0]+y);
                             prediction_errors[x*dimension_offsets[0]+y]=0;
-                        }
+                        }*/
                         quant_inds.push_back(0);
                     }
                 }
@@ -1547,10 +1548,11 @@ namespace QoZ {
                     for (size_t y=maxStep*(tuning==1);y<conf.dims[1];y+=maxStep){
                         for(size_t z=maxStep*(tuning==1);z<conf.dims[2];z+=maxStep){
                             quantizer.insert_unpred(*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z) );
+                            /*
                             if(peTracking){
                                // prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z);
                                 prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=0;
-                            }
+                            }*/
                             //if(tuning==0)
                                 //mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
 
@@ -3523,7 +3525,7 @@ namespace QoZ {
         std::vector<std::array<int, N>> dimension_sequences;
         int direction_sequence_id;
 
-        std::vector<float> prediction_errors;//for test, to delete in final version
+        std::vector<T> prediction_errors;//for test, to delete in final version
         int peTracking=0;//for test, to delete in final version
 
         size_t cur_level; //temp for "adaptive anchor stride";
