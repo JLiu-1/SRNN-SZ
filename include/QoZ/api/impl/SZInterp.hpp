@@ -1487,14 +1487,14 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         //double f2=conf.sampleBlockSize>=64?0.6:0.6;//just for hurricane nf2
         //double f2=conf.sampleBlockSize>=64?0.65:0.55;//just for hurricane nf3
         //double f2=conf.sampleBlockSize>=64?0.65:0.6;//just for hurricane nf4
-        double f2=conf.sampleBlockSize>=64?0.65:0.6;//just for hurricane nf5
+        double f2=conf.sampleBlockSize>=64?0.8:0.6;//just for hurricane nf5
 
         //double f3=conf.sampleBlockSize>=64?0.6:0.5;//just for hurricane old
         //double f3=conf.sampleBlockSize>=64?0.5:0.4;//just for hurricane nf1
         //double f3=conf.sampleBlockSize>=64?0.4:0.5;//just for hurricane nf2
         //double f3=conf.sampleBlockSize>=64?0.45:0.45;//just for hurricane nf3
         //double f3=conf.sampleBlockSize>=64?0.6:0.5;//just for hurricane nf4
-         double f3=conf.sampleBlockSize>=64?0.65:0.45;//just for hurricane nf5
+         double f3=conf.sampleBlockSize>=64?0.6:0.45;//just for hurricane nf5
         if(rel_bound<=em1)
             conf.waveletBrFix=fm1;
         else if(rel_bound<=e0)
