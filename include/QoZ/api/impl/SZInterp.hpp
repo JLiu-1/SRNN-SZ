@@ -1571,7 +1571,8 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         double f1=1;
         double f2=1.1;
        // double f3=1.2;//need to raise
-        double f3=1.3;//need to raise
+        //double f3=1.3;
+        double f3=1.25;
         //double f4=0.15;
         if(rel_bound<=e1)
             conf.lorenzoBrFix=f1;
