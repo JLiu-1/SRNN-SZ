@@ -276,8 +276,13 @@ namespace QoZ {
             write(offsetPredictor, c);
             //write(transformation, c);
             //write(external_wave, c);
-            write(coeffs_dims.data(), coeffs_dims.size(), c);
+            
             write(coeffs_num, c);
+            if(coeffs_num>0){
+                size_t tempsize=coeffs_dims.size();
+                write(tempsize,c);
+                write(coeffs_dims.data(), tempsize, c);
+            }
             write(pid, c);
             write(blockOrder, c);
             write(sperr, c);
@@ -342,8 +347,14 @@ namespace QoZ {
             read(offsetPredictor, c);
             //read(transformation, c);
             //read(external_wave, c);
-            read(coeffs_dims.data(), N, c);
+            
             read(coeffs_num, c);
+            if(coeffs_num>0){
+                size_t tempsize;
+                read(tempsize,c);
+                coeffs_dims.resize(tempsize);
+                read(coeffs_dims.data(), tempsize, c);
+            }
             read(pid, c);
             read(blockOrder, c);
             read(sperr, c);
