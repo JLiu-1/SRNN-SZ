@@ -3525,7 +3525,7 @@ namespace QoZ {
         std::vector<std::array<int, N>> dimension_sequences;
         int direction_sequence_id;
 
-        std::vector<T> prediction_errors;//for test, to delete in final version
+        std::vector<float> prediction_errors;//for test, to delete in final version. The float time is to match the vector in config.
         int peTracking=0;//for test, to delete in final version
 
         size_t cur_level; //temp for "adaptive anchor stride";
