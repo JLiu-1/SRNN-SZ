@@ -2295,7 +2295,7 @@ double Tuning(QoZ::Config &conf, T *data){
             timer.start();
         }
         */
-        for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
+        for(int wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
 
             if(conf.fixWave>=0 and conf.fixWave<=conf.waveletAutoTuning and  wave_idx!=conf.fixWave)
                 continue;
