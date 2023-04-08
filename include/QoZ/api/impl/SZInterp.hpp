@@ -1321,7 +1321,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
     std::cout<<"muqindedao0.0"<<std::endl; 
     if(!use_sperr<T,N>(testConfig)){
         auto cmprData=sz->encoding_lossless(totalOutSize,q_bins);                   
-        delete[]cmprData;   
+       // delete[]cmprData;//this causes error on certain input. Reason not figured out.   
        
     }  
     std::cout<<"muqindedao"<<std::endl;         
