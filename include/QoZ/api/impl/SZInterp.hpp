@@ -1901,7 +1901,7 @@ double Tuning(QoZ::Config &conf, T *data){
             
             double ori_eb=conf.absErrorBound;
             std::vector<size_t> coeffs_size;
-            std::cout<<"a1"<<std::endl;
+            //std::cout<<"a1"<<std::endl;
             if(wave_idx>0){//later distinguish different i
                 
 
@@ -2412,11 +2412,11 @@ double Tuning(QoZ::Config &conf, T *data){
                         if(wave_idx>0 and !use_sperr<T,N>(conf))
                             conf.absErrorBound*=conf.wavelet_rel_coeff;
                         //std::cout<<conf.absErrorBound<<s::std::endl;
-                        //std::cout<<"fuqindejian0.1"<<std::endl;                                      
+                        std::cout<<"fuqindejian0.1"<<std::endl;                                      
                         std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
                         std::cout<<"t6"<<std::endl;
-                        //std::cout<<"fuqindejian0.2"<<std::endl;  
+                        std::cout<<"fuqindejian0.2"<<std::endl;  
                         double bitrate=results.first;
                         double metric=results.second;
                         //printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
