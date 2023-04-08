@@ -1126,7 +1126,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         }
         else{
             std::copy(waveleted_input[k].begin(),waveleted_input[k].end(),cur_block.begin());
-            //std::cout<<"fuqindejian1"<<std::endl;
+            std::cout<<"fuqindejian1"<<cur_block.size()<<std::endl;
 
         }
         char *cmprData;
@@ -1199,7 +1199,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         }    
         else{
             cmprData = (char*)sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
-            //std::cout<<"fuqindejian2"<<std::endl;     
+            std::cout<<"fuqindejian2"<<std::endl;     
             delete[]cmprData;
             if(testConfig.wavelet>0 and waveleted_input.size()>0 and tuningTarget!=QoZ::TUNING_TARGET_CR){
                 //std::cout<<"test with wave"<<std::endl;
@@ -1207,7 +1207,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     QoZ::Wavelet<T,N> wlt;
                     wlt.postProcess_cdf97(cur_block.data(),conf.dims);
                     
-                    //std::cout<<"fuqindejian"<<std::endl; 
+                    std::cout<<"fuqindejian2.5"<<std::endl; 
                 }
                 else{
                     std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
