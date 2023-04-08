@@ -1894,15 +1894,14 @@ double Tuning(QoZ::Config &conf, T *data){
         std::vector <std::vector<T> > ori_sampled_blocks;
         if (conf.waveletAutoTuning>=1)
             ori_sampled_blocks=sampled_blocks;
-        for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
-            std::cout<<wave_idx<<" "<<conf.sperrWithoutWave<<" "<<conf.sperr<<" "<<conf.fixWave<<std::endl;
-            std::cout<<(wave_idx==0 and conf.sperrWithoutWave>0)<<" "<<(wave_idx>0 and wave_idx<=conf.sperr)<<" "<<(conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and conf.fixWave!=wave_idx)<<" "<<(conf.fixWave!=wave_idx)<<std::endl;
+        for(int wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
+
             if((wave_idx==0 and conf.sperrWithoutWave>0) or (wave_idx>0 and wave_idx<=conf.sperr) or (conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and conf.fixWave!=wave_idx))
                 continue;
             
             double ori_eb=conf.absErrorBound;
             std::vector<size_t> coeffs_size;
-            std::cout<<"a1"<<std::endl;
+            //std::cout<<"a1"<<std::endl;
             if(wave_idx>0){//later distinguish different i
                 
 
@@ -1946,7 +1945,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     conf.setDims(coeffs_size.begin(),coeffs_size.end());
 
                 }
-                std::cout<<"dawd"<<std::endl;
+               // std::cout<<"dawd"<<std::endl;
 
             }
           // std::cout<<"a3"<<std::endl;
