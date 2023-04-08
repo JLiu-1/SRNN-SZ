@@ -1895,12 +1895,13 @@ double Tuning(QoZ::Config &conf, T *data){
         if (conf.waveletAutoTuning>=1)
             ori_sampled_blocks=sampled_blocks;
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
+            std::cout<<wave_idx<<std::endl;
             if((wave_idx==0 and conf.sperrWithoutWave) or (wave_idx>0 and wave_idx<=conf.sperr) or (conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and conf.fixWave!=wave_idx))
                 continue;
-            //std::cout<<wave_idx<<std::endl;
+            
             double ori_eb=conf.absErrorBound;
             std::vector<size_t> coeffs_size;
-            //std::cout<<"a1"<<std::endl;
+            std::cout<<"a1"<<std::endl;
             if(wave_idx>0){//later distinguish different i
                 
 
