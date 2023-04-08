@@ -196,6 +196,7 @@ namespace QoZ {
             QoZ=cfg.GetBoolean("AlgoSettings", "FZ", FZ);
             sperrWithoutWave=cfg.GetBoolean("AlgoSettings", "sperrWithoutWave",sperrWithoutWave);
             pyBind=cfg.GetBoolean("AlgoSettings", "pyBind",pyBind);
+            profilingFix=cfg.GetBoolean("AlgoSettings", "profilingFix",profilingFix);
 
 
 
@@ -484,6 +485,7 @@ namespace QoZ {
         int var_first=0;
         size_t profStride=0;
         int sperr=-1;
+
         //double sperr_eb_coeff = 1.5;
         int waveAutoFix=1;
 
@@ -497,6 +499,7 @@ namespace QoZ {
         std::string metadata;
         bool pybind_activated=false;
         bool FZ=false;
+        bool profilingFix=true;//only for test
 
         double anchorThreshold=0.0;
         size_t minAnchorLevel=3;
