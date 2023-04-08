@@ -1901,7 +1901,7 @@ double Tuning(QoZ::Config &conf, T *data){
             
             double ori_eb=conf.absErrorBound;
             std::vector<size_t> coeffs_size;
-            //std::cout<<"a1"<<std::endl;
+            std::cout<<"a1"<<std::endl;
             if(wave_idx>0){//later distinguish different i
                 
 
@@ -2289,12 +2289,12 @@ double Tuning(QoZ::Config &conf, T *data){
 
         }
         double oriabseb=conf.absErrorBound;
-        /*
+        
         if(conf.verbose){
             timer.stop("B-M prep");
             timer.start();
         }
-        */
+        
         for(int wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
 
             if(conf.fixWave>=0 and conf.fixWave<=conf.waveletAutoTuning and  wave_idx!=conf.fixWave)
@@ -2322,22 +2322,22 @@ double Tuning(QoZ::Config &conf, T *data){
                     waveleted_input[i].resize(per_block_ele_num);
                     std::copy(sampled_blocks[i].begin(),sampled_blocks[i].end(),waveleted_input[i].begin());
                 }
-                //std::cout<<"t1"<<std::endl;
+                std::cout<<"t1"<<std::endl;
                 //double sum = std::accumulate(waveleted_input[4].begin(), waveleted_input[4].end(), 0.0);
                 //std::cout<<sum/per_block_ele_num<<std::endl;
                 if(conf.conditioning){
                     conf.block_metas.clear();
                     conf.block_metas.resize(waveleted_input.size());
                     //std::cout<<conf.block_metas.size()<<std::endl;
-                    //std::cout<<"t1.3"<<std::endl;
+                    std::cout<<"t1.3"<<std::endl;
                     for(size_t i=0;i<waveleted_input.size();i++){
                         conf.block_metas[i]=pre_Condition<T,N>(conf,waveleted_input[i].data());
-                        //std::cout<<"t1.6"<<std::endl;
+                        std::cout<<"t1.6"<<std::endl;
 
                     }
                     
                 }
-                //std::cout<<"t2"<<std::endl;
+                std::cout<<"t2"<<std::endl;
                 if(wave_idx==1){
                     for(size_t i=0;i<waveleted_input.size();i++){
                         QoZ::Wavelet<T,N> wlt;
@@ -2364,7 +2364,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                 coeffs_num*=coeffs_size[j];
                                 
                         }
-                        //std::cout<<"t3"<<std::endl;
+                        std::cout<<"t3"<<std::endl;
                         //std::cout<<coeffs_num<<std::endl;
 
                         waveleted_input[i].clear();
@@ -2379,7 +2379,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         
                         delete[]coeffData;
                     }
-                    //std::cout<<"t4"<<std::endl;
+                    std::cout<<"t4"<<std::endl;
                     conf.setDims(coeffs_size.begin(),coeffs_size.end());
 
                 }
@@ -2394,7 +2394,7 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<double>gamma_list;
             init_gammalist<T,N>(gamma_list,rel_bound,conf);
             size_t gamma_nums=gamma_list.size();  
-            //std::cout<<"t5"<<std::endl;
+            std::cout<<"t5"<<std::endl;
             for(size_t gamma_idx=0;gamma_idx<gamma_nums;gamma_idx++){
                 for (size_t i=0;i<alpha_nums;i++){
                     for (size_t j=0;j<beta_nums;j++){
@@ -2415,7 +2415,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         //std::cout<<"fuqindejian0.1"<<std::endl;                                      
                         std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
-                        //std::cout<<"t6"<<std::endl;
+                        std::cout<<"t6"<<std::endl;
                         //std::cout<<"fuqindejian0.2"<<std::endl;  
                         double bitrate=results.first;
                         double metric=results.second;
@@ -2476,7 +2476,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
                     }
                 }
-                //std::cout<<"t7"<<std::endl;
+                std::cout<<"t7"<<std::endl;
                 //double sum = std::accumulate(sampled_blocks[4].begin(), sampled_blocks[4].end(), 0.0);
                 //std::cout<<sum/per_block_ele_num<<std::endl;
             }
