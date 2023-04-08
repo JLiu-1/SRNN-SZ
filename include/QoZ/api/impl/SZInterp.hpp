@@ -2290,10 +2290,10 @@ double Tuning(QoZ::Config &conf, T *data){
         }
         double oriabseb=conf.absErrorBound;
         
-        if(conf.verbose){
+        /*if(conf.verbose){
             timer.stop("B-M prep");
             timer.start();
-        }
+        }*/
         
         for(int wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
 
