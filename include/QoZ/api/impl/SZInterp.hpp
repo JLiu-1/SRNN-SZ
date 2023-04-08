@@ -1846,10 +1846,12 @@ double Tuning(QoZ::Config &conf, T *data){
 
     size_t num_filtered_blocks=starts.size();
     double profiling_coeff=1;
+    //
     if(conf.profiling){
         profiling_coeff=((double)num_filtered_blocks)/(totalblock_num);
-
+        std::cout<<profiling_coeff<<std::endl;
     }
+    //
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;
 
@@ -1942,7 +1944,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     conf.setDims(coeffs_size.begin(),coeffs_size.end());
 
                 }
-                //std::cout<<"dawd"<<std::endl;
+                std::cout<<"dawd"<<std::endl;
 
             }
           // std::cout<<"a3"<<std::endl;
