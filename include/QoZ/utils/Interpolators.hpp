@@ -4,7 +4,6 @@
 
 #ifndef SZ_INTERPOLATORS_HPP
 #define SZ_INTERPOLATORS_HPP
-
 namespace QoZ {
     template<class T>
     inline T interp_linear(T a, T b) {
@@ -56,7 +55,10 @@ namespace QoZ {
         return (a-b-c+d-e+f+g);
     }
 
-
+    template<class T>
+    inline T interp_ave3(T a, T b, T c) {
+        return (a + b+c) / 3;
+    }
 
     template<class T>
     inline T interp_cubic_front(T a, T b, T c, T d) {
@@ -84,7 +86,7 @@ namespace QoZ {
     }
 
     template<class T>
-    inline T interp_akima(T a, T b, T c, T d) {
+    inline T interp_akima(T a, T b, T c, T d) {//what is it?
         T t0 = 2 * b - a - c;
         T t1 = 2 * c - b - d;
         T abt0 = fabs(t0);
@@ -97,7 +99,7 @@ namespace QoZ {
     }
 
     template<class T>
-    inline T interp_pchip(T a, T b, T c, T d) {
+    inline T interp_pchip(T a, T b, T c, T d) {//what is it?
         T pchip = (b + c) / 2;
         if ((b - a < 0) == (c - b < 0) && fabs(c - a) > 1e-9) {
             pchip += 1 / 4 * (b - a) * (c - b) / (c - a);
@@ -107,5 +109,30 @@ namespace QoZ {
         }
         return pchip;
     }
+
+    /*
+    template<class T>
+    inline T lanczos(T x, int a) {
+        if(x==0)
+            return 0;
+        else if (fabs(x)>a)
+            return 1;
+        else{
+            T pix=M_PI*x;
+            return a*sin(pix)*sin(pix/a)/(pix*pix);
+        }
+    }
+    template<class T>
+    inline T interp_lanczos_2(T a, T b, T c, T d) {
+
+        return a*lanczos(1.5,2)+b*lanczos(0.5,2)+c*lanczos(-0.5,2)+d*lanczos(-1.5,2);
+        
+        -0.06368435202786181
+        0.5731591682507563
+
+        
+    }
+    */
+
 }
 #endif //SZ_INTERPOLATORS_HPP

@@ -155,7 +155,7 @@ namespace QoZ {
             waveletMseFix = cfg.GetReal("AlgoSettings", "waveletMseFix", waveletMseFix);
             waveletMseFix2 = cfg.GetReal("AlgoSettings", "waveletMseFix2", waveletMseFix2);
             lorenzoBrFix = cfg.GetReal("AlgoSettings", "lorenzoBrFix", lorenzoBrFix);
-            anchorThreshold= cfg.GetReal("AlgoSettings", "anchorThreshold", anchorThreshold);
+            //anchorThreshold= cfg.GetReal("AlgoSettings", "anchorThreshold", anchorThreshold);
             //sperr_eb_coeff = cfg.GetReal("AlgoSettings", "sperr_eb_coeff", sperr_eb_coeff);
 
             openmp = cfg.GetBoolean("GlobalSettings", "OpenMP", openmp);
@@ -225,7 +225,7 @@ namespace QoZ {
             waveAutoFix = cfg.GetInteger("AlgoSettings", "waveAutoFix", waveAutoFix);
             conditioning = cfg.GetInteger("AlgoSettings", "conditioning", conditioning);
             fixWave = cfg.GetInteger("AlgoSettings", "fixWave", fixWave);
-            minAnchorLevel = cfg.GetInteger("AlgoSettings", "minAnchorLevel", minAnchorLevel);
+           // minAnchorLevel = cfg.GetInteger("AlgoSettings", "minAnchorLevel", minAnchorLevel);
 
 
 
@@ -501,8 +501,8 @@ namespace QoZ {
         bool FZ=false;
         bool profilingFix=true;//only for test
 
-        double anchorThreshold=0.0;
-        size_t minAnchorLevel=3;
+       // double anchorThreshold=0.0;
+       // size_t minAnchorLevel=3;
 
 
         
