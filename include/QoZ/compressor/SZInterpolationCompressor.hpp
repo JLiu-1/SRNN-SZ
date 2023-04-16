@@ -562,12 +562,12 @@ namespace QoZ {
             size_t interp_compressed_size = 0;
 
             double eb = quantizer.get_eb();
-
+            /*
             if(anchor and conf.anchorThreshold>0){
                 anchor_threshold=eb*conf.anchorThreshold;
                 min_anchor_level=conf.minAnchorLevel;
             }
-
+            */
 
 //            printf("Absolute error bound = %.5f\n", eb);
 
@@ -2666,7 +2666,7 @@ namespace QoZ {
 
                             if(m%2 ==0){
                                 d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
-                                predict_error+=quantize_tuning(d - data, *d, interp_linear(interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ),tuning);
+                                predict_error+=quantize_tuning(d - data, *d, interp_linear(interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ),tuning);
 
 
                             }
@@ -2690,7 +2690,7 @@ namespace QoZ {
 
                         if(m%2 ==0){
                             d = data + begin1 + stride1+begin2+(m-1)*stride2;
-                            predict_error+=quantize_tuning(d - data, *d, interp_linear(interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ),tuning);
+                            predict_error+=quantize_tuning(d - data, *d, interp_linear(interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ),tuning);
                         }
 
 
@@ -2711,7 +2711,7 @@ namespace QoZ {
 
                         if(m%2 ==0){
                             d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
-                            predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ),tuning);
+                            predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ),tuning);
                         }
 
                         //i=n-1 (odd)
@@ -2732,7 +2732,7 @@ namespace QoZ {
 
                             if(m%2 ==0){
                                 d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
-                                predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ),tuning);
+                                predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ),tuning);
                             }
                             
                         }
@@ -2762,7 +2762,7 @@ namespace QoZ {
 
                             if(m%2 ==0){
                                 d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
-                                quantize(d - data, *d, interp_linear(interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ));
+                                quantize(d - data, *d, interp_linear(interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ));
 
 
                             }
@@ -2786,7 +2786,7 @@ namespace QoZ {
 
                         if(m%2 ==0){
                             d = data + begin1 + stride1+begin2+(m-1)*stride2;
-                            quantize(d - data, *d, interp_linear(interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ) );
+                            quantize(d - data, *d, interp_linear(interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ) );
                         }
 
 
@@ -2807,7 +2807,7 @@ namespace QoZ {
 
                         if(m%2 ==0){
                             d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
-                            quantize(d - data, *d, interp_linear( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ));
+                            quantize(d - data, *d, interp_linear( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ));
                         }
 
                         //i=n-1 (odd)
@@ -2828,7 +2828,7 @@ namespace QoZ {
 
                             if(m%2 ==0){
                                 d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
-                                quantize(d - data, *d, interp_linear( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ));
+                                quantize(d - data, *d, interp_linear( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ));
                             }
                             
                         }
@@ -2855,7 +2855,7 @@ namespace QoZ {
 
                         if(m%2 ==0){
                             d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
-                            recover(d - data, *d, interp_linear(interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ));
+                            recover(d - data, *d, interp_linear(interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ));
 
 
                         }   
@@ -2876,7 +2876,7 @@ namespace QoZ {
 
                     if(m%2 ==0){
                         d = data + begin1 + stride1+begin2+(m-1)*stride2;
-                        recover(d - data, *d, interp_linear(interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ) );
+                        recover(d - data, *d, interp_linear(interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ) );
                     }
 
 
@@ -2897,7 +2897,7 @@ namespace QoZ {
 
                     if(m%2 ==0){
                         d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
-                        recover(d - data, *d, interp_linear( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ));
+                        recover(d - data, *d, interp_linear( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ));
                     }
 
                         //i=n-1 (odd)
@@ -2918,7 +2918,7 @@ namespace QoZ {
 
                         if(m%2 ==0){
                             d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
-                            recover(d - data, *d, interp_linear( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)), interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) ));
+                            recover(d - data, *d, interp_linear( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ));
                         }
                             
                     }
@@ -5296,8 +5296,8 @@ namespace QoZ {
         int peTracking=0;//for test, to delete in final version
 
         size_t cur_level; //temp for "adaptive anchor stride";
-        size_t min_anchor_level;//temp for "adaptive anchor stride";
-        double anchor_threshold=0.0;//temp for "adaptive anchor stride";
+        //size_t min_anchor_level;//temp for "adaptive anchor stride";
+       // double anchor_threshold=0.0;//temp for "adaptive anchor stride";
 
 
 
