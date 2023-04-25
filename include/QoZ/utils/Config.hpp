@@ -183,7 +183,7 @@ namespace QoZ {
             levelwisePredictionSelection=cfg.GetInteger("AlgoSettings", "levelwisePredictionSelection", levelwisePredictionSelection);
             //exhaustiveTuning=cfg.GetInteger("AlgoSettings", "exhaustiveTuning", exhaustiveTuning);
             testLorenzo=cfg.GetInteger("AlgoSettings", "testLorenzo", testLorenzo);
-            linearReduce=cfg.GetBoolean("AlgoSettings", "linearReduce", linearReduce);
+            //linearReduce=cfg.GetBoolean("AlgoSettings", "linearReduce", linearReduce);
             //train=cfg.GetBoolean("AlgoSettings", "train", train);
             //useCoeff=cfg.GetBoolean("AlgoSettings", "useCoeff", useCoeff);
             //regSampleStep=cfg.GetInteger("AlgoSettings", "regSampleStep", regSampleStep);
@@ -196,16 +196,16 @@ namespace QoZ {
             QoZ=cfg.GetBoolean("AlgoSettings", "FZ", FZ);
             sperrWithoutWave=cfg.GetBoolean("AlgoSettings", "sperrWithoutWave",sperrWithoutWave);
             pyBind=cfg.GetBoolean("AlgoSettings", "pyBind",pyBind);
-            profilingFix=cfg.GetBoolean("AlgoSettings", "profilingFix",profilingFix);
+            //profilingFix=cfg.GetBoolean("AlgoSettings", "profilingFix",profilingFix);
 
 
 
             blockwiseSampleBlockSize=cfg.GetInteger("AlgoSettings", "blockwiseSampleBlockSize", blockwiseSampleBlockSize);
-            pdTuningRealComp=cfg.GetBoolean("AlgoSettings", "pdTuningRealComp", pdTuningRealComp);
-            pdTuningAbConf=cfg.GetInteger("AlgoSettings", "pdTuningAbConf", pdTuningAbConf);
-            pdAlpha=cfg.GetReal("AlgoSettings", "pdAlpha", pdAlpha);
-            pdBeta=cfg.GetReal("AlgoSettings", "pdBeta", pdBeta);
-            lastPdTuning=cfg.GetBoolean("AlgoSettings", "lastPdTuning", lastPdTuning);
+            //pdTuningRealComp=cfg.GetBoolean("AlgoSettings", "pdTuningRealComp", pdTuningRealComp);
+           // pdTuningAbConf=cfg.GetInteger("AlgoSettings", "pdTuningAbConf", pdTuningAbConf);
+           // pdAlpha=cfg.GetReal("AlgoSettings", "pdAlpha", pdAlpha);
+            //pdBeta=cfg.GetReal("AlgoSettings", "pdBeta", pdBeta);
+            //lastPdTuning=cfg.GetBoolean("AlgoSettings", "lastPdTuning", lastPdTuning);
             abList=cfg.GetInteger("AlgoSettings", "abList", abList);
             crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
             sampleBlockSampleBlockSize=cfg.GetInteger("AlgoSettings", "sampleBlockSampleBlockSize", sampleBlockSampleBlockSize);
@@ -435,7 +435,7 @@ namespace QoZ {
         bool blockwiseTuning=0;
         int stride; //not used now
         int pred_dim; // not used now
-        bool linearReduce=0;
+        //bool linearReduce=0;
         //bool train=0;
         //bool useCoeff=0;
         //int regSampleStep=6;
@@ -448,11 +448,11 @@ namespace QoZ {
         //std::vector<double> lorenzo2_coeffs;
         bool verbose=1;
         bool QoZ=0;
-        bool pdTuningRealComp=0;
-        int pdTuningAbConf=0;
-        double pdAlpha=-1;
-        double pdBeta=-1;
-        bool lastPdTuning=0;
+        //bool pdTuningRealComp=0;
+        //int pdTuningAbConf=0;
+        //double pdAlpha=-1;
+        //double pdBeta=-1;
+        //bool lastPdTuning=0;
         int abList=0;
         int crossBlock=0;
         int sampleBlockSampleBlockSize=0;
@@ -485,10 +485,8 @@ namespace QoZ {
         int var_first=0;
         size_t profStride=0;
         int sperr=-1;
-
         //double sperr_eb_coeff = 1.5;
         int waveAutoFix=1;
-
         int conditioning=0;
         size_t meta_size=0;
         sperr::vec8_type meta;
@@ -499,7 +497,7 @@ namespace QoZ {
         std::string metadata;
         bool pybind_activated=false;
         bool FZ=false;
-        bool profilingFix=true;//only for test
+        //bool profilingFix=true;//only for test
 
        // double anchorThreshold=0.0;
        // size_t minAnchorLevel=3;
