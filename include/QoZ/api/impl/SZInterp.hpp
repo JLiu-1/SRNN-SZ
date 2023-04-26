@@ -41,7 +41,7 @@ namespace py = pybind11;
 
 template<class T, QoZ::uint N>
 bool use_sperr(const QoZ::Config & conf){
-    return ( (conf.wavelet>0 or conf.sperrWithoutWave) and conf.sperr>=conf.wavelet and N==3);
+    return ( (conf.wavelet>0 or conf.sperrWithoutWave) and conf.sperr>=conf.wavelet);
 }
 
 template<class T, QoZ::uint N>
