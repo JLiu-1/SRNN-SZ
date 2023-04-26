@@ -169,9 +169,8 @@ auto sperr::SPECK2D::encode() -> RTNType
   }
   else {  // FixedSize mode
     const auto max_coeff_bit = std::floor(std::log2(max_coeff));
-    //m_max_threshold_f = static_cast<float>(std::pow(2.0, max_coeff_bit));
-    m_max_threshold=max_t;
-    m_threshold=max_t;
+    m_max_threshold = std::pow(2.0, max_coeff_bit);
+    m_threshold = std::pow(2.0, max_coeff_bit);
   }
   //m_threshold = static_cast<double>(m_max_threshold_f);
 
