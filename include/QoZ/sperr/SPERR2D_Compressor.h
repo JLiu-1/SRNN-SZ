@@ -86,12 +86,12 @@ class SPERR2D_Compressor {
   auto m_assemble_encoded_bitstream() -> RTNType;
 };
 
-void sperr::SPERR2D_Compressor::set_skip_wave(const bool & skip){
+void SPERR2D_Compressor::set_skip_wave(const bool & skip){
   skip_wave=skip;
 }
 
 
-void sperr::SPERR2D_Compressor::set_eb_coeff(const double & coeff){
+void SPERR2D_Compressor::set_eb_coeff(const double & coeff){
   eb_coeff=coeff;
 }
 
@@ -247,7 +247,7 @@ auto SPERR2D_Compressor::compress() -> RTNType
       return rtn;
   }
   else{
-    / Step 1: Direct SPECK encoding
+    // Step 1: Direct SPECK encoding
     //const auto & coeffs=m_cdf.release_data();
 
     //sperr::write_n_bytes("sperr.dwt",coeffs.size()*sizeof(double),coeffs.data());
