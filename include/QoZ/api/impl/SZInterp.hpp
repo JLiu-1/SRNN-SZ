@@ -2213,10 +2213,11 @@ double Tuning(QoZ::Config &conf, T *data){
         }*/
         
         for(int wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
-
+            std::cout<<wave_idx<<std::endl;
             if(conf.fixWave>=0 and conf.fixWave<=conf.waveletAutoTuning and  wave_idx!=conf.fixWave)
                 continue;
         //std::vector<double> flattened_cur_blocks;
+
             
             conf.wavelet=wave_idx;
             conf.dims=std::vector<size_t>(N,sampleBlockSize+1);
@@ -2305,8 +2306,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         conf.wavelet_rel_coeff=gamma;
                         if(wave_idx>0 and !use_sperr<T,N>(conf))
                             conf.absErrorBound*=conf.wavelet_rel_coeff;
-                        printf("%d %.2f %.2f %.2f\n",wave_idx,gamma,alpha,beta);
-                                            
+                        //printf("%d %.2f %.2f %.2f\n",wave_idx,gamma,alpha,beta);                  
                         std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
                         double bitrate=results.first;
