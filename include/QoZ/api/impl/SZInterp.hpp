@@ -80,7 +80,6 @@ auto post_Condition(T * data,const size_t &num,const sperr::vec8_type& meta){
 
 template<class T, QoZ::uint N> 
 char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only supports float and double
-    std::cout<<"c0"<<std::endl;
     assert(N==2 or N==3);
     if(N==3){
         
@@ -112,34 +111,34 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only support
     else{
         SPERR2D_Compressor compressor;
         compressor.set_eb_coeff(conf.wavelet_rel_coeff);
-        std::cout<<"c0.5"<<std::endl;
         if(conf.wavelet!=1)
             compressor.set_skip_wave(true);
         auto rtn = sperr::RTNType::Good;
         //auto chunks = std::vector<size_t>{1024,1024,1024};//ori 256^3, to tell the truth this is not large enough for scale but I just keep it, maybe set it large later.
-        std::cout<<"c1"<<std::endl;
         if (std::is_same<T, double>::value)
             rtn = compressor.copy_data(reinterpret_cast<const double*>(data), conf.num,
                                     {conf.dims[1], conf.dims[0], 1});
         else
             rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
                                     {conf.dims[1], conf.dims[0], 1});
-        std::cout<<"c2"<<std::endl;
+        if(rtn!=sperr::RTNType::Good){
+            std::cerr << "Copy Error "<< std::endl;
+            return;
+        }
         compressor.set_target_pwe(conf.absErrorBound);
-        std::cout<<"c3"<<std::endl;
         rtn = compressor.compress();
-        std::cout<<"c4"<<std::endl;
+        if(rtn!=sperr::RTNType::Good){
+            std::cerr << "Compress Error "<< std::endl;
+            return;
+        }
         auto stream = compressor.view_encoded_bitstream();
-        std::cout<<"c5"<<std::endl;
             
         char * outData=new char[stream.size()+conf.size_est()];
         outSize=stream.size();
         memcpy(outData,stream.data(),stream.size());//maybe not efficient
-        std::cout<<"c6"<<std::endl;
         stream.clear();
         stream.shrink_to_fit();
         return outData;
-
     }
 
 }
@@ -2200,7 +2199,6 @@ double Tuning(QoZ::Config &conf, T *data){
         std::vector<T> flattened_sampled_data;
            
         if (conf.tuningTarget==QoZ::TUNING_TARGET_AC){
-
             for(int i=0;i<num_sampled_blocks;i++)
                 flattened_sampled_data.insert(flattened_sampled_data.end(),sampled_blocks[i].begin(),sampled_blocks[i].end());
 
@@ -2231,7 +2229,6 @@ double Tuning(QoZ::Config &conf, T *data){
                 conf.interpAlgo=bestInterpAlgos[wave_idx];
                 conf.interpDirection=bestInterpDirections[wave_idx];
             }
-            std::cout<<"b1"<<std::endl;
             std::vector <std::vector<T> > waveleted_input;
             if (wave_idx>0 and (wave_idx>1 or !use_sperr<T,N>(conf)) ){
                 waveleted_input.resize(sampled_blocks.size());
@@ -2283,7 +2280,6 @@ double Tuning(QoZ::Config &conf, T *data){
                 }
 
             }
-            std::cout<<"b2"<<std::endl;
             std::vector<double>alpha_list;
             init_alphalist<T,N>(alpha_list,rel_bound,conf);
             size_t alpha_nums=alpha_list.size();
@@ -2293,11 +2289,9 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<double>gamma_list;
             init_gammalist<T,N>(gamma_list,rel_bound,conf);
             size_t gamma_nums=gamma_list.size();  
-            std::cout<<"b3"<<std::endl;
             for(size_t gamma_idx=0;gamma_idx<gamma_nums;gamma_idx++){
                 for (size_t i=0;i<alpha_nums;i++){
                     for (size_t j=0;j<beta_nums;j++){
-                        std::cout<<gamma<<std::endl;
                         conf.absErrorBound=oriabseb;
                         double alpha=alpha_list[i];
                         double beta=beta_list[j];
@@ -2309,11 +2303,9 @@ double Tuning(QoZ::Config &conf, T *data){
                         conf.wavelet_rel_coeff=gamma;
                         if(wave_idx>0 and !use_sperr<T,N>(conf))
                             conf.absErrorBound*=conf.wavelet_rel_coeff;
-                        std::cout<<"b4"<<std::endl;
                         //printf("%d %.2f %.2f %.2f\n",wave_idx,gamma,alpha,beta);                  
                         std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
-                        std::cout<<"b5"<<std::endl;
                         double bitrate=results.first;
                         double metric=results.second;
                         //printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
