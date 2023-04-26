@@ -186,7 +186,10 @@ namespace QoZ {
             
 
             if(inplace){
-                memcpy(data,dwt_data.data(),conf.num*sizeof(T));
+                T* dtd=dwt_data.data();
+                for(size_t i=0;i<conf.num;i++)
+                    data[i]=dtd[i];
+                //memcpy(data,dwt_data.data(),conf.num*sizeof(T));
                 return data;
             }
             else{
@@ -196,7 +199,11 @@ namespace QoZ {
                     coeffs_num *= coeffs_size[i];
                 
                 T *coeffData = new T[coeffs_num];
-                memcpy(coeffData,dwt_data.data(),coeffs_num*sizeof(T));
+                T* dtd=dwt_data.data();
+                for(size_t i=0;i<coeffs_num;i++)
+                    coeffData[i]=dtd[i];
+
+                //memcpy(coeffData,dwt_data.data(),coeffs_num*sizeof(T));
             
                 return coeffData;
 
@@ -254,7 +261,11 @@ namespace QoZ {
             //std::cout<<"i2"<<std::endl;
             if(inplace){
                 idwt_data = pyModule.attr("idwt")(dwt_data, py::bytes(metadata), wavetype,conf.dims,std::is_same<T, double>::value);
-                memcpy(data,idwt_data.data(),conf.num*sizeof(T));
+                T* idtd = idwt_data.data();
+               
+                for(size_t i=0;i<conf.num;i++)
+                    data[i]=idtd[i];
+                //memcpy(data,idwt_data.data(),conf.num*sizeof(T));
                 return data;
             }
             else{
@@ -267,9 +278,10 @@ namespace QoZ {
                 std::cout<<idwt_data.size()<<std::endl;
 
                 T *outData = new T[outnum];
+                T* idtd = idwt_data.data();
                 for(size_t i=0;i<outnum;i++)
-                    outData[i]=idwt_data.data()[i];
-                //memcpy(outData,idwt_data.data(),outnum*sizeof(T));
+                    outData[i]=idtd[i];
+                //memcpy(outData,idwt_data.data(),outnum*sizeof(T));//this may cause bug when T=double, very strange......
                // std::cout<<"i4"<<std::endl;
                 
                 return outData;
