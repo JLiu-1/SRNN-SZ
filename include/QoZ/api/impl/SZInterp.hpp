@@ -116,19 +116,25 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only support
             compressor.set_skip_wave(true);
         auto rtn = sperr::RTNType::Good;
         //auto chunks = std::vector<size_t>{1024,1024,1024};//ori 256^3, to tell the truth this is not large enough for scale but I just keep it, maybe set it large later.
+        std::cout<<"c1"<<std::endl;
         if (std::is_same<T, double>::value)
             rtn = compressor.copy_data(reinterpret_cast<const double*>(data), conf.num,
                                     {conf.dims[1], conf.dims[0], 1});
         else
             rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
                                     {conf.dims[1], conf.dims[0], 1});
+        std::cout<<"c2"<<std::endl;
         compressor.set_target_pwe(conf.absErrorBound);
+        std::cout<<"c3"<<std::endl;
         rtn = compressor.compress();
+        std::cout<<"c4"<<std::endl;
         auto stream = compressor.view_encoded_bitstream();
+        std::cout<<"c5"<<std::endl;
             
         char * outData=new char[stream.size()+conf.size_est()];
         outSize=stream.size();
         memcpy(outData,stream.data(),stream.size());//maybe not efficient
+        std::cout<<"c6"<<std::endl;
         stream.clear();
         stream.shrink_to_fit();
         return outData;
