@@ -86,12 +86,12 @@ class SPERR2D_Compressor {
   auto m_assemble_encoded_bitstream() -> RTNType;
 };
 
-void sperr::SPERR3D_Compressor::set_skip_wave(const bool & skip){
+void sperr::SPERR2D_Compressor::set_skip_wave(const bool & skip){
   skip_wave=skip;
 }
 
 
-void sperr::SPERR3D_Compressor::set_eb_coeff(const double & coeff){
+void sperr::SPERR2D_Compressor::set_eb_coeff(const double & coeff){
   eb_coeff=coeff;
 }
 

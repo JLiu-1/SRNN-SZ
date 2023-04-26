@@ -105,7 +105,7 @@ sperr::SPECK2D::SPECK2D()
   m_dims[2] = 1;
 }
 
-void sperr::SPECK3D::set_eb_coeff(const double & coeff){
+void sperr::SPECK2D::set_eb_coeff(const double & coeff){
   eb_coeff=coeff;
 }
 
