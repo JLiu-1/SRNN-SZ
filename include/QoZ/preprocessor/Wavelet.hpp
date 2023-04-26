@@ -383,6 +383,7 @@ namespace QoZ {
                 m_dims[0]=dims[1];
                 m_dims[1]=dims[0];
                 m_dims[2]=1;
+                n=dims[0]*dims[1];
             }
 
             std::vector<double> dwtdata(n, 0);
@@ -393,6 +394,7 @@ namespace QoZ {
             sperr::CDF97 m_cdf;
 
             m_cdf.take_data(std::move(dwtdata), m_dims);
+
             /*
             auto xforms_xy = num_of_xforms(std::min(m_dims[0], m_dims[1]));
             auto xforms_z = num_of_xforms(m_dims[2]);
@@ -431,6 +433,7 @@ namespace QoZ {
                 m_dims[0]=dims[1];
                 m_dims[1]=dims[0];
                 m_dims[2]=1;
+                n=dims[0]*dims[1];
             }
             std::vector<double> dwtdata(n, 0);
             for (size_t i = 0; i < n; i++) {
