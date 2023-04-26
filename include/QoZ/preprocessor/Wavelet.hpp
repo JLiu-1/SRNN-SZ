@@ -420,6 +420,7 @@ namespace QoZ {
         void postProcess_cdf97(T *data, std::vector<size_t> dims) {
             assert(N==2 or N==3);
             std::array<size_t,3> m_dims;
+            size_t n=1;
             if(N==3){
                 for (size_t i=0;i<N;i++){
                     n*=dims[i];

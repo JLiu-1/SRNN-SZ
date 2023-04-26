@@ -22,9 +22,9 @@
 #include "QoZ/api/impl/SZLorenzoReg.hpp"
 
 #include "QoZ/sperr/SPERR3D_OMP_C.h"
-
+#include "QoZ/sperr/SPERR2D_Compressor.h"
 #include "QoZ/sperr/SPERR3D_OMP_D.h"
-
+#include "QoZ/sperr/SPERR2D_Deompressor.h"
 
 #include <pybind11/embed.h>
 #include <pybind11/numpy.h>
