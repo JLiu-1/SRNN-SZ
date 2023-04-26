@@ -80,7 +80,7 @@ auto post_Condition(T * data,const size_t &num,const sperr::vec8_type& meta){
 
 template<class T, QoZ::uint N> 
 char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only supports float and double
-
+    std::cout<<"c0"<<std::endl;
     assert(N==2 or N==3);
     if(N==3){
         
@@ -112,6 +112,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only support
     else{
         SPERR2D_Compressor compressor;
         compressor.set_eb_coeff(conf.wavelet_rel_coeff);
+        std::cout<<"c0.5"<<std::endl;
         if(conf.wavelet!=1)
             compressor.set_skip_wave(true);
         auto rtn = sperr::RTNType::Good;
@@ -2304,6 +2305,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         conf.wavelet_rel_coeff=gamma;
                         if(wave_idx>0 and !use_sperr<T,N>(conf))
                             conf.absErrorBound*=conf.wavelet_rel_coeff;
+                        printf("%d %.2f %.2f %.2f\n",wave_idx,gamma,alpha,beta);
                                             
                         std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
