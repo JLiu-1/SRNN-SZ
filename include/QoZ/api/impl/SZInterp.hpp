@@ -118,10 +118,10 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only support
         //auto chunks = std::vector<size_t>{1024,1024,1024};//ori 256^3, to tell the truth this is not large enough for scale but I just keep it, maybe set it large later.
         if (std::is_same<T, double>::value)
             rtn = compressor.copy_data(reinterpret_cast<const double*>(data), conf.num,
-                                    {conf.dims[1], conf.dims[0], conf.dims[1]});
+                                    {conf.dims[1], conf.dims[0], 1});
         else
             rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
-                                    {conf.dims[1], conf.dims[0], conf.dims[1]});
+                                    {conf.dims[1], conf.dims[0], 1});
         compressor.set_target_pwe(conf.absErrorBound);
         rtn = compressor.compress();
         auto stream = compressor.view_encoded_bitstream();
@@ -2303,7 +2303,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
                         double bitrate=results.first;
                         double metric=results.second;
-                        printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
+                        //printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
                         if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
                             bestalpha=alpha;
                             bestbeta=beta;
