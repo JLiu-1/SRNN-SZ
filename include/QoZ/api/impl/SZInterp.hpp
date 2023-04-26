@@ -116,7 +116,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
                                     {conf.dims[1], conf.dims[0], conf.dims[1]});
         compressor.set_target_pwe(conf.absErrorBound);
         rtn = compressor.compress();
-        auto stream = compressor.get_encoded_bitstream();
+        auto stream = compressor.view_encoded_bitstream();
             
         char * outData=new char[stream.size()+conf.size_est()];
         outSize=stream.size();
@@ -154,7 +154,7 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
         memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
     }
     else{
-        SPERR2D_Compressor decompressor;
+        SPERR2D_Decompressor decompressor;
       
         if (decompressor.use_bitstream(in_stream.data(), in_stream.size()) != sperr::RTNType::Good) {
             std::cerr << "Read compressed file error: "<< std::endl;
