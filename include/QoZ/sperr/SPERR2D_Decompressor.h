@@ -69,8 +69,8 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
   const uint8_t* u8p = static_cast<const uint8_t*>(p);
 
   // Task 1)
-  if (*u8p != static_cast<uint8_t>(SPERR_VERSION_MAJOR))
-    return RTNType::VersionMismatch;
+  //if (*u8p != static_cast<uint8_t>(SPERR_VERSION_MAJOR))
+  //  return RTNType::VersionMismatch;
   u8p += 1;
 
   // Task 2)
@@ -96,7 +96,7 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
     return RTNType::BitstreamWrongLen;
 
     // Task 4)
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
   if (metabool[0] == false)
     return RTNType::ZSTDMismatch;
 
@@ -112,10 +112,10 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
   // Redirect `u8p` to point to the beginning of conditioning stream
   u8p = content_buf.get();
   plen = content_size;
-#else
-  if (metabool[0] == true)
-    return RTNType::ZSTDMismatch;
-#endif
+//#else
+//  if (metabool[0] == true)
+//    return RTNType::ZSTDMismatch;
+//#endif
 
   // Task 5)
   const auto condi_size = m_conditioner.header_size(u8p);
