@@ -79,6 +79,7 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
   if (metabool[1] == true)  // true means it's 3D
     return RTNType::SliceVolumeMismatch;
 
+  std::cout<<"t1"<<std::endl;
   const auto has_sperr = metabool[3];
 
   // Task 3)
@@ -95,20 +96,27 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
     plen = len - m_meta_size;
   else
     return RTNType::BitstreamWrongLen;
+  std::cout<<"t2"<<std::endl;
 
     // Task 4)
 //#ifdef USE_ZSTD
   if (metabool[0] == false)
     return RTNType::ZSTDMismatch;
 
+  std::cout<<"t3"<<std::endl;
+
   const auto content_size = ZSTD_getFrameContentSize(u8p, plen);
   if (content_size == ZSTD_CONTENTSIZE_ERROR || content_size == ZSTD_CONTENTSIZE_UNKNOWN)
     return RTNType::ZSTDError;
+
+  std::cout<<"t4"<<std::endl;
 
   auto content_buf = std::make_unique<uint8_t[]>(content_size);
   const auto decomp_size = ZSTD_decompress(content_buf.get(), content_size, u8p, plen);
   if (ZSTD_isError(decomp_size) || decomp_size != content_size)
     return RTNType::ZSTDError;
+
+  std::cout<<"t5"<<std::endl;
 
   // Redirect `u8p` to point to the beginning of conditioning stream
   u8p = content_buf.get();
@@ -123,6 +131,7 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
   if (condi_size > plen)
     return RTNType::BitstreamWrongLen;
 
+  std::cout<<"t6"<<std::endl;
   m_condi_stream.resize(condi_size);
   std::copy(u8p, u8p + condi_size, m_condi_stream.begin());
   u8p += condi_size;
@@ -142,6 +151,7 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
   if (speck_size > plen)
     return RTNType::BitstreamWrongLen;
 
+  std::cout<<"t7"<<std::endl;
   m_speck_stream.resize(speck_size);
   std::copy(u8p, u8p + speck_size, m_speck_stream.begin());
   u8p += speck_size;
@@ -151,10 +161,13 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
     if (plen == 0)
       return RTNType::BitstreamWrongLen;
 
+    std::cout<<"t8"<<std::endl;
+
     const auto sperr_size = m_sperr.get_sperr_stream_size(u8p);
     if (sperr_size != plen)
       return RTNType::BitstreamWrongLen;
 
+    std::cout<<"t9"<<std::endl;
     m_sperr_stream.resize(sperr_size);
     std::copy(u8p, u8p + sperr_size, m_sperr_stream.begin());
   }
@@ -162,6 +175,7 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
     if (plen != 0)
       return RTNType::BitstreamWrongLen;
 
+    std::cout<<"t8.1"<<std::endl;
   }
   return RTNType::Good;
 }
