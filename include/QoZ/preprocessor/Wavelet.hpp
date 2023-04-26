@@ -186,9 +186,8 @@ namespace QoZ {
             
 
             if(inplace){
-                T* dtd=dwt_data.data();
                 for(size_t i=0;i<conf.num;i++)
-                    data[i]=dtd[i];
+                    data[i]=dwt_data.data()[i];
                 //memcpy(data,dwt_data.data(),conf.num*sizeof(T));
                 return data;
             }
@@ -199,9 +198,8 @@ namespace QoZ {
                     coeffs_num *= coeffs_size[i];
                 
                 T *coeffData = new T[coeffs_num];
-                T* dtd=dwt_data.data();
                 for(size_t i=0;i<coeffs_num;i++)
-                    coeffData[i]=dtd[i];
+                    coeffData[i]=dwt_data.data()[i];
 
                 //memcpy(coeffData,dwt_data.data(),coeffs_num*sizeof(T));
             
@@ -261,10 +259,8 @@ namespace QoZ {
             //std::cout<<"i2"<<std::endl;
             if(inplace){
                 idwt_data = pyModule.attr("idwt")(dwt_data, py::bytes(metadata), wavetype,conf.dims,std::is_same<T, double>::value);
-                T* idtd = idwt_data.data();
-               
                 for(size_t i=0;i<conf.num;i++)
-                    data[i]=idtd[i];
+                    data[i]=idwt_data.data()[i];
                 //memcpy(data,idwt_data.data(),conf.num*sizeof(T));
                 return data;
             }
@@ -278,9 +274,8 @@ namespace QoZ {
                 std::cout<<idwt_data.size()<<std::endl;
 
                 T *outData = new T[outnum];
-                T* idtd = idwt_data.data();
                 for(size_t i=0;i<outnum;i++)
-                    outData[i]=idtd[i];
+                    outData[i]=idwt_data.data()[i];
                 //memcpy(outData,idwt_data.data(),outnum*sizeof(T));//this may cause bug when T=double, very strange......
                // std::cout<<"i4"<<std::endl;
                 
