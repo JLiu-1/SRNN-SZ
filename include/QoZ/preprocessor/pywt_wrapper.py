@@ -6,7 +6,7 @@ import time
 structure = None
 
 
-def dwt(data, wave_type):
+def dwt(data, wave_type,is_float):
     start = time.time()
     c = pywt.wavedecn(data, wave_type, mode="periodization")
     d = pywt.coeffs_to_array(c)
@@ -16,8 +16,11 @@ def dwt(data, wave_type):
     structure = pickle.dumps(d[1])
     #print(d[0].shape)
 
-   
-    return d[0].astype(np.float32)
+    if(is_float):
+        return d[0].astype(np.float32)
+    else:
+        return d[0].astype(np.double)
+
 
 def dwt_structure():
     global structure
@@ -25,7 +28,7 @@ def dwt_structure():
 
 
 
-def idwt(data, wave_structure, wave_type, ori_shape):
+def idwt(data, wave_structure, wave_type, ori_shape,is_float):
     start = time.time()
     structure = pickle.loads(wave_structure)
     #print(structure)
@@ -41,4 +44,7 @@ def idwt(data, wave_structure, wave_type, ori_shape):
             b = b[:ori_shape[0], :ori_shape[1], :ori_shape[2]]
     end = time.time()
     #print('pure python time without c++ binding', end - start)
-    return b.astype(np.float32)
+    if is_float:
+        return b.astype(np.float32)
+    else:
+        return b.astype(np.double)
