@@ -92,10 +92,10 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only support
           
         auto chunks = std::vector<size_t>{1024,1024,1024};//ori 256^3, to tell the truth this is not large enough for scale but I just keep it, maybe set it large later.
         if (std::is_same<T, double>::value)
-            rtn = compressor.copy_data(reinterpret_cast<const double*>(data), conf.num,
+            rtn = compressor.copy_data<T>(reinterpret_cast<const double*>(data), conf.num,
                                     {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
         else
-            rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
+            rtn = compressor.copy_data<T>(reinterpret_cast<const float*>(data), conf.num,
                                     {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
         compressor.set_target_pwe(conf.absErrorBound);
         rtn = compressor.compress();
@@ -116,10 +116,10 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only support
         auto rtn = sperr::RTNType::Good;
         //auto chunks = std::vector<size_t>{1024,1024,1024};//ori 256^3, to tell the truth this is not large enough for scale but I just keep it, maybe set it large later.
         if (std::is_same<T, double>::value)
-            rtn = compressor.copy_data(reinterpret_cast<const double*>(data), conf.num,
+            rtn = compressor.copy_data<T>(reinterpret_cast<const double*>(data), conf.num,
                                     {conf.dims[1], conf.dims[0], 1});
         else
-            rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
+            rtn = compressor.copy_data<T>(reinterpret_cast<const float*>(data), conf.num,
                                     {conf.dims[1], conf.dims[0], 1});
         if(rtn!=sperr::RTNType::Good){
             std::cerr << "Copy error."<< std::endl;
@@ -166,6 +166,7 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){//only supports
         in_stream.shrink_to_fit();
         if (std::is_same<T, double>::value){
             const auto vol = decompressor.get_data<double>();
+            std::cout<<vol.size()<<std::endl;
             memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
         }
         else{
@@ -2154,7 +2155,6 @@ double Tuning(QoZ::Config &conf, T *data){
 
         double bestm=0;
         size_t num_sampled_blocks=sampled_blocks.size();
-        //std::cout<<num_sampled_blocks<<std::endl;
         size_t per_block_ele_num=pow(sampleBlockSize+1,N);
         size_t ele_num=num_sampled_blocks*per_block_ele_num;
         //vector<double> orig_sums(num_sampled_blocks,0);
