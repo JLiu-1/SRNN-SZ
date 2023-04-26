@@ -267,7 +267,9 @@ namespace QoZ {
                 std::cout<<idwt_data.size()<<std::endl;
 
                 T *outData = new T[outnum];
-                memcpy(outData,idwt_data.data(),outnum*sizeof(T));
+                for(size_t i=0;i<outnum;i++)
+                    outData[i]=idwt_data[i];
+                //memcpy(outData,idwt_data.data(),outnum*sizeof(T));
                // std::cout<<"i4"<<std::endl;
                 
                 return outData;
