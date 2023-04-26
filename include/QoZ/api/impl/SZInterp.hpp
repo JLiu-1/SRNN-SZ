@@ -390,7 +390,7 @@ void SZ_decompress_Interp(QoZ::Config &conf, char *cmpData, size_t cmpSize, T *d
         if(use_sperr<T,N>(conf) and conf.wavelet<=1){
 
 
-            SPERR_Decompress(cmpData, cmpSize, decData);
+            SPERR_Decompress<T,N>(cmpData, cmpSize, decData);
             /*
             std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
             SPERR3D_OMP_D decompressor;
