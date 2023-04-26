@@ -532,8 +532,9 @@ int main(int argc, char *argv[]) {
         } 
         else if (dataType == SZ_DOUBLE) {
             compress<double>(inPath, cmpPath, conf);
-        /*
-        } else if (dataType == SZ_INT32) {
+        
+        } 
+        /*else if (dataType == SZ_INT32) {
             compress<int32_t>(inPath, cmpPath, conf);
         } else if (dataType == SZ_INT64) {
             compress<int64_t>(inPath, cmpPath, conf);
