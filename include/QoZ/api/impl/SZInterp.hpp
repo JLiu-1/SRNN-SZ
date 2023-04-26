@@ -1720,8 +1720,8 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.waveletAutoTuning=1;
         else{
             double normvar=QoZ::calcNormedVariance(data,conf.num);
-            if (conf.verbose)
-                std::cout<<" Normvar: "<<normvar<<std::endl;
+            //if (conf.verbose)
+               // std::cout<<" Normvar: "<<normvar<<std::endl;
             double threshold=3e-3;
             if(normvar>=threshold)
                 conf.waveletAutoTuning=1;
@@ -2946,8 +2946,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         delete [] outlier_compress_output;
         if(conf.wavelet>1)//maybe need to fix
             delete [] decData;
-        std::cout<<"idwtfffdddfff"<<std::endl;
-
+    
         return final_output;
     }
     else{

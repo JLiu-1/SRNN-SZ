@@ -270,8 +270,6 @@ namespace QoZ {
                 size_t outnum=1;
                 for (size_t i = 0; i < N; i++)
                     outnum *= output_dims[i];
-                std::cout<<outnum<<std::endl;
-                std::cout<<idwt_data.size()<<std::endl;
 
                 T *outData = new T[outnum];
                 for(size_t i=0;i<outnum;i++)
