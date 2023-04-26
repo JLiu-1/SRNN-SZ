@@ -122,13 +122,13 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only support
             rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
                                     {conf.dims[1], conf.dims[0], 1});
         if(rtn!=sperr::RTNType::Good){
-            std::cerr << "Copy Error "<< std::endl;
+            std::cerr << "Copy error."<< std::endl;
             return NULL;
         }
         compressor.set_target_pwe(conf.absErrorBound);
         rtn = compressor.compress();
         if(rtn!=sperr::RTNType::Good){
-            std::cerr << "Compress Error "<< std::endl;
+            std::cerr << "Compression error."<< std::endl;
             return NULL;
         }
         auto stream = compressor.view_encoded_bitstream();
@@ -2211,7 +2211,6 @@ double Tuning(QoZ::Config &conf, T *data){
         }*/
         
         for(int wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
-            std::cout<<wave_idx<<std::endl;
             if(conf.fixWave>=0 and conf.fixWave<=conf.waveletAutoTuning and  wave_idx!=conf.fixWave)
                 continue;
         //std::vector<double> flattened_cur_blocks;
