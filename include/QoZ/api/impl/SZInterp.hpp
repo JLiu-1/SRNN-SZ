@@ -2231,7 +2231,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 conf.interpAlgo=bestInterpAlgos[wave_idx];
                 conf.interpDirection=bestInterpDirections[wave_idx];
             }
-            
+            std::cout<<"b1"<<std::endl;
             std::vector <std::vector<T> > waveleted_input;
             if (wave_idx>0 and (wave_idx>1 or !use_sperr<T,N>(conf)) ){
                 waveleted_input.resize(sampled_blocks.size());
@@ -2283,6 +2283,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 }
 
             }
+            std::cout<<"b2"<<std::endl;
             std::vector<double>alpha_list;
             init_alphalist<T,N>(alpha_list,rel_bound,conf);
             size_t alpha_nums=alpha_list.size();
@@ -2292,9 +2293,11 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<double>gamma_list;
             init_gammalist<T,N>(gamma_list,rel_bound,conf);
             size_t gamma_nums=gamma_list.size();  
+            std::cout<<"b3"<<std::endl;
             for(size_t gamma_idx=0;gamma_idx<gamma_nums;gamma_idx++){
                 for (size_t i=0;i<alpha_nums;i++){
                     for (size_t j=0;j<beta_nums;j++){
+                        std::cout<<gamma<<std::endl;
                         conf.absErrorBound=oriabseb;
                         double alpha=alpha_list[i];
                         double beta=beta_list[j];
@@ -2306,9 +2309,11 @@ double Tuning(QoZ::Config &conf, T *data){
                         conf.wavelet_rel_coeff=gamma;
                         if(wave_idx>0 and !use_sperr<T,N>(conf))
                             conf.absErrorBound*=conf.wavelet_rel_coeff;
+                        std::cout<<"b4"<<std::endl;
                         //printf("%d %.2f %.2f %.2f\n",wave_idx,gamma,alpha,beta);                  
                         std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
+                        std::cout<<"b5"<<std::endl;
                         double bitrate=results.first;
                         double metric=results.second;
                         //printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
