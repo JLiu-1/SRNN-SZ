@@ -166,7 +166,6 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){//only supports
         in_stream.shrink_to_fit();
         if (std::is_same<T, double>::value){
             const auto vol = decompressor.get_data<double>();
-            std::cout<<vol.size()<<std::endl;
             memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
         }
         else{
@@ -2874,13 +2873,14 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 coeffData=new T[conf.num];
                 SPERR_Decompress<T,N>(compress_output,outSize,coeffData);
             }
+            std::cout<<"000"<<std::endl;
           
 
             
             if(conf.pyBind){
     
                 decData=QoZ::pybind_wavelet_postprocessing<T,N>(conf,coeffData,conf.metadata,conf.wavelet, false,orig_dims);
-                //std::cout<<"idwtf"<<std::endl;
+                std::cout<<"idwtf"<<std::endl;
             }
             else
                 decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
@@ -2903,6 +2903,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=data[i]-decData[i];
             }
+            std::cout<<"idwtfff"<<std::endl;
         }
         else{
             if(use_sperr<T,N>(conf)){
@@ -2939,6 +2940,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         size_t outlier_outSize=0;
         char * outlier_compress_output;
         outlier_compress_output=outlier_compress<T,N>(newconf,decData,outlier_outSize);
+        std::cout<<"idwtffffff"<<std::endl;
 
         size_t totalsize=outSize+outlier_outSize;
         char * final_output=new char[totalsize+conf.size_est()+conf.metadata.size()];
@@ -2949,6 +2951,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         delete [] outlier_compress_output;
         if(conf.wavelet>1)//maybe need to fix
             delete [] decData;
+        std::cout<<"idwtfffdddfff"<<std::endl;
 
         return final_output;
     }
