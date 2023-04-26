@@ -79,7 +79,7 @@ auto post_Condition(T * data,const size_t &num,const sperr::vec8_type& meta){
 }
 
 template<class T, QoZ::uint N> 
-char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
+char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only supports float and double
 
     assert(N==2 or N==3);
     if(N==3){
@@ -92,7 +92,11 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
         auto rtn = sperr::RTNType::Good;
           
         auto chunks = std::vector<size_t>{1024,1024,1024};//ori 256^3, to tell the truth this is not large enough for scale but I just keep it, maybe set it large later.
-        rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
+        if (std::is_same<T, double>::value)
+            rtn = compressor.copy_data(reinterpret_cast<const double*>(data), conf.num,
+                                    {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
+        else
+            rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
                                     {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
         compressor.set_target_pwe(conf.absErrorBound);
         rtn = compressor.compress();
@@ -112,7 +116,11 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
             compressor.set_skip_wave(true);
         auto rtn = sperr::RTNType::Good;
         //auto chunks = std::vector<size_t>{1024,1024,1024};//ori 256^3, to tell the truth this is not large enough for scale but I just keep it, maybe set it large later.
-        rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
+        if (std::is_same<T, double>::value)
+            rtn = compressor.copy_data(reinterpret_cast<const double*>(data), conf.num,
+                                    {conf.dims[1], conf.dims[0], conf.dims[1]});
+        else
+            rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
                                     {conf.dims[1], conf.dims[0], conf.dims[1]});
         compressor.set_target_pwe(conf.absErrorBound);
         rtn = compressor.compress();
@@ -129,7 +137,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
 
 }
 template<class T, QoZ::uint N> 
-void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
+void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){//only supports float and double
     assert(N==2 or N==3);
 
     
@@ -150,8 +158,14 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
        
         in_stream.clear();
         in_stream.shrink_to_fit();
-        const auto vol = decompressor.get_data<float>();
-        memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
+        if (std::is_same<T, double>::value){
+            const auto vol = decompressor.get_data<double>();
+            memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
+        }
+        else{
+            const auto vol = decompressor.get_data<float>();
+            memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
+        }
     }
     else{
         SPERR2D_Decompressor decompressor;
@@ -161,15 +175,21 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
             return;
         }
 
-        if (decompressor.decompress(in_stream.data()) != sperr::RTNType::Good) {
+        if (decompressor.decompress() != sperr::RTNType::Good) {
             std::cerr << "Decompression failed!" << std::endl;
             return ;
         }
        
         in_stream.clear();
         in_stream.shrink_to_fit();
-        const auto vol = decompressor.get_data<float>();
-        memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
+        if (std::is_same<T, double>::value){
+            const auto vol = decompressor.get_data<double>();
+            memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
+        }
+        else{
+            const auto vol = decompressor.get_data<float>();
+            memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
+        }
     }
 }
 
