@@ -369,11 +369,20 @@ namespace QoZ {
         }
         #endif
         void preProcess_cdf97(T *data, std::vector<size_t> dims) {
+            assert(N==2 or N==3);
             size_t n=1;
-            std::array<size_t,3> m_dims=std::array<size_t,3>{1,1,1};
-            for (size_t i=0;i<N;i++){
-                n*=dims[i];
-                m_dims[N-1-i]=dims[i];
+            //std::array<size_t,3> m_dims=std::array<size_t,3>{1,1,1};
+            std::array<size_t,3> m_dims;
+            if(N==3){
+                for (size_t i=0;i<N;i++){
+                    n*=dims[i];
+                    m_dims[N-1-i]=dims[i];
+                }
+            }
+            else{
+                m_dims[0]=dims[1];
+                m_dims[1]=dims[0];
+                m_dims[2]=1;
             }
 
             std::vector<double> dwtdata(n, 0);
@@ -392,7 +401,11 @@ namespace QoZ {
             else
                 m_cdf.dwt3d_wavelet_packet();
             */
-            m_cdf.dwt3d();
+            if(N==3)
+                m_cdf.dwt3d();
+            else
+                m_cdf.dwt2d();
+
 
 
             dwtdata=m_cdf.release_data();
@@ -405,11 +418,18 @@ namespace QoZ {
 
 
         void postProcess_cdf97(T *data, std::vector<size_t> dims) {
-            size_t n=1;
-            std::array<size_t,3> m_dims=std::array<size_t,3>{1,1,1};
-            for (size_t i=0;i<N;i++){
-                n*=dims[i];
-                m_dims[N-1-i]=dims[i];
+            assert(N==2 or N==3);
+            std::array<size_t,3> m_dims;
+            if(N==3){
+                for (size_t i=0;i<N;i++){
+                    n*=dims[i];
+                    m_dims[N-1-i]=dims[i];
+                }
+            }
+            else{
+                m_dims[0]=dims[1];
+                m_dims[1]=dims[0];
+                m_dims[2]=1;
             }
             std::vector<double> dwtdata(n, 0);
             for (size_t i = 0; i < n; i++) {
@@ -427,7 +447,10 @@ namespace QoZ {
             else
                 m_cdf.idwt3d_wavelet_packet();
             */
-            m_cdf.idwt3d();
+            if(N==3)
+                m_cdf.idwt3d();
+            else
+                m_cdf.idwt2d();
 
 
             dwtdata=m_cdf.release_data();

@@ -213,12 +213,26 @@ auto SPERR2D_Decompressor::decompress() -> RTNType
   auto decoder_out = m_decoder.release_data();
   if (decoder_out.size() != total_vals)
     return RTNType::Error;
-  m_cdf.take_data(std::move(decoder_out), m_dims);
-  m_cdf.idwt2d();
 
-  // Step 3: Inverse Conditioning
-  m_val_buf = m_cdf.release_data();
-  m_conditioner.inverse_condition(m_val_buf, m_dims, m_condi_stream);
+  auto b8=sperr::unpack_8_booleans(m_condi_stream[0]);
+
+  bool skip_wave=b8[2];
+
+  if(!skip_wave){
+
+  
+  
+    m_cdf.take_data(std::move(decoder_out), m_dims);
+    m_cdf.idwt2d();
+
+    // Step 3: Inverse Conditioning
+    m_val_buf = m_cdf.release_data();
+    m_conditioner.inverse_condition(m_val_buf, m_dims, m_condi_stream);
+  }
+  else{
+    m_val_buf.resize(decoder_out.size());
+    std::copy(decoder_out.begin(), decoder_out.end(), m_val_buf.begin());
+  }
 
   // Step 4: if there's SPERR stream, then do outlier correction.
   if (!m_sperr_stream.empty()) {

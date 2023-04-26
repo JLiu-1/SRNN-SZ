@@ -45,6 +45,7 @@ class SPECK2D : public SPECK_Storage {
   // core operations
   auto encode() -> RTNType;
   auto decode() -> RTNType;
+  void set_eb_coeff(const double & coeff);
 
  private:
   auto m_sorting_pass_encode() -> RTNType;
@@ -74,6 +75,7 @@ class SPECK2D : public SPECK_Storage {
 
   std::vector<std::vector<SPECKSet2D>> m_LIS;
   SPECKSet2D m_I;
+  double eb_coeff=1.5;
 };
 
 };  // namespace sperr
@@ -101,6 +103,10 @@ sperr::SPECK2D::SPECK2D()
 {
   m_I.type = SetType::TypeI;
   m_dims[2] = 1;
+}
+
+void sperr::SPECK3D::set_eb_coeff(const double & coeff){
+  eb_coeff=coeff;
 }
 
 auto sperr::SPECK2D::encode() -> RTNType
@@ -150,7 +156,7 @@ auto sperr::SPECK2D::encode() -> RTNType
   size_t num_bitplanes = 128;
   const auto max_coeff = *std::max_element(m_coeff_buf.begin(), m_coeff_buf.end());
   if (m_mode_cache == CompMode::FixedPWE || m_mode_cache == CompMode::FixedPSNR) {
-    const auto terminal_threshold = m_estimate_finest_q();
+    const auto terminal_threshold = m_estimate_finest_q(eb_coeff);
     auto max_t = terminal_threshold;
     num_bitplanes = 1;
     while (max_t * 2.0 < max_coeff) {
