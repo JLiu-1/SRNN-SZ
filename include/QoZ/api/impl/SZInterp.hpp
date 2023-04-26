@@ -388,6 +388,10 @@ void SZ_decompress_Interp(QoZ::Config &conf, char *cmpData, size_t cmpSize, T *d
 
 
         if(use_sperr<T,N>(conf) and conf.wavelet<=1){
+
+
+            SPERR_Decompress(cmpData, cmpSize, decData);
+            /*
             std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
             SPERR3D_OMP_D decompressor;
             decompressor.set_num_threads(1);
@@ -404,6 +408,7 @@ void SZ_decompress_Interp(QoZ::Config &conf, char *cmpData, size_t cmpSize, T *d
             in_stream.shrink_to_fit();
             const auto vol = decompressor.get_data<float>();
             memcpy(decData,vol.data(),sizeof(T)*conf.num);//maybe not efficient
+            */
             
             return;
 
