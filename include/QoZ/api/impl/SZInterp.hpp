@@ -123,13 +123,13 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){//only support
                                     {conf.dims[1], conf.dims[0], 1});
         if(rtn!=sperr::RTNType::Good){
             std::cerr << "Copy Error "<< std::endl;
-            return;
+            return NULL;
         }
         compressor.set_target_pwe(conf.absErrorBound);
         rtn = compressor.compress();
         if(rtn!=sperr::RTNType::Good){
             std::cerr << "Compress Error "<< std::endl;
-            return;
+            return NULL;
         }
         auto stream = compressor.view_encoded_bitstream();
             
