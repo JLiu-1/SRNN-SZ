@@ -326,7 +326,7 @@ auto SPERR2D_Compressor::compress() -> RTNType
 auto SPERR2D_Compressor::m_assemble_encoded_bitstream() -> RTNType
 {
 
-  /*
+  
   // This method does 3 things:
   // 1) prepend a proper header containing meta data.
   // 2) assemble conditioner, SPECK, and possibly SPERR bitstreams together.
@@ -344,12 +344,12 @@ auto SPERR2D_Compressor::m_assemble_encoded_bitstream() -> RTNType
   // bool_byte[3-7]: unused
   //
   auto meta = std::vector<uint8_t>(m_meta_size, 0);
-  meta[0] = static_cast<uint8_t>(SPERR_VERSION_MAJOR);
+  meta[0] = 0;//static_cast<uint8_t>(SPERR_VERSION_MAJOR);
   auto metabool = std::array<bool, 8>{false, false, false, false, false, false, false, false};
 
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
   metabool[0] = true;
-#endif
+//#endif
 
   metabool[2] = m_orig_is_float;
   metabool[3] = !m_sperr_stream.empty();
@@ -376,7 +376,7 @@ auto SPERR2D_Compressor::m_assemble_encoded_bitstream() -> RTNType
   itr += m_sperr_stream.size();
   assert(itr == m_encoded_stream.end());
 
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
   // Task 3: apply ZSTD compression.
   const auto uncomp_size = total_size - m_meta_size;
   const auto comp_buf_len = ZSTD_compressBound(uncomp_size);
@@ -389,58 +389,18 @@ auto SPERR2D_Compressor::m_assemble_encoded_bitstream() -> RTNType
   if (ZSTD_isError(comp_size)) {
     return RTNType::ZSTDError;
   }
-  else {
+  //else {
     // Note: when the encoded stream is only a few kilobytes or smaller, the ZSTD compressed
     //       output can be larger.
-    comp_buf.resize(m_meta_size + comp_size);
-    m_encoded_stream = std::move(comp_buf);
-  }
-#endif
-
-  return RTNType::Good;
-  */
-
-  // Copy over the condi stream.
-  // `m_encoded_stream` is either empty, or is already allocated space and filled with the speck
-  // stream.
-  if (m_encoded_stream.empty())
-    m_encoded_stream.resize(m_condi_stream.size());
-  std::copy(m_condi_stream.begin(), m_condi_stream.end(), m_encoded_stream.begin());
-
-  // If there's outlier correction stream, copy it over too.
-  if (!m_sperr_stream.empty()) {
-    const auto condi_speck_len = m_encoded_stream.size();
-    assert(condi_speck_len > m_condi_stream.size());
-    m_encoded_stream.resize(condi_speck_len + m_sperr_stream.size());
-    std::copy(m_sperr_stream.cbegin(), m_sperr_stream.cend(),
-              m_encoded_stream.begin() + condi_speck_len);
-  }
-
-//#ifdef USE_ZSTD
-  if (m_cctx == nullptr) {
-    auto* ctx_p = ZSTD_createCCtx();
-    if (ctx_p == nullptr)
-      return RTNType::ZSTDError;
-    else
-      m_cctx.reset(ctx_p);
-  }
-
-  const size_t comp_upper_size = ZSTD_compressBound(m_encoded_stream.size());
-  m_zstd_buf.resize(comp_upper_size);
-  const size_t comp_size =
-      ZSTD_compressCCtx(m_cctx.get(), m_zstd_buf.data(), comp_upper_size, m_encoded_stream.data(),
-                        m_encoded_stream.size(), ZSTD_CLEVEL_DEFAULT + 6);
-  if (ZSTD_isError(comp_size))
-    return RTNType::ZSTDError;
-  else {
-    // Note: when the encoded stream is only a few kilobytes or smaller, the ZSTD compressed
-    //       output can be larger.
-    m_encoded_stream.resize(comp_size);
-    std::copy(m_zstd_buf.cbegin(), m_zstd_buf.cbegin() + comp_size, m_encoded_stream.begin());
-  }
+   // comp_buf.resize(m_meta_size + comp_size);
+   // m_encoded_stream = std::move(comp_buf);
+ // }
 //#endif
 
   return RTNType::Good;
+  
+
+
 }
 
 
