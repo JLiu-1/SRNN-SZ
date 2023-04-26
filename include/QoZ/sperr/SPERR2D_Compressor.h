@@ -389,12 +389,12 @@ auto SPERR2D_Compressor::m_assemble_encoded_bitstream() -> RTNType
   if (ZSTD_isError(comp_size)) {
     return RTNType::ZSTDError;
   }
-  //else {
-    // Note: when the encoded stream is only a few kilobytes or smaller, the ZSTD compressed
-    //       output can be larger.
-   // comp_buf.resize(m_meta_size + comp_size);
-   // m_encoded_stream = std::move(comp_buf);
- // }
+  else {
+     Note: when the encoded stream is only a few kilobytes or smaller, the ZSTD compressed
+           output can be larger.
+    comp_buf.resize(m_meta_size + comp_size);
+    m_encoded_stream = std::move(comp_buf);
+  }
 //#endif
 
   return RTNType::Good;
