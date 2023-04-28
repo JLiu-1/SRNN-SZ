@@ -2928,7 +2928,7 @@ namespace QoZ {
                     }
                     //k=1
                     d = data + begin1 + i*stride1+begin2+j*stride2+begin3+stride3;
-                        recovere(d - data, *d, interp_ave3( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)),
+                        recover(d - data, *d, interp_ave3( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)),
                             interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) , 
                             interp_quad_1(*(d - stride3), *(d + stride3), *(d + stride3x3)) ));
                     //k=p-3 or p-2
