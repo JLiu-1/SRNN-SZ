@@ -1086,7 +1086,6 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     QoZ::TUNING_TARGET tuningTarget=QoZ::TUNING_TARGET_RD,bool useFast=true,double profiling_coeff=1,const std::vector<double> &orig_means=std::vector<double>(),
                     const std::vector<double> &orig_sigma2s=std::vector<double>(),const std::vector<double> &orig_ranges=std::vector<double>(),const std::vector<T> &flattened_sampled_data=std::vector<T>(),const std::vector< std::vector<T> > & waveleted_input=std::vector< std::vector<T> >()){
     QoZ::Config testConfig(conf);
-    std::cout<<"testing"<<std::endl;
     size_t ssim_size=conf.SSIMBlockSize;    
     if(algo == QoZ::ALGO_LORENZO_REG){
         testConfig.cmprAlgo = QoZ::ALGO_LORENZO_REG;
@@ -1147,7 +1146,6 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         }
         else{
             std::copy(waveleted_input[k].begin(),waveleted_input[k].end(),cur_block.begin());
-
         }
         char *cmprData;
         if(use_sperr<T,N>(testConfig)){
@@ -1156,13 +1154,11 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 totalOutSize+=sampleOutSize;
                 if(tuningTarget!=QoZ::TUNING_TARGET_CR){
                     SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
-                    
                 } 
             }
             else{
     
                 cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
-                
                 totalOutSize+=sampleOutSize;
                 if(1){//tuningTarget!=QoZ::TUNING_TARGET_CR){
                     SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
@@ -1239,7 +1235,6 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
 
         
         if(algo==QoZ::ALGO_INTERP and !(use_sperr<T,N>(testConfig))){
-            std::cout<<"pb"<<std::endl;
             block_q_bins.push_back(testConfig.quant_bins);
         }
 
@@ -1254,7 +1249,6 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 
                 }
             }
-            std::cout<<"sqe:"<<square_error<<std::endl;
         }
         else if (tuningTarget==QoZ::TUNING_TARGET_SSIM){
             size_t ssim_block_num=orig_means.size();                       
@@ -1301,7 +1295,6 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         }                      
     }
     if(algo==QoZ::ALGO_INTERP and !(use_sperr<T,N>(testConfig))){
-        std::cout<<"comb"<<std::endl;
         q_bin_counts=testConfig.quant_bin_counts;
         size_t level_num=q_bin_counts.size();
         size_t last_pos=0;
@@ -1316,21 +1309,16 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
     }
     size_t sampleOutSize;
     if(!use_sperr<T,N>(testConfig)){
-        auto cmprData=sz->encoding_lossless(totalOutSize,q_bins);     
-        std::cout<<"tos:"<<totalOutSize<<std::endl;              
+        auto cmprData=sz->encoding_lossless(totalOutSize,q_bins);             
         delete[]cmprData;
-       
     }    
     
     bitrate=8*double(totalOutSize)/ele_num;
     
     bitrate*=profiling_coeff;
     if(tuningTarget==QoZ::TUNING_TARGET_RD){
-                   
         double mse=square_error/ele_num;
-        std::cout<<"mse:"<<mse<<std::endl;
         mse*=profiling_coeff;      
-        std::cout<<"fixedmse:"<<mse<<std::endl;
         if(testConfig.wavelet==1)
             mse*=testConfig.waveletMseFix;
         else if(testConfig.wavelet>1)
@@ -1796,10 +1784,9 @@ double Tuning(QoZ::Config &conf, T *data){
     size_t num_filtered_blocks=starts.size();
     double profiling_coeff=1;//It seems that this coefficent is useless. Need further test
   
-    //if(conf.profiling and conf.profilingFix){
+    if(conf.profiling){// and conf.profilingFix){
         profiling_coeff=((double)num_filtered_blocks)/(totalblock_num);
-       
-    //}
+    }
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;
 
