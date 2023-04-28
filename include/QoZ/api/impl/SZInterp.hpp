@@ -1637,10 +1637,10 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.levelwisePredictionSelection=max_interp_level;
     }
             
-
+    /*
     std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
     std::vector<int> dir_candidates={0,QoZ::factorial(N)-1};
-     /*
+     
     if(conf.multiDimInterp){
         dir_candidates.push_back(QoZ::factorial(N));
     }
@@ -1898,9 +1898,9 @@ double Tuning(QoZ::Config &conf, T *data){
             }
             std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
             std::vector<int> interpDirection_Candidates={0, QoZ::factorial(N) -1};
-            //if(conf.multiDimInterp)
+            if(conf.multiDimInterp)
               
-              //  interpDirection_Candidates.push_back(QoZ::factorial(N));
+                interpDirection_Candidates.push_back(QoZ::factorial(N));
             if(conf.levelwisePredictionSelection>0){
                 std::vector<uint8_t> interpAlgo_list(conf.levelwisePredictionSelection,0);
                 std::vector<uint8_t> interpDirection_list(conf.levelwisePredictionSelection,0);
@@ -2724,6 +2724,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         else {
             std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
             std::vector<int> dir_candidates={0,QoZ::factorial(N)-1};
+            if(conf.multiDimInterp){
+                dir_candidates.push_back(QoZ::factorial(N));
+            }
             if(conf.wavelet >1){
                 compress_output = SZ_compress_AutoSelectiveInterp<T,N>(conf,coeffData,outSize,op_candidates,dir_candidates,0);
             }
