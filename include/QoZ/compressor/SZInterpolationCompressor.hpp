@@ -1432,20 +1432,24 @@ namespace QoZ {
                         for (size_t i = 1; i + 1 < n; i += 2) {
                             for(size_t j=1;j+1<m;j+=2){
                                 T *d = data + begin1 + i* stride1+begin2+j*stride2;
+                                std::cout<<"q1 "<<i<<" "<<j<<std::endl;
                                 predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1), *(d + stride1),*(d - stride2), *(d + stride2)),tuning);
 
                             }
                             if(m%2 ==0){
+                                std::cout<<"q2 "<<i<<std::endl;
                                 T *d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
                                 predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride1), *(d + stride1)),tuning);//to determine whether 2d or 1d 
                             }
                         }
                         if (n % 2 == 0) {
                             for(size_t j=1;j+1<m;j+=2){
+                                std::cout<<"q3 "<<j<<std::endl;
                                 T *d = data + begin1 + (n-1) * stride1+begin2+j*stride2;
                                 predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride2), *(d + stride2)),tuning);//to determine whether 2d or 1d 
                             }
                             if(m%2 ==0){
+                                std::cout<<"q4"<<std::endl;
                                 T *d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
                                 predict_error+=quantize_tuning(d - data, *d, lorenzo_2d(*(d - stride1-stride2), *(d - stride1), *(d - stride2)),tuning);//to determine whether use lorenzo or not
                             }          
@@ -3086,7 +3090,7 @@ namespace QoZ {
                             const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
-            //if(direction!=2){
+            if(direction!=2){
                 const std::array<int, N> dims = dimension_sequences[direction];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
@@ -3102,8 +3106,8 @@ namespace QoZ {
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
                                                             stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
                 }
-            //}
-            /*
+            }
+            
             else{
                 const std::array<int, N> dims = dimension_sequences[0];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
@@ -3132,7 +3136,7 @@ namespace QoZ {
                                                             stride * dimension_offsets[dims[0]],
                                                             stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
             }
-            */
+            
             return predict_error;
         }
 
@@ -3146,7 +3150,7 @@ namespace QoZ {
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
-            //if(direction!=6){
+            if(direction!=6){
                 const std::array<int, N> dims = dimension_sequences[direction];
                 //if (cross_block==0){
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
@@ -3257,8 +3261,8 @@ namespace QoZ {
 
                 }
                 */
-            //}
-            /*
+            }
+            
             else{
                 const std::array<int, N> dims = dimension_sequences[0];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
@@ -3354,7 +3358,7 @@ namespace QoZ {
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
                                                                 stride * dimension_offsets[dims[0]],stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,tuning);
-            }*/
+            }
             return predict_error;
         }
 
