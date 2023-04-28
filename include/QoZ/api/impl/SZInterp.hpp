@@ -1904,7 +1904,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                         QoZ::HuffmanEncoder<int>(),
                                         QoZ::Lossless_zstd());   
                 for(int level=conf.levelwisePredictionSelection;level>0;level--){
-                  
+                    std::cout<<level<<std::endl;
                     int start_level=(level==conf.levelwisePredictionSelection?9999:level);
                     int end_level=level-1;
                     uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
@@ -1927,6 +1927,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                 delete []cmprData;                              
                                 cur_absloss+=conf.decomp_square_error;
                             }
+                            std::cout<<interp_direction<<" "<<cur_absloss<<std::endl; 
                             if (cur_absloss<best_interp_absloss){
                                 best_interp_absloss=cur_absloss;
                                 bestInterpAlgo=interp_op;
