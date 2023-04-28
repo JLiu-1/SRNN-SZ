@@ -1432,24 +1432,24 @@ namespace QoZ {
                         for (size_t i = 1; i + 1 < n; i += 2) {
                             for(size_t j=1;j+1<m;j+=2){
                                 T *d = data + begin1 + i* stride1+begin2+j*stride2;
-                                std::cout<<"q1 "<<i<<" "<<j<<std::endl;
+                                //std::cout<<"q1 "<<i<<" "<<j<<std::endl;
                                 predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1), *(d + stride1),*(d - stride2), *(d + stride2)),tuning);
 
                             }
                             if(m%2 ==0){
-                                std::cout<<"q2 "<<i<<std::endl;
+                               // std::cout<<"q2 "<<i<<std::endl;
                                 T *d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
                                 predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride1), *(d + stride1)),tuning);//to determine whether 2d or 1d 
                             }
                         }
                         if (n % 2 == 0) {
                             for(size_t j=1;j+1<m;j+=2){
-                                std::cout<<"q3 "<<j<<std::endl;
+                               // std::cout<<"q3 "<<j<<std::endl;
                                 T *d = data + begin1 + (n-1) * stride1+begin2+j*stride2;
                                 predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride2), *(d + stride2)),tuning);//to determine whether 2d or 1d 
                             }
                             if(m%2 ==0){
-                                std::cout<<"q4"<<std::endl;
+                                //std::cout<<"q4"<<std::endl;
                                 T *d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
                                 predict_error+=quantize_tuning(d - data, *d, lorenzo_2d(*(d - stride1-stride2), *(d - stride1), *(d - stride2)),tuning);//to determine whether use lorenzo or not
                             }          
