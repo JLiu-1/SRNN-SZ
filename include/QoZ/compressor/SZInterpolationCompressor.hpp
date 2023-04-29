@@ -2620,7 +2620,7 @@ namespace QoZ {
                                     interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) , 
                                     interp_quad_2(*(d - stride3x3), *(d - stride3), *(d + stride3)) ));
                             */
-                            quantize(d - data, *d, interp_cubic(*(d - stride3x3), *(d - stride2), *(d + stride2), *(d + stride3x2)));
+                            quantize(d - data, *d, interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)));
                             //k=p-1
                             if(p%2==0){
                                 d = data + begin1 +  stride1+begin2+j*stride2+begin3+(p-1)*stride3;
@@ -2945,12 +2945,12 @@ namespace QoZ {
                                 }
                                 //k=1
                                 d = data + begin1 +  (n-1)*stride1+begin2+(m-1)*stride2+begin3+stride3;
-                                    quantize(d - data, *d, interp_ave3( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)),
+                                quantize(d - data, *d, interp_ave3( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)),
                                         interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)),
                                         interp_quad_1(*(d - stride3), *(d + stride3), *(d + stride3x3)) ));
                                 //k=p-3 or p-2
                                 d = data + begin1 + (n-1)*stride1+begin2+(m-1)*stride2+begin3+k*stride3;
-                                    quantize(d - data, *d, interp_ave3( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)),
+                                quantize(d - data, *d, interp_ave3( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)),
                                         interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)),
                                         interp_quad_2(*(d - stride3x3), *(d - stride3), *(d + stride3)) ));
                                 //k=p-1
