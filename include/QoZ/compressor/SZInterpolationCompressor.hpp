@@ -2485,7 +2485,7 @@ namespace QoZ {
                                     interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)),
                                     interp_cubic(*(d - stride3x3), *(d - stride3), *(d + stride3), *(d + stride3x3)) ));
                                 */
-                                quantize(d - data, *d, interp_liear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
+                                quantize(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
                                         interp_cubic(*(d - stride3x3), *(d - stride3), *(d + stride3), *(d + stride3x3)) ) );
                             }
                             //k=1
