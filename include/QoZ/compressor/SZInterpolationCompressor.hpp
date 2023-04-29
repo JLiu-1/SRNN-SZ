@@ -2454,7 +2454,7 @@ namespace QoZ {
                                         interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) , 
                                         interp_quad_1(*(d - stride3), *(d + stride3), *(d + stride3x3)) ));//should or how we ave for different interps?
                                 */
-                                quantize(d - data, *d, interp_liear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
+                                quantize(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
                                         interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ) );
                                 //k=p-3 or p-2
                                 d = data + begin1 + i* stride1+begin2+j*stride2+begin3+k*stride3;
@@ -2463,7 +2463,7 @@ namespace QoZ {
                                         interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) , 
                                         interp_quad_2(*(d - stride3x3), *(d - stride3), *(d + stride3)) ));
                                 */
-                                quantize(d - data, *d, interp_liear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
+                                quantize(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
                                         interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ) );
                                 //k=p-1
                                 if(p%2==0){
@@ -2473,7 +2473,7 @@ namespace QoZ {
                                         interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) , 
                                         interp_quad_3(*(d - stride5x3), *(d - stride3x3), *(d - stride3)) ));
                                     */
-                                    quantize(d - data, *d, interp_liear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
+                                    quantize(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
                                         interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ) );
                                 }
                             }
@@ -2549,7 +2549,7 @@ namespace QoZ {
                                     interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) , 
                                     interp_quad_3(*(d - stride5x3), *(d - stride3x3), *(d - stride3)) ));
                                 */
-                                quantiz(d - data, *d, interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)));
+                                quantize(d - data, *d, interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)));
                             }
                             if(m%2 ==0){//j=m-1
                                 for(k=3;k+3<p;k+=2){
