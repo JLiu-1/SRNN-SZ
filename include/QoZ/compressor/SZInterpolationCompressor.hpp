@@ -1424,7 +1424,7 @@ namespace QoZ {
                 return 0;
             }
             double predict_error = 0;
-            if (interp_func == "linear") {
+            if (interp_func == "linear"||n<5 ||m<5) {//nm cond temp added
                 if (pb == PB_predict_overwrite) {
                     if (tuning){
                         for (size_t i = 1; i + 1 < n; i += 2) {
@@ -1540,7 +1540,7 @@ namespace QoZ {
                         }
                         //j=1
                         d = data + begin1 + stride1+ begin2+stride2;
-                        predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)) ),tuning);//bug when n or m<=4, all the following quads has this problem
+                        predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)), interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)) ),tuning);//bug when no nmcond and n or m<=4, all the following quads has this problem
                         
                         //j=m-3 or m-2
                         d = data +begin1 + stride1+ begin2+j*stride2;
@@ -1761,7 +1761,7 @@ namespace QoZ {
                 return 0;
             }
             double predict_error = 0;
-            if (interp_func == "linear"){
+            if (interp_func == "linear" || n<5 || m<5 || p<5 ){//nmpcond temp added
                 if (pb == PB_predict_overwrite) {
                     if (tuning){
                         for (size_t i = 1; i + 1 < n; i += 2) {
