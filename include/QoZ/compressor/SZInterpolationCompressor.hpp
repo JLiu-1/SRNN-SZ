@@ -1353,14 +1353,14 @@ namespace QoZ {
                     else{
                         for (size_t i = 1; i + 1 < n; i += 2) {
                             T *d = data + begin + i * stride;
-                            quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride)));
+                            quantize_integrated(d - data, *d, interp_linear(*(d - stride), *(d + stride)));
                         }
                         if (n % 2 == 0) {
                             T *d = data + begin + (n - 1) * stride;
                             if (n < 4) {                              
-                                quantize(d - data, *d, *(d - stride));
+                                quantize_integrated(d - data, *d, *(d - stride));
                             } else {
-                                quantize(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)));
+                                quantize_integrated(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)));
                             }
                         }
                     }
@@ -1402,16 +1402,16 @@ namespace QoZ {
                         size_t i;
                         for (i = 3; i + 3 < n; i += 2) {
                             d = data + begin + i * stride;
-                            quantize(d - data, *d,
+                            quantize_integrated(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)));
                         }
                         d = data + begin + stride;
-                        quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)));
+                        quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)));
                         d = data + begin + i * stride;
-                        quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)));
+                        quantize_integrated(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)));
                         if (n % 2 == 0) {
                             d = data + begin + (n - 1) * stride;
-                            quantize(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)));
+                            quantize_integrated(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)));
                         }
                     }
                 } else {
