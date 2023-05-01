@@ -3500,6 +3500,7 @@ namespace QoZ {
                 return 0;
             }
             double predict_error = 0;
+            size_t stride3x1=3*stride1,stride3x2=3*stride2,stride5x1=5*stride1,stride5x2=5*stride2;
             if (interp_func == "linear") {
                 if (pb == PB_predict_overwrite) {
                     if (tuning){
@@ -3608,7 +3609,7 @@ namespace QoZ {
                 }
             }
             else{//cubic
-                size_t stride3x1=3*stride1,stride3x2=3*stride2,stride5x1=5*stride1,stride5x2=5*stride2;
+                
                 //adaptive todo
                 if (pb == PB_predict_overwrite) {
                     if (tuning){
