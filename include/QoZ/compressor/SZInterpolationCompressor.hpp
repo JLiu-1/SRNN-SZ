@@ -979,7 +979,7 @@ namespace QoZ {
         };
 
         inline double quantize_integrated(size_t idx, T &d, T pred, int mode=0){
-            double pred error=0;
+            double pred_error=0;
             if(mode==-1){//recover
                 d = quantizer.recover(pred, quant_inds[quant_index++]);
                 return 0;
@@ -3728,7 +3728,7 @@ namespace QoZ {
                             for(j=3;j+3<m;j+=2){
                                 d = data + begin1 + (n-1)*stride1+begin2+j*stride2;
                                 //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_linear1(*(d - stride3x1-stride3x2), *(d - stride1-stride2)) ,interp_linear1(*(d - stride3x1+stride3x2), *(d - stride1+stride2)) ),tuning);//2d cross
-                                predict_error+=quantize_tuning(d - data, *d, interp_cubic(*(d - stride1-stride3x2), *(d -  stride1stride2), *(d - stride1+ stride2), *(d - stride1+ stride3x2)) ,tuning);//1d cubic
+                                predict_error+=quantize_tuning(d - data, *d, interp_cubic(*(d - stride1-stride3x2), *(d -  stride1-stride2), *(d - stride1+ stride2), *(d - stride1+ stride3x2)) ,tuning);//1d cubic
 
                             }
                             //j=1
