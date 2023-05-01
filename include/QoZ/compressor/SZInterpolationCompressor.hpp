@@ -3501,7 +3501,7 @@ namespace QoZ {
             }
             double predict_error = 0;
             size_t stride3x1=3*stride1,stride3x2=3*stride2,stride5x1=5*stride1,stride5x2=5*stride2;
-            if (interp_func == "linear") {
+            if (interp_func == "linear"|| n<5 || m<5 ) {//nmcond temp added
                 if (pb == PB_predict_overwrite) {
                     if (tuning){
                         for (size_t i = 1; i + 1 < n; i += 2) {
