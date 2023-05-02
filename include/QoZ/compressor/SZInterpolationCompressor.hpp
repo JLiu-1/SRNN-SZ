@@ -1530,22 +1530,22 @@ namespace QoZ {
                     for(size_t j=1;j+1<m;j+=2){
                         for(size_t k=1;k+1<p;k+=2){
                             T *d = data + begin1 + i* stride1+begin2+j*stride2+begin3+k*stride3;
-                            predict_error+=quantize_mode(d - data, *d, interp_3d(*(d - stride1), *(d + stride1),*(d - stride2), *(d + stride2),*(d - stride3), *(d + stride3)),mode);
+                            predict_error+=quantize_tuning(d - data, *d, interp_3d(*(d - stride1), *(d + stride1),*(d - stride2), *(d + stride2),*(d - stride3), *(d + stride3)),mode);
                         }
                         if(p%2==0){
                             T *d = data + begin1 + i* stride1+begin2+j*stride2+begin3+(p-1)*stride3;
-                            predict_error+=quantize_mode(d - data, *d, interp_2d(*(d - stride1), *(d + stride1),*(d - stride2), *(d + stride2)),mode);
+                            predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1), *(d + stride1),*(d - stride2), *(d + stride2)),mode);
                         }
 
                     }
                     if(m%2 ==0){
                         for(size_t k=1;k+1<p;k+=2){
                             T *d = data + begin1 + i* stride1+begin2+(m-1)*stride2+begin3+k*stride3;
-                            predict_error+=quantize_mode(d - data, *d, interp_2d(*(d - stride1), *(d + stride1),*(d - stride3), *(d + stride3)),mode);
+                            predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1), *(d + stride1),*(d - stride3), *(d + stride3)),mode);
                         }
                         if(p%2==0){
                             T *d = data + begin1 + i* stride1+begin2+(m-1)*stride2+begin3+(p-1)*stride3;
-                            predict_error+=quantize_mode(d - data, *d, interp_linear(*(d - stride1), *(d + stride1)),mode);
+                            predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride1), *(d + stride1)),mode);
                         }
                     }      
                 }
@@ -1553,21 +1553,21 @@ namespace QoZ {
                     for(size_t j=1;j+1<m;j+=2){
                         for(size_t k=1;k+1<p;k+=2){
                             T *d = data + begin1 + (n-1)* stride1+begin2+j*stride2+begin3+k*stride3;
-                            predict_error+=quantize_mode(d - data, *d, interp_2d(*(d - stride2), *(d + stride2),*(d - stride3), *(d + stride3)),mode);
+                            predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride2), *(d + stride2),*(d - stride3), *(d + stride3)),mode);
                         }
                         if(p%2==0){
                             T *d = data + begin1 + (n-1)* stride1+begin2+j*stride2+begin3+(p-1)*stride3;
-                            predict_error+=quantize_mode(d - data, *d, interp_linear(*(d - stride2), *(d + stride2)),mode);
+                            predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride2), *(d + stride2)),mode);
                         }
                     }
                     if(m%2 ==0){
                         for(size_t k=1;k+1<p;k+=2){
                             T *d = data + begin1 + (n-1)* stride1+begin2+(m-1)*stride2+begin3+k*stride3;
-                            predict_error+=quantize_mode(d - data, *d, interp_linear(*(d - stride3), *(d + stride3)),mode);
+                            predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride3), *(d + stride3)),mode);
                         }
                         if(p%2==0){
                             T *d = data + begin1 + (n-1)* stride1+begin2+(m-1)*stride2+begin3+(p-1)*stride3;
-                            predict_error+=quantize_mode(d - data, *d, lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3)),mode);
+                            predict_error+=quantize_tuning(d - data, *d, lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3)),mode);
                         }
                     }           
                 }
@@ -1680,7 +1680,7 @@ namespace QoZ {
                     //k=p-3 or p-2
                     d = data + begin1 + i* stride1+begin2+j*stride2+begin3+k*stride3;
                     /*
-                    predict_error+=quantize_mode(d - data, *d, interp_ave3( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
+                    predict_error+=quantize_tuning(d - data, *d, interp_ave3( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
                             interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) , 
                             interp_quad_2(*(d - stride3x3), *(d - stride3), *(d + stride3)) ),mode);
                     */
@@ -1689,7 +1689,7 @@ namespace QoZ {
                     if(p%2==0){
                         d = data + begin1 + i* stride1+begin2+j*stride2+begin3+(p-1)*stride3;
                         /*
-                        predict_error+=quantize_mode(d - data, *d, interp_ave3( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
+                        predict_error+=quantize_tuning(d - data, *d, interp_ave3( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),
                             interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) , 
                             interp_quad_3(*(d - stride5x3), *(d - stride3x3), *(d - stride3)) ),mode);
                         */
