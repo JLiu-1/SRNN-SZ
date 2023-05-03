@@ -2323,12 +2323,12 @@ namespace QoZ {
                     //j=0
                     if((n-1)%2==1){
                         T *d = data + begin1 +(n-1)*stride1+begin2;
-                        predict_error+=quantize_integrated(d - data, *d, *(d+stride2),mode);//for simplicity,may extend to 2d.
+                        predict_error+=quantize_integrated(d - data, *d, *(d-stride1),mode);//for simplicity,may extend to 2d.
                     }
                     //j=m-1, j wont be 0
                     if( j==m-1){
                         T *d = data + begin1 +(n-1)*stride1+begin2+j*stride2;
-                        predict_error+=quantize_integrated(d - data, *d, *(d-stride2),mode);//for simplicity,may extend to 2d.
+                        predict_error+=quantize_integrated(d - data, *d, *(d-stride1),mode);//for simplicity,may extend to 2d.
                     }
                 }
                     
