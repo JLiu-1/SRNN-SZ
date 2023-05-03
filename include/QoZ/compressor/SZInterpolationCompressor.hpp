@@ -2157,7 +2157,7 @@ namespace QoZ {
                     //std::cout<<"q3"<<std::endl;
                     for(size_t j=1;j+1<m;j+=2){
                         if(mark[data + begin1 + (n-1) * stride1+begin2+j*stride2])
-                            std::cout<<"e-0.5 "<<i<<" "<<j<<std::endl;
+                            std::cout<<"e-0.5 "<<j<<std::endl;
                         mark[data + begin1 + (n-1) * stride1+begin2+j*stride2]=true;
                         
                         T *d = data + begin1 + (n-1) * stride1+begin2+j*stride2;
