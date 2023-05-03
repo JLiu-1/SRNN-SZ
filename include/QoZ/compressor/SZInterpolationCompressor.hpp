@@ -2122,7 +2122,7 @@ namespace QoZ {
                     for(size_t j=1;j+1<m;j+=2){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
 
-                        T p_value= interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2))
+                        T p_value= interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2));
                         if(p_value>1)
                             std::cout<<"e-1 "<<i<<" "<<j<<std::endl;
                         
