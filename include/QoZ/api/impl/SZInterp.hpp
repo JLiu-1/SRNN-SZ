@@ -1919,11 +1919,9 @@ double Tuning(QoZ::Config &conf, T *data){
                             if (interp_direction==2 and level<=2)//???
                                 continue;
                             */
-                            std::cout<<interp_direction<<std::endl;
                             conf.interpAlgo=interp_op;
                             conf.interpDirection=interp_direction;
                             double cur_absloss=0;
-                            std::cout<<"dddd"<<std::endl;
                             for (int i=0;i<num_sampled_blocks;i++){
                                 cur_block=sampled_blocks[i];                
                                 size_t outSize=0;                              
