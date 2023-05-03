@@ -2288,6 +2288,9 @@ namespace QoZ {
                 for (i = 1; i + 1 < n; i += 1) {
                     for(j=1+(i%2);j+1<m;j+=2){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
+                        T p_value= interp_linearnterp_2d(*(d - stride1 ), *(d + stride1 ),*(d  + stride2), *(d  - stride2));
+                        if(p_value>1)
+                            std::cout<<"e0 "<<i<<" "<<j<<std::endl;
                         //std::cout<<"q1 "<<i<<" "<<j<<std::endl;
                         predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 ), *(d + stride1 ),*(d  + stride2), *(d  - stride2)),mode);
 
@@ -2296,6 +2299,9 @@ namespace QoZ {
                     //j=0
                     if(i%2==1 and begin2==0){
                         T *d = data + begin1 + i* stride1+begin2;
+                        T p_value= interp_linear(*(d  + stride1), *(d  - stride1));
+                        if(p_value>1)
+                            std::cout<<"e0.5 "<<i<<" "<<j<<std::endl;
                        
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 ), *(d + stride1 )),mode);
                     }
@@ -2313,6 +2319,9 @@ namespace QoZ {
                 if(begin1==0){
                     for(j=1;j+1<m;j+=2){
                         T *d = data + begin1 +begin2+j*stride2;
+                        T p_value= interp_linear(*(d  + stride2), *(d  - stride2));
+                        if(p_value>1)
+                            std::cout<<"e1.5 "<<i<<" "<<j<<std::endl;
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d  + stride2), *(d  - stride2)),mode);
                     }
                 
@@ -2329,6 +2338,9 @@ namespace QoZ {
                 if(n>1){
                     for(size_t j=1+(n-1)%2;j+1<m;j+=2){
                         T *d = data + begin1 +(n-1)*stride1+begin2+j*stride2;
+                        T p_value= interp_linear(*(d  + stride2), *(d  - stride2));
+                        if(p_value>1)
+                            std::cout<<"e2.5 "<<i<<" "<<j<<std::endl;
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d  + stride2), *(d  - stride2)),mode);
                     }
                     //j=0
