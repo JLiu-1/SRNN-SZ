@@ -2386,7 +2386,7 @@ namespace QoZ {
                 }
                 //i=n-1
                 if(n>1){
-                    for(size_t j=1+(n-1)%2;j+1<m;j+=2){
+                    for(j=1+(n-1)%2;j+1<m;j+=2){
                         T *d = data + begin1 +(n-1)*stride1+begin2+j*stride2;
                         if(mark[begin1 +(n-1)*stride1+begin2+j*stride2])
                             std::cout<<"e2.5 "<<j<<std::endl;
