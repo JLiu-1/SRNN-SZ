@@ -482,7 +482,7 @@ namespace QoZ {
                 timer.stop("prediction");
             for(size_t i=0;i<num_elements;i++){
                 if(!mark[i])
-                    std<<i<<std::endl;
+                    std::cout<<i<<std::endl;
             }
             //timer.start();
             assert(quant_inds.size() == num_elements);
