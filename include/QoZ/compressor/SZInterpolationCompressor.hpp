@@ -2302,6 +2302,10 @@ namespace QoZ {
                     //j=m-1, j wont be 0
                     if(j==m-1){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
+                        T p_value=interp_linear(*(d - stride1 ), *(d + stride1 ));
+                        if(p_value>1)
+                            std::cout<<"e1 "<<i<<" "<<j<<std::endl;
+
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 ), *(d + stride1 )),mode);
                     }
                 }
@@ -2315,6 +2319,9 @@ namespace QoZ {
                 //j=m-1, j wont be 0
                     if(j==m-1){
                         T *d = data + begin1 +begin2+j*stride2;
+                        T p_value=(d - stride1 ), *(d + stride1 );
+                        if(p_value>1)
+                            std::cout<<"e2 "<<i<<" "<<j<<std::endl;
                         predict_error+=quantize_integrated(d - data, *d, *(d-stride2),mode);//for simplicity,may extend to 2d.
                     }
                 }
@@ -2326,12 +2333,20 @@ namespace QoZ {
                     }
                     //j=0
                     if((n-1)%2==1 and begin2==0){
+                        
                         T *d = data + begin1 +(n-1)*stride1+begin2;
+                        T p_value=(d - stride1 ), *(d + stride1 );
+                        if(p_value>1)
+                            std::cout<<"e3 "<<i<<" "<<j<<std::endl;
                         predict_error+=quantize_integrated(d - data, *d, *(d-stride1),mode);//for simplicity,may extend to 2d.
                     }
                     //j=m-1, j wont be 0
                     if( j==m-1){
+                        
                         T *d = data + begin1 +(n-1)*stride1+begin2+j*stride2;
+                        T p_value=(d - stride1 ), *(d + stride1 );
+                        if(p_value>1)
+                            std::cout<<"e4"<<i<<" "<<j<<std::endl;
                         predict_error+=quantize_integrated(d - data, *d, *(d-stride1),mode);//for simplicity,may extend to 2d.
                     }
                 }
