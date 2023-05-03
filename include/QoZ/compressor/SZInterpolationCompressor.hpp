@@ -733,7 +733,7 @@ namespace QoZ {
             }
             if(conf.verbose)
                 timer.stop("prediction");  
-            //assert(quant_inds.size() == num_elements);
+            assert(quant_inds.size() == num_elements);
             size_t bufferSize = 2.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());//ori is 3. In fact this often causes bug.
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
