@@ -2366,14 +2366,14 @@ namespace QoZ {
                     }
                 }
                 //continue here.
-                std::vector<size_t> boundary_is=(i>5)?{0,1,2,n-3,n-2,n-1}:{0,1,2,n-2,n-1};
+                std::vector<size_t> boundary_is=(i>5)?std::vector<size_t>{0,1,2,n-3,n-2,n-1}:std::vector<size_t>{0,1,2,n-2,n-1};
                 for(i:boundary_is){
                     for(j=3;j+3<m;j+=2){
                         d = data + begin1+begin2+j*stride2;
                         predict_error+=quantize_tuning(d - data, *d,interp_cubic(*(d - stride3x2), *(d - stride2), *(d+ stride2), *(d + stride3x2) ),mode);
                     }
 
-                    std::vector<size_t> boundary_js=(i%2)?{0,2,j}:{1,j};
+                    std::vector<size_t> boundary_js=(i%2)?std::vector<size_t>{0,2,j}:std::vector<size_t>{1,j};
                     if(j+2==m-1)
                         boundary_js.push_back(m-1);
 
