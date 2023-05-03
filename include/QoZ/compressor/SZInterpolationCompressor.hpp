@@ -2367,42 +2367,42 @@ namespace QoZ {
                 }
                 //continue here.
                 std::vector<size_t> boundary_is=(i>5)?std::vector<size_t>{0,1,2,n-3,n-2,n-1}:std::vector<size_t>{0,1,2,n-2,n-1};
-                for(i:boundary_is){
+                for(auto ii:boundary_is){
                     for(j=3;j+3<m;j+=2){
-                        d = data + begin1+begin2+j*stride2;
+                        d = data + begin1+ii*stride1+begin2+j*stride2;
                         predict_error+=quantize_tuning(d - data, *d,interp_cubic(*(d - stride3x2), *(d - stride2), *(d+ stride2), *(d + stride3x2) ),mode);
                     }
 
-                    std::vector<size_t> boundary_js=(i%2)?std::vector<size_t>{0,2,j}:std::vector<size_t>{1,j};
+                    std::vector<size_t> boundary_js=(ii%2)?std::vector<size_t>{0,2,j}:std::vector<size_t>{1,j};
                     if(j+2==m-1)
                         boundary_js.push_back(m-1);
 
-                    for(j:boundary_js){
-                        d = data + begin1 + i* stride1+begin2+j*stride2;
+                    for(auto jj:boundary_js){
+                        d = data + begin1 + ii* stride1+begin2+jj*stride2;
                         T v1;
-                        if(i==0)
+                        if(ii==0)
                             v1=interp_quad3(*(d + stride5x1), *(d+ stride3x1), *(d + stride1) );
-                        else if(i==1)
+                        else if(ii==1)
                             v1=interp_quad1(*(d - stride1), *(d+ stride1), *(d + stride3x1) );
-                        else if (i==n-2)
+                        else if (ii==n-2)
                             v1=interp_quad2(*(d - stride3x1), *(d- stride1), *(d + stride1) );
-                        else if (i==n-1)
+                        else if (ii==n-1)
                             v1=interp_quad3(*(d - stride5x1), *(d- stride3x1), *(d - stride1) );
                         else{//i==2 or n-3
                             if(n==5)
                                 v1=interp_linear(*(d - stride1), *(d+ stride1));
-                            else if (i==2)
+                            else if (ii==2)
                                 v1=interp_quad1(*(d - stride1), *(d+ stride1), *(d + stride3x1) );
                             else
                                 v1=interp_quad2(*(d - stride3x1), *(d- stride1), *(d + stride1) );
                         }
 
                         T v2;
-                        if(j==0)
+                        if(jj==0)
                             v2=interp_quad3( *(d + stride5x2), *(d+ stride3x2), *(d + stride2) );
-                        else if (j==1 or j==2)
+                        else if (jj==1 or jj==2)
                             v2=interp_quad1( *(d - stride2), *(d+ stride2), *(d + stride3x2) );
-                        else if(j==m-1)
+                        else if(jj==m-1)
                             v2=interp_quad3( *(d - stride5x2), *(d- stride3x2), *(d - stride2) );
                         else
                             v2=interp_quad2( *(d - stride3x2), *(d- stride2), *(d + stride2) );
