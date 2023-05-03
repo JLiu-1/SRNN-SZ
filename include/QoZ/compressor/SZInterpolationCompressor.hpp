@@ -2106,7 +2106,6 @@ namespace QoZ {
         }
 
         double block_interpolation_2d_cross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,int tuning=0) {
-            std::cout<<"qstart"<<std::endl;
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
                 return 0;
