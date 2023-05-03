@@ -2120,7 +2120,7 @@ namespace QoZ {
             if (interp_func == "linear"|| n<5 || m<5 ) {//nmcond temp added
                 
                 for (size_t i = 1; i + 1 < n; i += 2) {
-                    std::cout<<"q1 "<<i<<" "<<j<<std::endl;
+                    std::cout<<"q1 "<<i<<std::endl;
                     for(size_t j=1;j+1<m;j+=2){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
                         
@@ -2138,7 +2138,7 @@ namespace QoZ {
                     }
                 }
                 if (n % 2 == 0) {
-                    std::cout<<"q3 "<<j<<std::endl;
+                    std::cout<<"q3 "<<std::endl;
                     for(size_t j=1;j+1<m;j+=2){
                         
                         T *d = data + begin1 + (n-1) * stride1+begin2+j*stride2;
