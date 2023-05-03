@@ -2106,6 +2106,7 @@ namespace QoZ {
         }
 
         double block_interpolation_2d_cross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,int tuning=0) {
+            std::cout<<"qstart"<<std::endl;
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
                 return 0;
@@ -2114,6 +2115,7 @@ namespace QoZ {
             if (m <= 1) {
                 return 0;
             }
+
             double predict_error = 0;
             size_t stride3x1=3*stride1,stride3x2=3*stride2,stride5x1=5*stride1,stride5x2=5*stride2;
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
@@ -2479,6 +2481,7 @@ namespace QoZ {
                                                             stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
             }
             else if(direction==3){
+                std::cout<<"111"<<std::endl;
                 const std::array<int, N> dims = dimension_sequences[0];
                 size_t begin_offset1=begin[dims[0]]*dimension_offsets[dims[0]];
                 size_t begin_offset2=begin[dims[1]]*dimension_offsets[dims[1]];
