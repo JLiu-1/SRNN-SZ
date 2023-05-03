@@ -2171,12 +2171,12 @@ namespace QoZ {
                     //j=1
                     d = data + begin1 + i* stride1+ begin2+stride2;
                     predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
-                                                    ,interp_quad1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ) ),mode);
+                                                    ,interp_quad_1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ) ),mode);
                    
                     //j=m-3 or m-2
                     d = data +begin1 + i* stride1+ begin2+j*stride2;
                     predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
-                                                    ,interp_quad2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) ) ),mode);
+                                                    ,interp_quad_2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) ) ),mode);
                     //j=m-1
                     if(m%2 ==0){
                         d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
@@ -2242,7 +2242,7 @@ namespace QoZ {
                 if(m%2 ==0){
                     d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride1-stride2), *(d + stride1-stride2)),mode);//1d linear
-                    predict_error+=quantize_tuning(d - data, *d, interp_quad1(*(d - stride1-stride2), *(d + stride1-stride2),*(d + stride3x1-stride2)),mode);//1d quad
+                    predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d - stride1-stride2), *(d + stride1-stride2),*(d + stride3x1-stride2)),mode);//1d quad
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear1(*(d + stride3x1-stride3x2), *(d + stride1-stride2)),mode);//1d cross linear
                 }
 
