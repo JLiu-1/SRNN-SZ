@@ -2156,9 +2156,9 @@ namespace QoZ {
                 if (n % 2 == 0) {
                     //std::cout<<"q3"<<std::endl;
                     for(size_t j=1;j+1<m;j+=2){
-                        if(mark[data + begin1 + (n-1) * stride1+begin2+j*stride2])
+                        if(mark[begin1 + (n-1) * stride1+begin2+j*stride2])
                             std::cout<<"e-0.5 "<<j<<std::endl;
-                        mark[data + begin1 + (n-1) * stride1+begin2+j*stride2]=true;
+                        mark[begin1 + (n-1) * stride1+begin2+j*stride2]=true;
                         
                         T *d = data + begin1 + (n-1) * stride1+begin2+j*stride2;
                         if(n<4 or j<3 or j+3>=m)
@@ -2169,9 +2169,9 @@ namespace QoZ {
                     }
                     if(m%2 ==0){
                         //std::cout<<"q4"<<std::endl;
-                        if(mark[data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2])
+                        if(mark[ begin1 + (n-1) * stride1+begin2+(m-1)*stride2])
                             std::cout<<"e-0.25 "<<std::endl;
-                        mark[data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2]=true;
+                        mark[begin1 + (n-1) * stride1+begin2+(m-1)*stride2]=true;
                         T *d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
                         if(n<4 or m<4)
                             predict_error+=quantize_integrated(d - data, *d, *(d - stride1 - stride2),mode);//this is important. Not sure whether it is good.
