@@ -2434,7 +2434,7 @@ namespace QoZ {
                             const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
-            if(direction!=2){
+            if(direction<2){
                 const std::array<int, N> dims = dimension_sequences[direction];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
