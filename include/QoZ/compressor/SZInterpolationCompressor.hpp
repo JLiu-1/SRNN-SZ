@@ -2120,14 +2120,15 @@ namespace QoZ {
             if (interp_func == "linear"|| n<5 || m<5 ) {//nmcond temp added
                 
                 for (size_t i = 1; i + 1 < n; i += 2) {
+                    std::cout<<"q1 "<<i<<" "<<j<<std::endl;
                     for(size_t j=1;j+1<m;j+=2){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
-                        //std::cout<<"q1 "<<i<<" "<<j<<std::endl;
+                        
                         predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);
 
                     }
                     if(m%2 ==0){
-                       // std::cout<<"q2 "<<i<<std::endl;
+                        std::cout<<"q2 "<<i<<std::endl;
                         T *d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
                         if(i<3 or i+3>=n or m<4)
                             predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 - stride2), *(d + stride1 - stride2)),mode);//this is important. Not sure whether it is good.
@@ -2137,8 +2138,9 @@ namespace QoZ {
                     }
                 }
                 if (n % 2 == 0) {
+                    std::cout<<"q3 "<<j<<std::endl;
                     for(size_t j=1;j+1<m;j+=2){
-                       // std::cout<<"q3 "<<j<<std::endl;
+                        
                         T *d = data + begin1 + (n-1) * stride1+begin2+j*stride2;
                         if(n<4 or j<3 or j+3>=m)
                             predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 - stride2), *(d - stride1 + stride2)),mode);//this is important. Not sure whether it is good.
@@ -2147,7 +2149,7 @@ namespace QoZ {
                                                             , interp_linear1(*(d - stride3x1 + stride3x2),*(d - stride1 + stride2))),mode);//this is important. Not sure whether it is good.
                     }
                     if(m%2 ==0){
-                        //std::cout<<"q4"<<std::endl;
+                        std::cout<<"q4"<<std::endl;
                         T *d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
                         if(n<4 or m<4)
                             predict_error+=quantize_integrated(d - data, *d, *(d - stride1 - stride2),mode);//this is important. Not sure whether it is good.
