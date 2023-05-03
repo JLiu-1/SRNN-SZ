@@ -2417,7 +2417,7 @@ namespace QoZ {
                         
                         T *d = data + begin1 +(n-1)*stride1+begin2+j*stride2;
                         if(mark[begin1 +(n-1)*stride1+begin2+j*stride2])
-                            std::cout<<"e4 "<<j<<std::endl;
+                            std::cout<<"e4 "<<n-1<<" "<<j<<std::endl;
                         mark[begin1 +(n-1)*stride1+begin2+j*stride2]=true;
                         /*
                         T p_value=*(d - stride1 );
