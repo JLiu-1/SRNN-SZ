@@ -188,6 +188,7 @@ namespace QoZ {
             //useCoeff=cfg.GetBoolean("AlgoSettings", "useCoeff", useCoeff);
             //regSampleStep=cfg.GetInteger("AlgoSettings", "regSampleStep", regSampleStep);
             multiDimInterp=cfg.GetInteger("AlgoSettings", "multiDimInterp", multiDimInterp);
+            mdCrossInterp=cfg.GetInteger("AlgoSettings", "mdCrossInterp", mdCrossInterp);
             profiling=cfg.GetInteger("AlgoSettings", "profiling", profiling);
             SSIMBlockSize=cfg.GetInteger("AlgoSettings", "SSIMBlockSize", SSIMBlockSize);
             fixBlockSize=cfg.GetInteger("AlgoSettings", "fixBlockSize", fixBlockSize);
@@ -440,6 +441,7 @@ namespace QoZ {
         //bool useCoeff=0;
         //int regSampleStep=6;
         int multiDimInterp=0;
+        int mdCrossInterp=0;
         int profiling=0;//since there may be multiple ways of profiling set it to int
         int SSIMBlockSize=8;
         int fixBlockSize=0;
