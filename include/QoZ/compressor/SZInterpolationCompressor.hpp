@@ -2170,31 +2170,31 @@ namespace QoZ {
                     }
                     //j=1
                     d = data + begin1 + i* stride1+ begin2+stride2;
-                    predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
+                    predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
                                                     ,interp_quad1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ) ),mode);
                    
                     //j=m-3 or m-2
                     d = data +begin1 + i* stride1+ begin2+j*stride2;
-                    predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
+                    predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
                                                     ,interp_quad2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) ) ),mode);
                     //j=m-1
                     if(m%2 ==0){
                         d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
-                        predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad3( *(d - stride5x1-stride5x2),*(d - stride3x1-stride3x2),*(d - stride1-stride2) )
-                                                    ,interp_quad2( *(d + stride5x1-stride5x2),*(d + stride3x1-stride3x2),*(d + stride1-stride2) ) ),mode);
+                        predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_3( *(d - stride5x1-stride5x2),*(d - stride3x1-stride3x2),*(d - stride1-stride2) )
+                                                    ,interp_quad_2( *(d + stride5x1-stride5x2),*(d + stride3x1-stride3x2),*(d + stride1-stride2) ) ),mode);
                     }
                 }
                
                 //i=1
                 for(j=3;j+3<m;j+=2){
                     d = data + begin1 + stride1+begin2+j*stride2;
-                    predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
-                                                    ,interp_quad1( *(d - stride1+stride2),*(d + stride1-stride2),*(d + stride3x1-stride3x2) ) ),mode);
+                    predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
+                                                    ,interp_quad_1( *(d - stride1+stride2),*(d + stride1-stride2),*(d + stride3x1-stride3x2) ) ),mode);
                 }
                 //j=1
                 d = data + begin1 + stride1+ begin2+stride2;
                 //predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
-                predict_error+=quantize_tuning(d - data, *d, interp_quad1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) ),mode);//1d quad
+                predict_error+=quantize_tuning(d - data, *d, interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) ),mode);//1d quad
                 //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
                 //                                    ,interp_linear( *(d + stride1-stride2),*(d - stride1+stride2) ) ),mode);//2d linear+quad
 
@@ -2204,7 +2204,7 @@ namespace QoZ {
                 d = data +begin1 + stride1+ begin2+j*stride2;
 
                 //predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
-                predict_error+=quantize_tuning(d - data, *d, interp_quad2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) ),mode);//1d quad
+                predict_error+=quantize_tuning(d - data, *d, interp_quad_2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) ),mode);//1d quad
                 //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) )
                 //                                    ,interp_linear( *(d - stride1-stride2),*(d + stride1+stride2) ) ),mode);//2d linear+quad
                 
@@ -2212,29 +2212,29 @@ namespace QoZ {
                 if(m%2 ==0){
                     d = data + begin1 + stride1+begin2+(m-1)*stride2;
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride1-stride2), *(d + stride1-stride2)),mode);//1d linear
-                    predict_error+=quantize_tuning(d - data, *d, interp_quad1(*(d - stride1-stride2), *(d + stride1-stride2),*(d + stride3x1-stride2)),mode);//1d quad
+                    predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d - stride1-stride2), *(d + stride1-stride2),*(d + stride3x1-stride2)),mode);//1d quad
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear1(*(d + stride3x1-stride3x2), *(d + stride1-stride2)),mode);//1d cross linear
 
                 }
                 //i= n-3 or n-2
                 for(j=3;j+3<m;j+=2){
                     d = data + begin1 + i*stride1+begin2+j*stride2;
-                    predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
-                                                    ,interp_quad2( *(d - stride3x1+stride3x2),*(d - stride1+stride2),*(d + stride1-stride2) ) ),mode);
+                    predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
+                                                    ,interp_quad_2( *(d - stride3x1+stride3x2),*(d - stride1+stride2),*(d + stride1-stride2) ) ),mode);
 
                 }
                 //j=1
                 d = data + begin1 + i*stride1+ begin2+stride2;
 
                 //predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
-                predict_error+=quantize_tuning(d - data, *d, interp_quad1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ),mode);//1d quad
+                predict_error+=quantize_tuning(d - data, *d, interp_quad_1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ),mode);//1d quad
                 //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) )
                 //                                    ,interp_linear( *(d - stride1-stride2),*(d + stride1+stride2) ) ),mode);//2d linear+quad
                 //j=m-3 or m-2
                 d = data +begin1 + i*stride1+ begin2+j*stride2;
 
                 //predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
-                predict_error+=quantize_tuning(d - data, *d, interp_quad2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) ),mode);//1d quad
+                predict_error+=quantize_tuning(d - data, *d, interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) ),mode);//1d quad
                 //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
                 //                                    ,interp_linear( *(d + stride1-stride2),*(d - stride1+stride2) ) ),mode);//2d linear+quad
                 
@@ -2257,12 +2257,12 @@ namespace QoZ {
                     //j=1
                     d = data + begin1 + (n-1)*stride1+ begin2+stride2;
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear1( *(d - stride3x1+stride3x2), *(d - stride1+stride2)),mode);//1d linear
-                    predict_error+=quantize_tuning(d - data, *d, interp_quad1(*(d - stride1-stride2), *(d - stride1+stride2),*(d - stride1+stride3x2)),mode);//1d quad
+                    predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d - stride1-stride2), *(d - stride1+stride2),*(d - stride1+stride3x2)),mode);//1d quad
 
                     //j=m-3 or m-2
                     d = data +begin1 + (n-1)*stride1+ begin2+j*stride2;
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear1( *(d - stride3x1-stride3x2), *(d - stride1-stride2)),mode);//1d linear
-                    predict_error+=quantize_tuning(d - data, *d, interp_quad2(*(d - stride1-stride3x2), *(d - stride1-stride2),*(d - stride1+stride2)),mode);//1d quad
+                    predict_error+=quantize_tuning(d - data, *d, interp_quad_2(*(d - stride1-stride3x2), *(d - stride1-stride2),*(d - stride1+stride2)),mode);//1d quad
                     //j=m-1
                     if(m%2 ==0){
                         d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
@@ -2381,31 +2381,31 @@ namespace QoZ {
                         d = data + begin1 + ii* stride1+begin2+jj*stride2;
                         T v1;
                         if(ii==0)
-                            v1=interp_quad3(*(d + stride5x1), *(d+ stride3x1), *(d + stride1) );
+                            v1=interp_quad_3(*(d + stride5x1), *(d+ stride3x1), *(d + stride1) );
                         else if(ii==1)
-                            v1=interp_quad1(*(d - stride1), *(d+ stride1), *(d + stride3x1) );
+                            v1=interp_quad_1(*(d - stride1), *(d+ stride1), *(d + stride3x1) );
                         else if (ii==n-2)
-                            v1=interp_quad2(*(d - stride3x1), *(d- stride1), *(d + stride1) );
+                            v1=interp_quad_2(*(d - stride3x1), *(d- stride1), *(d + stride1) );
                         else if (ii==n-1)
-                            v1=interp_quad3(*(d - stride5x1), *(d- stride3x1), *(d - stride1) );
+                            v1=interp_quad_3(*(d - stride5x1), *(d- stride3x1), *(d - stride1) );
                         else{//i==2 or n-3
                             if(n==5)
                                 v1=interp_linear(*(d - stride1), *(d+ stride1));
                             else if (ii==2)
-                                v1=interp_quad1(*(d - stride1), *(d+ stride1), *(d + stride3x1) );
+                                v1=interp_quad_1(*(d - stride1), *(d+ stride1), *(d + stride3x1) );
                             else
-                                v1=interp_quad2(*(d - stride3x1), *(d- stride1), *(d + stride1) );
+                                v1=interp_quad_2(*(d - stride3x1), *(d- stride1), *(d + stride1) );
                         }
 
                         T v2;
                         if(jj==0)
-                            v2=interp_quad3( *(d + stride5x2), *(d+ stride3x2), *(d + stride2) );
+                            v2=interp_quad_3( *(d + stride5x2), *(d+ stride3x2), *(d + stride2) );
                         else if (jj==1 or jj==2)
-                            v2=interp_quad1( *(d - stride2), *(d+ stride2), *(d + stride3x2) );
+                            v2=interp_quad_1( *(d - stride2), *(d+ stride2), *(d + stride3x2) );
                         else if(jj==m-1)
-                            v2=interp_quad3( *(d - stride5x2), *(d- stride3x2), *(d - stride2) );
+                            v2=interp_quad_3( *(d - stride5x2), *(d- stride3x2), *(d - stride2) );
                         else
-                            v2=interp_quad2( *(d - stride3x2), *(d- stride2), *(d + stride2) );
+                            v2=interp_quad_2( *(d - stride3x2), *(d- stride2), *(d + stride2) );
 
                         predict_error+=quantize_tuning(d - data, *d,interp_linear( v1,v2 ),mode);
 
