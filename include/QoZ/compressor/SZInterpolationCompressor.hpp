@@ -2294,7 +2294,7 @@ namespace QoZ {
                     }
 
                     //j=0
-                    if(i%2==1){
+                    if(i%2==1 and begin2==0){
                         T *d = data + begin1 + i* stride1+begin2;
                        
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 ), *(d + stride1 )),mode);
@@ -2306,14 +2306,17 @@ namespace QoZ {
                     }
                 }
                 //i=0
-                for(j=1;j+1<m;j+=2){
-                    T *d = data + begin1 +begin2+j*stride2;
-                    predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d  + stride2), *(d  - stride2)),mode);
-                }
+                if(begin1==0){
+                    for(j=1;j+1<m;j+=2){
+                        T *d = data + begin1 +begin2+j*stride2;
+                        predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d  + stride2), *(d  - stride2)),mode);
+                    }
+                
                 //j=m-1, j wont be 0
-                if(j==m-1){
-                    T *d = data + begin1 +begin2+j*stride2;
-                    predict_error+=quantize_integrated(d - data, *d, *(d-stride2),mode);//for simplicity,may extend to 2d.
+                    if(j==m-1){
+                        T *d = data + begin1 +begin2+j*stride2;
+                        predict_error+=quantize_integrated(d - data, *d, *(d-stride2),mode);//for simplicity,may extend to 2d.
+                    }
                 }
                 //i=n-1
                 if(n>1){
@@ -2322,7 +2325,7 @@ namespace QoZ {
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d  + stride2), *(d  - stride2)),mode);
                     }
                     //j=0
-                    if((n-1)%2==1){
+                    if((n-1)%2==1 and begin2==0){
                         T *d = data + begin1 +(n-1)*stride1+begin2;
                         predict_error+=quantize_integrated(d - data, *d, *(d-stride1),mode);//for simplicity,may extend to 2d.
                     }
@@ -2346,7 +2349,7 @@ namespace QoZ {
                                                         ,interp_cubic(*(d - stride3x2), *(d - stride2), *(d+ stride2), *(d + stride3x2)) ),mode);
                     }
                     //j=0
-                    if(i%2==1){
+                    if(i%2==1 and begin2==0){
                         d = data + begin1 + i* stride1+begin2;
                         predict_error+=quantize_tuning(d - data, *d, interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                     }
@@ -2366,7 +2369,9 @@ namespace QoZ {
                     }
                 }
                 //continue here.
-                std::vector<size_t> boundary_is=(i>5)?std::vector<size_t>{0,1,2,n-3,n-2,n-1}:std::vector<size_t>{0,1,2,n-2,n-1};
+                std::vector<size_t> boundary_is=(i>5)?std::vector<size_t>{1,2,n-3,n-2,n-1}:std::vector<size_t>{1,2,n-2,n-1};
+                if(begin1==0)
+                    boundary_is.push_front(0);
                 for(auto ii:boundary_is){
                     for(j=3;j+3<m;j+=2){
                         d = data + begin1+ii*stride1+begin2+j*stride2;
@@ -2378,6 +2383,8 @@ namespace QoZ {
                         boundary_js.push_back(m-1);
 
                     for(auto jj:boundary_js){
+                        if(begin2!=0 and jj==0)
+                            continue;
                         d = data + begin1 + ii* stride1+begin2+jj*stride2;
                         T v1;
                         if(ii==0)

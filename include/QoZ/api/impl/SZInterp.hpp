@@ -2507,6 +2507,19 @@ template<class T, QoZ::uint N>
 char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
     QoZ::calAbsErrorBound(conf, data);
+
+    if(N!=2&&N!=3){
+        conf.autoTuningRate=0;
+        conf.predictorTuningRate=0;
+        conf.maxStep=0;
+        conf.levelwisePredictionSelection=0;
+        conf.sperr=-1;
+        conf.waveletAutoTuning=0;
+        conf.multiDimInterp=0;
+        conf.QoZ=0;
+        conf.fixWave=-1;
+
+    }//merge this part to other branches.
    
     double prewave_absErrorBound=conf.absErrorBound;
     
