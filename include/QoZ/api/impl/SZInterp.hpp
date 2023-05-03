@@ -2519,7 +2519,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.QoZ=0;
         conf.fixWave=-1;
 
-    }//merge this part to other branches.
+    }//merge this part to other branches
    
     double prewave_absErrorBound=conf.absErrorBound;
     
