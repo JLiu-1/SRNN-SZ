@@ -480,6 +480,10 @@ namespace QoZ {
             }
             if(conf.verbose)
                 timer.stop("prediction");
+            for(size_t i=0;i<num_elements;i++){
+                if(!mark[i])
+                    std<<i<<std::endl;
+            }
             //timer.start();
             assert(quant_inds.size() == num_elements);
             encoder.preprocess_encode(quant_inds, 0);
@@ -733,7 +737,7 @@ namespace QoZ {
             }
             if(conf.verbose)
                 timer.stop("prediction");  
-            assert(quant_inds.size() == num_elements);
+            //assert(quant_inds.size() == num_elements);
             size_t bufferSize = 2.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());//ori is 3. In fact this often causes bug.
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
@@ -848,6 +852,7 @@ namespace QoZ {
             do {
                 dimension_sequences.push_back(sequence);
             } while (std::next_permutation(sequence.begin(), sequence.end()));    
+            mark.resize(num_elements,false)
         }
        
         void build_grid(Config &conf, T *data,size_t maxStep,int tuning=0){
@@ -876,6 +881,7 @@ namespace QoZ {
                             prediction_errors[x*dimension_offsets[0]+y]=0;
                         }*/
                         quant_inds.push_back(0);
+                        mark[x*conf.dims[1]+y]=true;
                     }
                 }
             }
@@ -2121,10 +2127,15 @@ namespace QoZ {
                 for (size_t i = 1; i + 1 < n; i += 2) {
                     for(size_t j=1;j+1<m;j+=2){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
-
+                        if(mark[begin1 + i* stride1+begin2+j*stride2])
+                            std::cout<<"e-1 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 + i* stride1+begin2+j*stride2]=true;
+                        /*
                         T p_value= interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2));
                         if(p_value>1)
                             std::cout<<"e-1 "<<i<<" "<<j<<std::endl;
+                        */
+
                         
                         predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);
 
@@ -2132,6 +2143,9 @@ namespace QoZ {
                     if(m%2 ==0){
                         //std::cout<<"q2"<<std::endl;
                         T *d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
+                        if(mark[begin1 + i * stride1+begin2+(m-1)*stride2])
+                            std::cout<<"e-0.75 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 + i * stride1+begin2+(m-1)*stride2]=true;
                         if(i<3 or i+3>=n or m<4)
                             predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 - stride2), *(d + stride1 - stride2)),mode);//this is important. Not sure whether it is good.
                         else
@@ -2142,6 +2156,9 @@ namespace QoZ {
                 if (n % 2 == 0) {
                     //std::cout<<"q3"<<std::endl;
                     for(size_t j=1;j+1<m;j+=2){
+                        if(mark[data + begin1 + (n-1) * stride1+begin2+j*stride2])
+                            std::cout<<"e-0.5 "<<i<<" "<<j<<std::endl;
+                        mark[data + begin1 + (n-1) * stride1+begin2+j*stride2]=true;
                         
                         T *d = data + begin1 + (n-1) * stride1+begin2+j*stride2;
                         if(n<4 or j<3 or j+3>=m)
@@ -2152,6 +2169,9 @@ namespace QoZ {
                     }
                     if(m%2 ==0){
                         //std::cout<<"q4"<<std::endl;
+                        if(mark[data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2])
+                            std::cout<<"e-0.25 "<<i<<" "<<j<<std::endl;
+                        mark[data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2]=true;
                         T *d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
                         if(n<4 or m<4)
                             predict_error+=quantize_integrated(d - data, *d, *(d - stride1 - stride2),mode);//this is important. Not sure whether it is good.
@@ -2292,9 +2312,15 @@ namespace QoZ {
                 for (i = 1; i + 1 < n; i += 1) {
                     for(j=1+(i%2);j+1<m;j+=2){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
+                        /*
                         T p_value= interp_2d(*(d - stride1 ), *(d + stride1 ),*(d  + stride2), *(d  - stride2));
                         if(p_value>1)
                             std::cout<<"e0 "<<i<<" "<<j<<std::endl;
+                        */
+                        if(mark[begin1 + i* stride1+begin2+j*stride2])
+                            std::cout<<"e0 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 + i* stride1+begin2+j*stride2]=true;
+                        T *d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
                         //std::cout<<"q1 "<<i<<" "<<j<<std::endl;
                         predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 ), *(d + stride1 ),*(d  + stride2), *(d  - stride2)),mode);
 
@@ -2303,18 +2329,29 @@ namespace QoZ {
                     //j=0
                     if(i%2==1 and begin2==0){
                         T *d = data + begin1 + i* stride1+begin2;
+                        if(mark[begin1 + i* stride1+begin2])
+                            std::cout<<"e0.5 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 + i* stride1+begin2]=true;
+                        /*
                         T p_value= interp_linear(*(d  + stride1), *(d  - stride1));
                         if(p_value>1)
                             std::cout<<"e0.5 "<<i<<" "<<j<<std::endl;
+                        */
                        
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 ), *(d + stride1 )),mode);
                     }
                     //j=m-1, j wont be 0
                     if(j==m-1){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
+                        if(mark[begin1 + i* stride1+begin2+j*stride2])
+                            std::cout<<"e1 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 + i* stride1+begin2+j*stride2]=true;
+                        /*
                         T p_value=interp_linear(*(d - stride1 ), *(d + stride1 ));
                         if(p_value>1)
                             std::cout<<"e1 "<<i<<" "<<j<<std::endl;
+                        */
+
 
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 ), *(d + stride1 )),mode);
                     }
@@ -2323,18 +2360,28 @@ namespace QoZ {
                 if(begin1==0){
                     for(j=1;j+1<m;j+=2){
                         T *d = data + begin1 +begin2+j*stride2;
+                        if(mark[begin1 +begin2+j*stride2])
+                            std::cout<<"e1.5 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 +begin2+j*stride2]=true;
+                        /*
                         T p_value= interp_linear(*(d  + stride2), *(d  - stride2));
                         if(p_value>1)
                             std::cout<<"e1.5 "<<i<<" "<<j<<std::endl;
+                            */
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d  + stride2), *(d  - stride2)),mode);
                     }
                 
                 //j=m-1, j wont be 0
                     if(j==m-1){
                         T *d = data + begin1 +begin2+j*stride2;
+                        if(mark[begin1 +begin2+j*stride2])
+                            std::cout<<"e2 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 +begin2+j*stride2]=true;
+                        /*
                         T p_value=*(d - stride2 );
                         if(p_value>1)
-                            std::cout<<"e2 "<<i<<" "<<j<<std::endl;
+                            std::cout<<"e2 "<<i<<" "<<j<<std::endl;]
+                        */
                         predict_error+=quantize_integrated(d - data, *d, *(d-stride2),mode);//for simplicity,may extend to 2d.
                     }
                 }
@@ -2342,27 +2389,42 @@ namespace QoZ {
                 if(n>1){
                     for(size_t j=1+(n-1)%2;j+1<m;j+=2){
                         T *d = data + begin1 +(n-1)*stride1+begin2+j*stride2;
+                        if(mark[begin1 +(n-1)*stride1+begin2+j*stride2])
+                            std::cout<<"e2.5 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 +(n-1)*stride1+begin2+j*stride2]=true;
+                        /*
                         T p_value= interp_linear(*(d  + stride2), *(d  - stride2));
                         if(p_value>1)
                             std::cout<<"e2.5 "<<i<<" "<<j<<std::endl;
+                        */
                         predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d  + stride2), *(d  - stride2)),mode);
                     }
                     //j=0
                     if((n-1)%2==1 and begin2==0){
                         
                         T *d = data + begin1 +(n-1)*stride1+begin2;
+                        if(mark[begin1 +(n-1)*stride1+begin2])
+                            std::cout<<"e3 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 +(n-1)*stride1+begin2]=true;
+                        /*
                         T p_value= *(d - stride1 );
                         if(p_value>1)
                             std::cout<<"e3 "<<i<<" "<<j<<std::endl;
+                        */
                         predict_error+=quantize_integrated(d - data, *d, *(d-stride1),mode);//for simplicity,may extend to 2d.
                     }
                     //j=m-1, j wont be 0
                     if( j==m-1){
                         
                         T *d = data + begin1 +(n-1)*stride1+begin2+j*stride2;
+                        if(mark[begin1 +(n-1)*stride1+begin2+j*stride2])
+                            std::cout<<"e4 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 +(n-1)*stride1+begin2+j*stride2]=true;
+                        /*
                         T p_value=*(d - stride1 );
                         if(p_value>1)
                             std::cout<<"e4"<<i<<" "<<j<<std::endl;
+                        */
                         predict_error+=quantize_integrated(d - data, *d, *(d-stride1),mode);//for simplicity,may extend to 2d.
                     }
                 }
@@ -3054,7 +3116,7 @@ namespace QoZ {
         double beta;
         std::vector<std::string> interpolators = {"linear", "cubic"};
         std::vector<int> quant_inds;
-        //std::vector<bool> mark;
+        std::vector<bool> mark;
         size_t quant_index = 0; // for decompress
         size_t maxStep=0;
         //double max_error;
