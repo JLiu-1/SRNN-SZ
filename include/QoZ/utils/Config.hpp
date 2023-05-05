@@ -226,6 +226,7 @@ namespace QoZ {
             waveAutoFix = cfg.GetInteger("AlgoSettings", "waveAutoFix", waveAutoFix);
             conditioning = cfg.GetInteger("AlgoSettings", "conditioning", conditioning);
             fixWave = cfg.GetInteger("AlgoSettings", "fixWave", fixWave);
+            regressiveInterp = cfg.GetInteger("AlgoSettings", "regressiveInterp", regressiveInterp);
            // minAnchorLevel = cfg.GetInteger("AlgoSettings", "minAnchorLevel", minAnchorLevel);
 
 
@@ -499,6 +500,7 @@ namespace QoZ {
         std::string metadata;
         bool pybind_activated=false;
         bool FZ=false;
+        int regressiveInterp=0;
         //bool profilingFix=true;//only for test
 
        // double anchorThreshold=0.0;
