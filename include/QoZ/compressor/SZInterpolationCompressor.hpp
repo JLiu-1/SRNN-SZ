@@ -480,13 +480,18 @@ namespace QoZ {
             }
             if(conf.verbose)
                 timer.stop("prediction");
-            /*
-            for(size_t i=0;i<num_elements;i++){
-                if(!mark[i])
-                    std::cout<<i<<std::endl;
-                    break;
+            if(N==2){
+                for(size_t i=0;i<global_dimensions[0];i++){
+                    for(size_t j=0;j<global_dimensions[1];j++){
+                        size_t idx=i*global_dimensions[1]+j;
+                        if(!mark[idx]){
+                            std::cout<<i<<" "<<j<<std::endl;
+                        }
+                    }
+                }
             }
-            */
+        
+            
             //timer.start();
             assert(quant_inds.size() == num_elements);
             encoder.preprocess_encode(quant_inds, 0);
@@ -855,10 +860,10 @@ namespace QoZ {
             do {
                 dimension_sequences.push_back(sequence);
             } while (std::next_permutation(sequence.begin(), sequence.end()));  
-            /*  
+            
             mark.clear();
             mark.resize(num_elements,false);
-            */
+            
         }
        
         void build_grid(Config &conf, T *data,size_t maxStep,int tuning=0){
@@ -2202,21 +2207,33 @@ namespace QoZ {
                 T *d;
                 for (i = 3; i + 3 < n; i += 2) {
                     for(j=3;j+3<m;j+=2){
+                        if(mark[begin1 + i* stride1+begin2+j*stride2])
+                            std::cout<<"e0 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 + i* stride1+begin2+j*stride2]=true;
                         d = data + begin1 + i* stride1+begin2+j*stride2;
                         predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1-stride3x2), *(d - stride1-stride2), *(d + stride1+stride2), *(d + stride3x1+stride3x2))
                                                         ,interp_cubic(*(d +stride3x1- stride3x2), *(d +stride1- stride2), *(d -stride1+ stride2), *(d -stride3x1+ stride3x2)) ),mode);
                     }
                     //j=1
+                    if(mark[begin1 + i* stride1+begin2+stride2])
+                            std::cout<<"e1 "<<i<<std::endl;
+                    mark[begin1 + i* stride1+begin2+stride2]=true;
                     d = data + begin1 + i* stride1+ begin2+stride2;
                     predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
                                                     ,interp_quad_1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ) ),mode);
                    
                     //j=m-3 or m-2
+                    if(mark[begin1 + i* stride1+begin2+j*stride2])
+                            std::cout<<"e2 "<<i<<" "<<j<<std::endl;
+                    mark[begin1 + i* stride1+begin2+j*stride2]=true;
                     d = data +begin1 + i* stride1+ begin2+j*stride2;
                     predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
                                                     ,interp_quad_2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) ) ),mode);
                     //j=m-1
                     if(m%2 ==0){
+                        if(mark[begin1 + i* stride1+begin2+(m-1)*stride2])
+                            std::cout<<"e3 "<<i<<" "<<(m-1)<<std::endl;
+                        mark[begin1 + i* stride1+begin2+(m-1)*stride2]=true;
 
                         d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
                         if(i>=5 and i+5<n)
@@ -2230,11 +2247,17 @@ namespace QoZ {
                
                 //i=1
                 for(j=3;j+3<m;j+=2){
+                    if(mark[begin1 + stride1+begin2+j*stride2])
+                        std::cout<<"e4 "<<j<<std::endl;
+                    mark[begin1 + stride1+begin2+j*stride2]=true;
                     d = data + begin1 + stride1+begin2+j*stride2;
                     predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
                                                     ,interp_quad_1( *(d - stride1+stride2),*(d + stride1-stride2),*(d + stride3x1-stride3x2) ) ),mode);
                 }
                 //j=1
+                if(mark[begin1 + stride1+begin2+stride2])
+                    std::cout<<"e5 "<<std::endl;
+                mark[begin1 + stride1+begin2+stride2]=true;
                 d = data + begin1 + stride1+ begin2+stride2;
                 //predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
                 predict_error+=quantize_tuning(d - data, *d, interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) ),mode);//1d quad
@@ -2244,6 +2267,9 @@ namespace QoZ {
 
                 
                 //j=m-3 or m-2
+                if(mark[begin1 + stride1+begin2+j*stride2])
+                    std::cout<<"e6 "<<j<<std::endl;
+                mark[begin1 + stride1+begin2+j*stride2]=true;
                 d = data +begin1 + stride1+ begin2+j*stride2;
 
                 //predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
@@ -2253,6 +2279,9 @@ namespace QoZ {
                 
                 //j=m-1
                 if(m%2 ==0){
+                    if(mark[begin1 + stride1+begin2+(m-1)*stride2])
+                        std::cout<<"e7 "<<std::endl;
+                    mark[begin1 + stride1+begin2+(m-1)*stride2]=true;
                     d = data + begin1 + stride1+begin2+(m-1)*stride2;
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride1-stride2), *(d + stride1-stride2)),mode);//1d linear
                     predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d - stride1-stride2), *(d + stride1-stride2),*(d + stride3x1-stride2)),mode);//1d quad
@@ -2262,6 +2291,9 @@ namespace QoZ {
 
                 //i= n-3 or n-2
                 for(j=3;j+3<m;j+=2){
+                    if(mark[begin1 + i* stride1+begin2+j*stride2])
+                        std::cout<<"e8 "<<i<<" "<<j<<std::endl;
+                    mark[begin1 + i* stride1+begin2+j*stride2]=true;
                     d = data + begin1 + i*stride1+begin2+j*stride2;
                     predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
                                                     ,interp_quad_2( *(d - stride3x1+stride3x2),*(d - stride1+stride2),*(d + stride1-stride2) ) ),mode);
@@ -2269,13 +2301,18 @@ namespace QoZ {
                 }
                 //j=1
                 d = data + begin1 + i*stride1+ begin2+stride2;
-
+                if(mark[begin1 + i* stride1+begin2+stride2])
+                        std::cout<<"e9 "<<i<<std::endl;
+                mark[begin1 + i* stride1+begin2+stride2]=true;
                 //predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
                 predict_error+=quantize_tuning(d - data, *d, interp_quad_1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ),mode);//1d quad
                 //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_quad1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) )
                 //                                    ,interp_linear( *(d - stride1-stride2),*(d + stride1+stride2) ) ),mode);//2d linear+quad
                 //j=m-3 or m-2
                 d = data +begin1 + i*stride1+ begin2+j*stride2;
+                if(mark[begin1 + i* stride1+begin2+j*stride2])
+                    std::cout<<"e10 "<<i<<" "<<j<<std::endl;
+                mark[begin1 + i* stride1+begin2+j*stride2]=true;
 
                 //predict_error+=quantize_tuning(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
                 predict_error+=quantize_tuning(d - data, *d, interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) ),mode);//1d quad
@@ -2284,6 +2321,9 @@ namespace QoZ {
                 
                 //j=m-1
                 if(m%2 ==0){
+                    if(mark[begin1 + i* stride1+begin2+(m-1)*stride2])
+                        std::cout<<"e11 "<<i<<" "<<(m-1)<<std::endl;
+                    mark[begin1 + i* stride1+begin2+(m-1)*stride2]=true;
                     d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride1-stride2), *(d + stride1-stride2)),mode);//1d linear
                     predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d + stride1-stride2), *(d - stride1-stride2),*(d - stride3x1-stride2)),mode);//1d quad
@@ -2293,22 +2333,34 @@ namespace QoZ {
                 //i=n-1 (odd)
                 if (n % 2 == 0) {
                     for(j=3;j+3<m;j+=2){
+                        if(mark[begin1 + (n-1)* stride1+begin2+j*stride2])
+                            std::cout<<"e12 "<<(n-1)<<" "<<j<<std::endl;
+                        mark[begin1 + (n-1)* stride1+begin2+j*stride2]=true;
                         d = data + begin1 + (n-1)*stride1+begin2+j*stride2;
                         //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_linear1(*(d - stride3x1-stride3x2), *(d - stride1-stride2)) ,interp_linear1(*(d - stride3x1+stride3x2), *(d - stride1+stride2)) ),mode);//2d cross
                         predict_error+=quantize_tuning(d - data, *d, interp_cubic(*(d - stride1-stride3x2), *(d -  stride1-stride2), *(d - stride1+ stride2), *(d - stride1+ stride3x2)),mode);//1d cubic
 
                     }
                     //j=1
+                    if(mark[begin1 + (n-1)* stride1+begin2+stride2])
+                        std::cout<<"e13 "<<(n-1)<<" "<<std::endl;
+                    mark[begin1 + (n-1)* stride1+begin2+stride2]=true;
                     d = data + begin1 + (n-1)*stride1+ begin2+stride2;
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear1( *(d - stride3x1+stride3x2), *(d - stride1+stride2)),mode);//1d linear
                     predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d - stride1-stride2), *(d - stride1+stride2),*(d - stride1+stride3x2)),mode);//1d quad
 
                     //j=m-3 or m-2
+                    if(mark[begin1 + (n-1)* stride1+begin2+j*stride2])
+                        std::cout<<"e14 "<<(n-1)<<" "<<j<<std::endl;
+                    mark[begin1 + (n-1)* stride1+begin2+j*stride2]=true;
                     d = data +begin1 + (n-1)*stride1+ begin2+j*stride2;
                     //predict_error+=quantize_tuning(d - data, *d, interp_linear1( *(d - stride3x1-stride3x2), *(d - stride1-stride2)),mode);//1d linear
                     predict_error+=quantize_tuning(d - data, *d, interp_quad_2(*(d - stride1-stride3x2), *(d - stride1-stride2),*(d - stride1+stride2)),mode);//1d quad
                     //j=m-1
                     if(m%2 ==0){
+                        if(mark[begin1 + (n-1)* stride1+begin2+(m-1)*stride2])
+                            std::cout<<"e15 "<<(n-1)<<" "<<(m-1)<<std::endl;
+                        mark[begin1 + (n-1)* stride1+begin2+(m-1)*stride2]=true;
                         d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
                         predict_error+=quantize_tuning(d - data, *d, interp_quad_3(*(d - stride5x1-stride5x2), *(d - stride3x1-stride3x2), *(d - stride1-stride2)),mode);
                     }
@@ -2466,6 +2518,9 @@ namespace QoZ {
                 for (i = 3; i + 3 < n; i += 1) {
                     //std::cout<<"ac1 "<<i<<std::endl;
                     for(j=3+(i%2);j+3<m;j+=2){
+                        if(mark[begin1 + i* stride1+begin2+j*stride2])
+                            std::cout<<"e16 "<<i<<" "<<j<<std::endl;
+                        mark[begin1 + i* stride1+begin2+j*stride2]=true;
                         d = data + begin1 + i* stride1+begin2+j*stride2;
                         predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
                                                         ,interp_cubic(*(d - stride3x2), *(d - stride2), *(d+ stride2), *(d + stride3x2)) ),mode);
@@ -2473,15 +2528,24 @@ namespace QoZ {
                     //j=0
                     //std::cout<<"ac2 "<<i<<std::endl;
                     if(i%2==1 and begin2==0){
+                        if(mark[begin1 + i* stride1+begin2+stride2])
+                            std::cout<<"e17 "<<i<<" "<<std::endl;
+                        mark[begin1 + i* stride1+begin2+stride2]=true;
                         d = data + begin1 + i* stride1+begin2;
                         predict_error+=quantize_tuning(d - data, *d, interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                     }
                     //j=1 or 2 
                     //std::cout<<"ac3 "<<i<<std::endl;
+                    if(mark[begin1 + i* stride1+begin2+(1+(i%2))*stride2])
+                        std::cout<<"e18 "<<i<<" "<<std::endl;
+                    mark[begin1 + i* stride1+begin2+(1+(i%2))*stride2]=true;
                     d = data + begin1 + i* stride1+begin2+(1+(i%2))*stride2;
                     predict_error+=quantize_tuning(d - data, *d, interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                     //j=m-3 or m-2, j wont be 2.
                     //std::cout<<"ac4 "<<i<<std::endl;
+                    if(mark[begin1 + i* stride1+begin2+j*stride2])
+                        std::cout<<"e19 "<<i<<" "<<j<<std::endl;
+                    mark[begin1 + i* stride1+begin2+j*stride2]=true;
                     d = data + begin1 + i* stride1+begin2+j*stride2;
                     predict_error+=quantize_tuning(d - data, *d,  interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                    
@@ -2489,6 +2553,9 @@ namespace QoZ {
                   
                     if(j+2==m-1){
                        // std::cout<<"ac5 "<<i<<std::endl;
+                        if(mark[begin1 + i* stride1+begin2+(m-1)*stride2])
+                            std::cout<<"e20 "<<i<<" "<<(m-1)<<std::endl;
+                        mark[begin1 + i* stride1+begin2+(m-1)*stride2]=true;
                         d = data + begin1 + i* stride1+begin2+(m-1)*stride2;
                         predict_error+=quantize_tuning(d - data, *d,  interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                     }
@@ -2502,6 +2569,9 @@ namespace QoZ {
                         continue;
                     //std::cout<<"ac6 "<<ii<<std::endl;
                     for(j=3;j+3<m;j+=2){
+                        if(mark[begin1 + ii* stride1+begin2+j*stride2])
+                            std::cout<<"e21 "<<ii<<" "<<j<<std::endl;
+                        mark[begin1 + ii* stride1+begin2+j*stride2]=true;
                         d = data + begin1+ii*stride1+begin2+j*stride2;
                         predict_error+=quantize_tuning(d - data, *d,interp_cubic(*(d - stride3x2), *(d - stride2), *(d+ stride2), *(d + stride3x2) ),mode);
                     }
@@ -2514,6 +2584,9 @@ namespace QoZ {
                         //std::cout<<"ac7 "<<jj<<std::endl;
                         if(begin2!=0 and jj==0)
                             continue;
+                        if(mark[begin1 + ii* stride1+begin2+j*stride2])
+                            std::cout<<"e22 "<<ii<<" "<<jj<<std::endl;
+                        mark[begin1 + ii* stride1+begin2+jj*stride2]=true;
                         d = data + begin1 + ii* stride1+begin2+jj*stride2;
                         T v1;
                         if(ii==0){
