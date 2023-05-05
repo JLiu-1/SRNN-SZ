@@ -62,7 +62,7 @@ namespace QoZ {
         //judge whether we can use Guass(i.e., whether the diagonal elements are all 0.
         for(i=0;i<size;i++)
         {
-            if(A[i][i]==0)
+            if(A[i][i]<1e-10)
             {
                 //printf("This matrix cannot be solved by Gauss\n");
                 return 1; //error
@@ -129,7 +129,7 @@ namespace QoZ {
     	printf("\n");		
     }
     */
-    double* Regression(double * A,size_t numPoints,size_t numFeatures,double * b)
+    double* Regression(double * A,size_t numPoints,size_t numFeatures,double * b,int &status)
     {
         
         double* AT = new double[numPoints*numFeatures]; //transpose
@@ -147,7 +147,7 @@ namespace QoZ {
         printVector(c, interpSize);
         */
         double* result = NULL;
-        Gauss(ATA, c, numFeatures, &result);
+        status=Gauss(ATA, c, numFeatures, &result);
         
         //delete A(extractedMatrix);
         delete []AT;
