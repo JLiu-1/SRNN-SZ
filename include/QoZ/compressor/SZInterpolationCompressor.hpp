@@ -2417,7 +2417,8 @@ namespace QoZ {
                         mark[begin1 + i* stride1+begin2+j*stride2]=true;
                         */
                         //std::cout<<"q1 "<<i<<" "<<j<<std::endl;
-                        predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 ), *(d + stride1 ),*(d  + stride2), *(d  - stride2)),mode);
+                        //predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 ), *(d + stride1 ),*(d  + stride2), *(d  - stride2)),mode);
+                        predict_error+=quantize_integrated(d - data, *d,0,mode);
 
                     }
 
