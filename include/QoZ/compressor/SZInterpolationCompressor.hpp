@@ -1403,10 +1403,12 @@ namespace QoZ {
             std::vector<double> A={*(d-strides3x[main_direction]),*(d+strides[main_direction]),*(d-strides[main_direction]),*(d+strides3x[main_direction])};
             std::vector<double> b={*(d-strides[main_direction]),*(d+strides[main_direction])};
             for(auto sub_direction:sub_directions){
-                size_t sub_stride=dimensional_sparsity*strides[sub_direction];
-                A.push_back{*(d-sub_stride-strides3x[main_direction]),*(d-sub_stride+strides[main_direction]),*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides3x[main_direction])
+                size_t sub_stride=dimensional_sparsity[sub_direction]*strides[sub_direction];
+                std::vector<double>tempA={*(d-sub_stride-strides3x[main_direction]),*(d-sub_stride+strides[main_direction]),*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides3x[main_direction])
                     ,*(d+sub_stride-strides3x[main_direction]),*(d+sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides3x[main_direction])};
-                B.push_back{*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides[main_direction])};
+                A.insert(A.end(),tempA.begin(),tempA.end());
+                std::vector<double>tempb={*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides[main_direction])};
+                b.insert(b.end(),tempb.begin(),tempb.end())
 
             }
 
