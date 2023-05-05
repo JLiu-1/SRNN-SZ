@@ -866,9 +866,10 @@ namespace QoZ {
             do {
                 dimension_sequences.push_back(sequence);
             } while (std::next_permutation(sequence.begin(), sequence.end()));  
-            
+            /*
             mark.clear();
             mark.resize(num_elements,false);
+            */
             
         }
        
