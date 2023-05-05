@@ -1408,7 +1408,7 @@ namespace QoZ {
                     ,*(d+sub_stride-strides3x[main_direction]),*(d+sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides3x[main_direction])};
                 A.insert(A.end(),tempA.begin(),tempA.end());
                 std::vector<double>tempb={*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides[main_direction])};
-                b.insert(b.end(),tempb.begin(),tempb.end())
+                b.insert(b.end(),tempb.begin(),tempb.end());
 
             }
 
@@ -2629,7 +2629,7 @@ namespace QoZ {
                         cur_begin[dims[1]]=j;
                         std::vector<size_t> cur_end(end.begin(),end.end());
                         cur_end[dims[1]]=j;
-                        block_interpolation_1d_regressive(data,begin,end,dims[0],cur_begin,cur_end,sparsity,
+                        block_interpolation_1d_regressive(data,(std::vector<size_t>)begin,(std::vector<size_t>)end,dims[0],cur_begin,cur_end,sparsity,
                                                         stride,interp_func,pb,tuning);
                     }
                     sparsity[dims[1]]=1;
@@ -2638,7 +2638,7 @@ namespace QoZ {
                         cur_begin[dims[0]]=i;
                         std::vector<size_t> cur_end(end.begin(),end.end());
                         cur_end[dims[0]]=i;
-                        block_interpolation_1d_regressive(data,begin,end,dims[1],cur_begin,cur_end,sparsity,
+                        block_interpolation_1d_regressive(data,(std::vector<size_t>)begin,(std::vector<size_t>)end,dims[1],cur_begin,cur_end,sparsity,
                                                         stride,interp_func,pb,tuning);
                     }
 
