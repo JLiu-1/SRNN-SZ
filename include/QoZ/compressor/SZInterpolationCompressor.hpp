@@ -2527,10 +2527,10 @@ namespace QoZ {
                     }
                     //j=0
                     //std::cout<<"ac2 "<<i<<std::endl;
-                    if(i%2==1 and begin1==0){
-                        if(mark[begin1 + i* stride1+begin2+stride2])
+                    if(i%2==1 and begin2==0){
+                        if(mark[begin1 + i* stride1+begin2])
                             std::cout<<"e17 "<<i<<" "<<std::endl;
-                        mark[begin1 + i* stride1+begin2+stride2]=true;
+                        mark[begin1 + i* stride1+begin2]=true;
                         d = data + begin1 + i* stride1+begin2;
                         predict_error+=quantize_tuning(d - data, *d, interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                     }
@@ -2565,7 +2565,7 @@ namespace QoZ {
                 std::vector<size_t> boundary_is=(n>5)?std::vector<size_t>{0,1,2,n-3,n-2,n-1}:std::vector<size_t>{0,1,2,n-2,n-1};
                 
                 for(auto ii:boundary_is){
-                    if(ii==0 and begin2!=0)
+                    if(ii==0 and begin1!=0)
                         continue;
                     //std::cout<<"ac6 "<<ii<<std::endl;
                     for(j=3;j+3<m;j+=2){
