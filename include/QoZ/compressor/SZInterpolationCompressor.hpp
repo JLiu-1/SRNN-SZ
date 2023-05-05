@@ -2568,7 +2568,7 @@ namespace QoZ {
                     if(ii==0 and begin1!=0)
                         continue;
                     //std::cout<<"ac6 "<<ii<<std::endl;
-                    for(j=3;j+3<m;j+=2){
+                    for(j=3+(ii%2);j+3<m;j+=2){
                         if(mark[begin1 + ii* stride1+begin2+j*stride2])
                             std::cout<<"e21 "<<ii<<" "<<j<<std::endl;
                         mark[begin1 + ii* stride1+begin2+j*stride2]=true;
