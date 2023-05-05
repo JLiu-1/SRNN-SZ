@@ -490,6 +490,7 @@ namespace QoZ {
                     }
                 }
             }
+            std::cout<<"ne "<<num_elements<<std::endl;
             for(size_t i=0;i<num_elements;i++){
                 if(!mark[i])
                     std::cout<<i<<std::endl;
