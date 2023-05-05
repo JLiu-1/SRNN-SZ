@@ -2143,28 +2143,13 @@ namespace QoZ {
                 for (size_t i = 1; i + 1 < n; i += 2) {
                     for(size_t j=1;j+1<m;j+=2){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
-                        /*
-                        if(mark[begin1 + i* stride1+begin2+j*stride2])
-                            std::cout<<"e-1 "<<i<<" "<<j<<std::endl;
-                        mark[begin1 + i* stride1+begin2+j*stride2]=true;
-                        /*
-                        T p_value= interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2));
-                        if(p_value>1)
-                            std::cout<<"e-1 "<<i<<" "<<j<<std::endl;
-                        */
-
-                        
+                       
                         predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);
 
                     }
                     if(m%2 ==0){
-                        //std::cout<<"q2"<<std::endl;
                         T *d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
-                        /*
-                        if(mark[begin1 + i * stride1+begin2+(m-1)*stride2])
-                            std::cout<<"e-0.75 "<<i<<std::endl;
-                        mark[begin1 + i * stride1+begin2+(m-1)*stride2]=true;
-                        */
+
                         if(i<3 or i+3>=n or m<4)
                             predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 - stride2), *(d + stride1 - stride2)),mode);//this is important. Not sure whether it is good.
                         else
@@ -2173,14 +2158,8 @@ namespace QoZ {
                     }
                 }
                 if (n % 2 == 0) {
-                    //std::cout<<"q3"<<std::endl;
                     for(size_t j=1;j+1<m;j+=2){
-                        /*
-                        if(mark[begin1 + (n-1) * stride1+begin2+j*stride2])
-                            std::cout<<"e-0.5 "<<j<<std::endl;
-                        mark[begin1 + (n-1) * stride1+begin2+j*stride2]=true;
-                        */
-                        
+
                         T *d = data + begin1 + (n-1) * stride1+begin2+j*stride2;
                         if(n<4 or j<3 or j+3>=m)
                             predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1 - stride2), *(d - stride1 + stride2)),mode);//this is important. Not sure whether it is good.
@@ -2189,12 +2168,6 @@ namespace QoZ {
                                                             , interp_linear1(*(d - stride3x1 + stride3x2),*(d - stride1 + stride2))),mode);//this is important. Not sure whether it is good.
                     }
                     if(m%2 ==0){
-                        //std::cout<<"q4"<<std::endl;
-                        /*
-                        if(mark[ begin1 + (n-1) * stride1+begin2+(m-1)*stride2])
-                            std::cout<<"e-0.25 "<<std::endl;
-                        mark[begin1 + (n-1) * stride1+begin2+(m-1)*stride2]=true;
-                        */
                         T *d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
                         if(n<4 or m<4)
                             predict_error+=quantize_integrated(d - data, *d, *(d - stride1 - stride2),mode);//this is important. Not sure whether it is good.
@@ -2211,43 +2184,22 @@ namespace QoZ {
                 T *d;
                 for (i = 3; i + 3 < n; i += 2) {
                     for(j=3;j+3<m;j+=2){
-                        /*
-                        if(mark[begin1 + i* stride1+begin2+j*stride2])
-                            std::cout<<"e0 "<<i<<" "<<j<<std::endl;
-                        mark[begin1 + i* stride1+begin2+j*stride2]=true;
-                        */
                         d = data + begin1 + i* stride1+begin2+j*stride2;
                         predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1-stride3x2), *(d - stride1-stride2), *(d + stride1+stride2), *(d + stride3x1+stride3x2))
                                                         ,interp_cubic(*(d +stride3x1- stride3x2), *(d +stride1- stride2), *(d -stride1+ stride2), *(d -stride3x1+ stride3x2)) ),mode);
                     }
                     //j=1
-                    /*
-                    if(mark[begin1 + i* stride1+begin2+stride2])
-                         std::cout<<"e1 "<<i<<std::endl;
-                    mark[begin1 + i* stride1+begin2+stride2]=true;
-                    */
                     d = data + begin1 + i* stride1+ begin2+stride2;
                     predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
                                                     ,interp_quad_1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ) ),mode);
-                    
-                   
+                                       
                     //j=m-3 or m-2
-                    /*
-                    if(mark[begin1 + i* stride1+begin2+j*stride2])
-                            std::cout<<"e2 "<<i<<" "<<j<<std::endl;
-                    mark[begin1 + i* stride1+begin2+j*stride2]=true;
-                    */
                     d = data +begin1 + i* stride1+ begin2+j*stride2;
                     predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
                                                     ,interp_quad_2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) ) ),mode);
                     
                     //j=m-1
                     if(m%2 ==0){
-                        /*
-                        if(mark[begin1 + i* stride1+begin2+(m-1)*stride2])
-                            std::cout<<"e3 "<<i<<" "<<(m-1)<<std::endl;
-                        mark[begin1 + i* stride1+begin2+(m-1)*stride2]=true;
-                        */
                         d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
                         if(i>=5 and i+5<n)
                             predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_3( *(d - stride5x1-stride5x2),*(d - stride3x1-stride3x2),*(d - stride1-stride2) )
@@ -2260,141 +2212,88 @@ namespace QoZ {
                
                 //i=1
                 for(j=3;j+3<m;j+=2){
-                    
-                    if(mark[begin1 + stride1+begin2+j*stride2])
-                        std::cout<<"e4 "<<j<<std::endl;
-                    mark[begin1 + stride1+begin2+j*stride2]=true;
                     d = data + begin1 + stride1+begin2+j*stride2;
                     predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
                                                     ,interp_quad_1( *(d - stride1+stride2),*(d + stride1-stride2),*(d + stride3x1-stride3x2) ) ),mode);
                 }
                 //j=1
-                if(mark[begin1 + stride1+begin2+stride2])
-                    std::cout<<"e5 "<<std::endl;
-                mark[begin1 + stride1+begin2+stride2]=true;
+
                 d = data + begin1 + stride1+ begin2+stride2;
                 //predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
-                
                 //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) )
                 //                                    ,interp_linear( *(d + stride1-stride2),*(d - stride1+stride2) ) ),mode);//2d linear+quad
-                //predict_error+=quantize_integrated(d - data, *d, interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) ),mode);//1d quad
-                predict_error+=quantize_integrated(d - data, *d, 0,mode);//1d quad
+                predict_error+=quantize_integrated(d - data, *d, interp_quad_1( *(d - stride1-stride2),*(d + stride1+stride2),*(d + stride3x1+stride3x2) ),mode);//1d quad
 
-                
                 //j=m-3 or m-2
-                if(mark[begin1 + stride1+begin2+j*stride2])
-                    std::cout<<"e6 "<<j<<std::endl;
-                mark[begin1 + stride1+begin2+j*stride2]=true;
                 d = data +begin1 + stride1+ begin2+j*stride2;
 
                 //predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
-                
                 //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) )
                 //                                    ,interp_linear( *(d - stride1-stride2),*(d + stride1+stride2) ) ),mode);//2d linear+quad
-                //predict_error+=quantize_integrated(d - data, *d, interp_quad_2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) ),mode);//1d quad
-                predict_error+=quantize_integrated(d - data, *d, 0,mode);//1d quad
+                predict_error+=quantize_integrated(d - data, *d, interp_quad_2( *(d + stride3x1-stride3x2),*(d + stride1-stride2),*(d - stride1+stride2) ),mode);//1d quad
                 
                 //j=m-1
                 if(m%2 ==0){
-                    if(mark[begin1 + stride1+begin2+(m-1)*stride2])
-                        std::cout<<"e7 "<<std::endl;
-                    mark[begin1 + stride1+begin2+(m-1)*stride2]=true;
                     d = data + begin1 + stride1+begin2+(m-1)*stride2;
                     //predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1-stride2), *(d + stride1-stride2)),mode);//1d linear
-                    
                     //predict_error+=quantize_integrated(d - data, *d, interp_linear1(*(d + stride3x1-stride3x2), *(d + stride1-stride2)),mode);//1d cross linear
-                    //predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride1-stride2), *(d + stride1-stride2),*(d + stride3x1-stride2)),mode);//1d quad
-                    predict_error+=quantize_integrated(d - data, *d, 0,mode);//1d quad
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride1-stride2), *(d + stride1-stride2),*(d + stride3x1-stride2)),mode);//1d quad
 
                 }
 
                 //i= n-3 or n-2
                 for(j=3;j+3<m;j+=2){
-                    if(mark[begin1 + i* stride1+begin2+j*stride2])
-                        std::cout<<"e8 "<<i<<" "<<j<<std::endl;
-                    mark[begin1 + i* stride1+begin2+j*stride2]=true;
+                   
                     d = data + begin1 + i*stride1+begin2+j*stride2;
-                    //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
-                    //                                ,interp_quad_2( *(d - stride3x1+stride3x2),*(d - stride1+stride2),*(d + stride1-stride2) ) ),mode);
-                    predict_error+=quantize_integrated(d - data, *d, 0,mode);
-
+                    predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
+                                                    ,interp_quad_2( *(d - stride3x1+stride3x2),*(d - stride1+stride2),*(d + stride1-stride2) ) ),mode);
 
                 }
                 //j=1
                 d = data + begin1 + i*stride1+ begin2+stride2;
-                if(mark[begin1 + i* stride1+begin2+stride2])
-                        std::cout<<"e9 "<<i<<std::endl;
-                mark[begin1 + i* stride1+begin2+stride2]=true;
                 //predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
-                
                 //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) )
                 //                                    ,interp_linear( *(d - stride1-stride2),*(d + stride1+stride2) ) ),mode);//2d linear+quad
-                //predict_error+=quantize_integrated(d - data, *d, interp_quad_1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ),mode);//1d quad
-                predict_error+=quantize_integrated(d - data, *d, 0,mode);//1d quad
+                predict_error+=quantize_integrated(d - data, *d, interp_quad_1( *(d + stride1-stride2),*(d - stride1+stride2),*(d - stride3x1+stride3x2) ),mode);//1d quad
+                
                 //j=m-3 or m-2
                 d = data +begin1 + i*stride1+ begin2+j*stride2;
-                if(mark[begin1 + i* stride1+begin2+j*stride2])
-                    std::cout<<"e10 "<<i<<" "<<j<<std::endl;
-                mark[begin1 + i* stride1+begin2+j*stride2]=true;
-
+           
                 //predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 - stride2), *(d + stride1 + stride2),*(d - stride1 + stride2), *(d + stride1 - stride2)),mode);//2d linear
-                
                 //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) )
                 //                                    ,interp_linear( *(d + stride1-stride2),*(d - stride1+stride2) ) ),mode);//2d linear+quad
-                //predict_error+=quantize_integrated(d - data, *d, interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) ),mode);//1d quad
-                predict_error+=quantize_integrated(d - data, *d, 0,mode);//1d quad
+                predict_error+=quantize_integrated(d - data, *d, interp_quad_2( *(d - stride3x1-stride3x2),*(d - stride1-stride2),*(d + stride1+stride2) ),mode);//1d quad
                 
                 //j=m-1
                 if(m%2 ==0){
-                    if(mark[begin1 + i* stride1+begin2+(m-1)*stride2])
-                        std::cout<<"e11 "<<i<<" "<<(m-1)<<std::endl;
-                    mark[begin1 + i* stride1+begin2+(m-1)*stride2]=true;
                     d = data + begin1 + i * stride1+begin2+(m-1)*stride2;
                     //predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride1-stride2), *(d + stride1-stride2)),mode);//1d linear
-                    
                     //predict_error+=quantize_integrated(d - data, *d, interp_linear1(*(d + stride3x1-stride3x2), *(d + stride1-stride2)),mode);//1d cross linear
-                    //predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d + stride1-stride2), *(d - stride1-stride2),*(d - stride3x1-stride2)),mode);//1d quad
-                    predict_error+=quantize_integrated(d - data, *d, 0,mode);//1d quad
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d + stride1-stride2), *(d - stride1-stride2),*(d - stride3x1-stride2)),mode);//1d quad
                 }
 
                 //i=n-1 (odd)
                 if (n % 2 == 0) {
                     for(j=3;j+3<m;j+=2){
-                        if(mark[begin1 + (n-1)* stride1+begin2+j*stride2])
-                            std::cout<<"e12 "<<(n-1)<<" "<<j<<std::endl;
-                        mark[begin1 + (n-1)* stride1+begin2+j*stride2]=true;
                         d = data + begin1 + (n-1)*stride1+begin2+j*stride2;
                         //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_linear1(*(d - stride3x1-stride3x2), *(d - stride1-stride2)) ,interp_linear1(*(d - stride3x1+stride3x2), *(d - stride1+stride2)) ),mode);//2d cross
-                        //predict_error+=quantize_integrated(d - data, *d, interp_cubic(*(d - stride1-stride3x2), *(d -  stride1-stride2), *(d - stride1+ stride2), *(d - stride1+ stride3x2)),mode);//1d cubic
-                        predict_error+=quantize_integrated(d - data, *d, 0,mode);//1d cubic
+                        predict_error+=quantize_integrated(d - data, *d, interp_cubic(*(d - stride1-stride3x2), *(d -  stride1-stride2), *(d - stride1+ stride2), *(d - stride1+ stride3x2)),mode);//1d cubic
 
 
                     }
                     //j=1
-                    if(mark[begin1 + (n-1)* stride1+begin2+stride2])
-                        std::cout<<"e13 "<<(n-1)<<" "<<std::endl;
-                    mark[begin1 + (n-1)* stride1+begin2+stride2]=true;
                     d = data + begin1 + (n-1)*stride1+ begin2+stride2;
                     //predict_error+=quantize_integrated(d - data, *d, interp_linear1( *(d - stride3x1+stride3x2), *(d - stride1+stride2)),mode);//1d linear
-                    //predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride1-stride2), *(d - stride1+stride2),*(d - stride1+stride3x2)),mode);//1d quad
-                    predict_error+=quantize_integrated(d - data, *d, 0,mode);//1d quad
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride1-stride2), *(d - stride1+stride2),*(d - stride1+stride3x2)),mode);//1d quad
 
                     //j=m-3 or m-2
-                    if(mark[begin1 + (n-1)* stride1+begin2+j*stride2])
-                        std::cout<<"e14 "<<(n-1)<<" "<<j<<std::endl;
-                    mark[begin1 + (n-1)* stride1+begin2+j*stride2]=true;
                     d = data +begin1 + (n-1)*stride1+ begin2+j*stride2;
                     //predict_error+=quantize_integrated(d - data, *d, interp_linear1( *(d - stride3x1-stride3x2), *(d - stride1-stride2)),mode);//1d linear
-                    //predict_error+=quantize_integrated(d - data, *d, interp_quad_2(*(d - stride1-stride3x2), *(d - stride1-stride2),*(d - stride1+stride2)),mode);//1d quad
-                    predict_error+=quantize_integrated(d - data, *d, 0,mode);//1d quad
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_2(*(d - stride1-stride3x2), *(d - stride1-stride2),*(d - stride1+stride2)),mode);//1d quad
                     //j=m-1
                     if(m%2 ==0){
-                        if(mark[begin1 + (n-1)* stride1+begin2+(m-1)*stride2])
-                            std::cout<<"e15 "<<(n-1)<<" "<<(m-1)<<std::endl;
-                        mark[begin1 + (n-1)* stride1+begin2+(m-1)*stride2]=true;
                         d = data + begin1 + (n-1) * stride1+begin2+(m-1)*stride2;
-                        //predict_error+=quantize_integrated(d - data, *d, interp_quad_3(*(d - stride5x1-stride5x2), *(d - stride3x1-stride3x2), *(d - stride1-stride2)),mode);
-                        predict_error+=quantize_integrated(d - data, *d, 0,mode);
+                        predict_error+=quantize_integrated(d - data, *d, interp_quad_3(*(d - stride5x1-stride5x2), *(d - stride3x1-stride3x2), *(d - stride1-stride2)),mode);
                     }
                 }         
             }
@@ -2402,7 +2301,6 @@ namespace QoZ {
         }
 
         double block_interpolation_2d_aftercross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,int tuning=0) {
-            //std::cout<<"acst"<<std::endl;
             size_t n = (end1 - begin1) / stride1 + 1;
             
             size_t m = (end2 - begin2) / stride2 + 1;
