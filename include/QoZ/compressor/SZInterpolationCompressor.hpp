@@ -69,7 +69,7 @@ namespace QoZ {
             int blockOrder=0;
             read(blockOrder,buffer_pos, remaining_length); 
             int regressiveInterp;   
-            read(regressiveInterp, remaining_length);       
+            read(regressiveInterp,buffer_pos, remaining_length);       
             if (trimToZero>0){
                 quantizer.setTrimToZero(trimToZero);
             }
@@ -1398,7 +1398,7 @@ namespace QoZ {
         } 
 
 
-        double regressive_interpolation_1d_linear(T *data, int &status, const size_t & cur_idx,const size_t &main_direction,const_const std::vector<size_t> & sub_directions, const std::vector<size_t> & strides, const std::vector<size_t> & strides3x,const std::vector<size_t> &dimensional_sparsity){
+        double regressive_interpolation_1d_linear(T *data, int &status, const size_t & cur_idx,const size_t &main_direction,const std::vector<size_t> & sub_directions, const std::vector<size_t> & strides, const std::vector<size_t> & strides3x,const std::vector<size_t> &dimensional_sparsity){
             T *d=data+cur_idx;
             std::vector<double> A={*(d-strides3x[main_direction]),*(d+strides[main_direction]),*(d-strides[main_direction]),*(d+strides3x[main_direction])};
             std::vector<double> b={*(d-strides[main_direction]),*(d+strides[main_direction])};
@@ -1445,12 +1445,12 @@ namespace QoZ {
             }
 
             double predict_error = 0;
-            size_t begin_idx=0;
+            size_t begin=0;
             for(size_t i=0;i<N;i++){
-                begin_idx+=begins[i]*dimension_offsets[i];
+                begin+=begins[i]*dimension_offsets[i];
             }
 
-            bool reg_along_sub_d==true;
+            bool reg_along_sub_d=true;
             for(auto i:sub_directions){
                 if (begins[i]<block_begins[i]+dimensional_sparsity[i]*m_stride or ends[i]>block_ends[i]-dimensional_sparsity[i]*m_stride){
                     reg_along_sub_d=false;
@@ -1463,7 +1463,7 @@ namespace QoZ {
                
                 for (size_t i = 1; i + 1 < n; i += 2) {
 
-                    size_t cur_idx=begin_idx + i * stride;
+                    size_t cur_idx=begin + i * stride;
                     T *d = data + cur_idx;
 
                     if(reg_along_sub_d and i>=3 and i+3<n){
