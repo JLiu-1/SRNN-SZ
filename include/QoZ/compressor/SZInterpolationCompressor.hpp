@@ -2116,6 +2116,7 @@ namespace QoZ {
         }
 
         double block_interpolation_2d_cross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,int tuning=0) {
+            std::cout<<"cst"<<std::endl;
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
                 return 0;
@@ -2317,6 +2318,7 @@ namespace QoZ {
         }
 
         double block_interpolation_2d_aftercross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,int tuning=0) {
+            std::cout<<"acst"<<std::endl;
             size_t n = (end1 - begin1) / stride1 + 1;
             
             size_t m = (end2 - begin2) / stride2 + 1;
