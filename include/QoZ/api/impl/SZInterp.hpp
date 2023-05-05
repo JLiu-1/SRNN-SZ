@@ -1892,9 +1892,9 @@ double Tuning(QoZ::Config &conf, T *data){
                // }
             }
             //std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
-            std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_CUBIC};//temp. 
-            //std::vector<int> interpDirection_Candidates={0, QoZ::factorial(N) -1};
-            std::vector<int> interpDirection_Candidates={};//temp. 
+            std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR};//temp. 
+            std::vector<int> interpDirection_Candidates={0, QoZ::factorial(N) -1};
+            //std::vector<int> interpDirection_Candidates={};//temp. 
             if(conf.multiDimInterp)
               
                 interpDirection_Candidates.push_back(QoZ::factorial(N));
