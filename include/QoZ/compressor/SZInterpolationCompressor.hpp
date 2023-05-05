@@ -2516,14 +2516,22 @@ namespace QoZ {
                             continue;
                         d = data + begin1 + ii* stride1+begin2+jj*stride2;
                         T v1;
-                        if(ii==0)
-                            v1=interp_quad_3(*(d + stride5x1), *(d+ stride3x1), *(d + stride1) );
+                        if(ii==0){
+                            if(n>5)
+                                v1=interp_quad_3(*(d + stride5x1), *(d+ stride3x1), *(d + stride1) );
+                            else
+                                v1=interp_linear1( *(d+ stride3x1), *(d + stride1) );
+                        }
                         else if(ii==1)
                             v1=interp_quad_1(*(d - stride1), *(d+ stride1), *(d + stride3x1) );
                         else if (ii==n-2)
                             v1=interp_quad_2(*(d - stride3x1), *(d- stride1), *(d + stride1) );
-                        else if (ii==n-1)
-                            v1=interp_quad_3(*(d - stride5x1), *(d- stride3x1), *(d - stride1) );
+                        else if (ii==n-1){
+                            if(n>5)
+                                v1=interp_quad_3(*(d - stride5x1), *(d- stride3x1), *(d - stride1) );
+                            else
+                                v1=interp_linear1( *(d- stride3x1), *(d - stride1) );
+                        }
                         else{//i==2 or n-3
                             if(n==5)
                                 v1=interp_linear(*(d - stride1), *(d+ stride1));
@@ -2534,12 +2542,20 @@ namespace QoZ {
                         }
 
                         T v2;
-                        if(jj==0)
-                            v2=interp_quad_3( *(d + stride5x2), *(d+ stride3x2), *(d + stride2) );
+                        if(jj==0){
+                            if(m>5)
+                                v2=interp_quad_3( *(d + stride5x2), *(d+ stride3x2), *(d + stride2) );
+                            else
+                                v2=interp_linear1( *(d+ stride3x2), *(d + stride2) );
+                        }
                         else if (jj==1 or jj==2)
                             v2=interp_quad_1( *(d - stride2), *(d+ stride2), *(d + stride3x2) );
-                        else if(jj==m-1)
-                            v2=interp_quad_3( *(d - stride5x2), *(d- stride3x2), *(d - stride2) );
+                        else if(jj==m-1){
+                            if(m>5)
+                                v2=interp_quad_3( *(d - stride5x2), *(d- stride3x2), *(d - stride2) );
+                            else
+                                v2=interp_linear1( *(d- stride3x2), *(d - stride2) );
+                        }
                         else
                             v2=interp_quad_2( *(d - stride3x2), *(d- stride2), *(d + stride2) );
 
