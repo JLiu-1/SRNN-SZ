@@ -2337,10 +2337,11 @@ namespace QoZ {
                         T p_value= interp_2d(*(d - stride1 ), *(d + stride1 ),*(d  + stride2), *(d  - stride2));
                         if(p_value>1)
                             std::cout<<"e0 "<<i<<" "<<j<<std::endl;
-                        */
+                        
                         if(mark[begin1 + i* stride1+begin2+j*stride2])
                             std::cout<<"e0 "<<i<<" "<<j<<std::endl;
                         mark[begin1 + i* stride1+begin2+j*stride2]=true;
+                        */
                         //std::cout<<"q1 "<<i<<" "<<j<<std::endl;
                         predict_error+=quantize_integrated(d - data, *d, interp_2d(*(d - stride1 ), *(d + stride1 ),*(d  + stride2), *(d  - stride2)),mode);
 
@@ -2349,10 +2350,11 @@ namespace QoZ {
                     //j=0
                     if(i%2==1 and begin2==0){
                         T *d = data + begin1 + i* stride1+begin2;
+                        /*
                         if(mark[begin1 + i* stride1+begin2])
                             std::cout<<"e0.5 "<<i<<std::endl;
                         mark[begin1 + i* stride1+begin2]=true;
-                        /*
+                        
                         T p_value= interp_linear(*(d  + stride1), *(d  - stride1));
                         if(p_value>1)
                             std::cout<<"e0.5 "<<i<<" "<<j<<std::endl;
@@ -2363,10 +2365,11 @@ namespace QoZ {
                     //j=m-1, j wont be 0
                     if(j==m-1){
                         T *d = data + begin1 + i* stride1+begin2+j*stride2;
+                        /*
                         if(mark[begin1 + i* stride1+begin2+j*stride2])
                             std::cout<<"e1 "<<i<<" "<<j<<std::endl;
                         mark[begin1 + i* stride1+begin2+j*stride2]=true;
-                        /*
+                        
                         T p_value=interp_linear(*(d - stride1 ), *(d + stride1 ));
                         if(p_value>1)
                             std::cout<<"e1 "<<i<<" "<<j<<std::endl;
@@ -2380,10 +2383,11 @@ namespace QoZ {
                 if(begin1==0){
                     for(j=1;j+1<m;j+=2){
                         T *d = data + begin1 +begin2+j*stride2;
+                        /*
                         if(mark[begin1 +begin2+j*stride2])
                             std::cout<<"e1.5 "<<j<<std::endl;
                         mark[begin1 +begin2+j*stride2]=true;
-                        /*
+                        
                         T p_value= interp_linear(*(d  + stride2), *(d  - stride2));
                         if(p_value>1)
                             std::cout<<"e1.5 "<<i<<" "<<j<<std::endl;
@@ -2394,10 +2398,11 @@ namespace QoZ {
                 //j=m-1, j wont be 0
                     if(j==m-1){
                         T *d = data + begin1 +begin2+j*stride2;
+                        /*
                         if(mark[begin1 +begin2+j*stride2])
                             std::cout<<"e2 "<<j<<std::endl;
                         mark[begin1 +begin2+j*stride2]=true;
-                        /*
+                        
                         T p_value=*(d - stride2 );
                         if(p_value>1)
                             std::cout<<"e2 "<<i<<" "<<j<<std::endl;]
@@ -2409,10 +2414,11 @@ namespace QoZ {
                 if(n>1){
                     for(j=1+(n-1)%2;j+1<m;j+=2){
                         T *d = data + begin1 +(n-1)*stride1+begin2+j*stride2;
+                        /*
                         if(mark[begin1 +(n-1)*stride1+begin2+j*stride2])
                             std::cout<<"e2.5 "<<j<<std::endl;
                         mark[begin1 +(n-1)*stride1+begin2+j*stride2]=true;
-                        /*
+                        
                         T p_value= interp_linear(*(d  + stride2), *(d  - stride2));
                         if(p_value>1)
                             std::cout<<"e2.5 "<<i<<" "<<j<<std::endl;
@@ -2423,10 +2429,11 @@ namespace QoZ {
                     if((n-1)%2==1 and begin2==0){
                         
                         T *d = data + begin1 +(n-1)*stride1+begin2;
+                        /*
                         if(mark[begin1 +(n-1)*stride1+begin2])
                             std::cout<<"e3 "<<std::endl;
                         mark[begin1 +(n-1)*stride1+begin2]=true;
-                        /*
+                        
                         T p_value= *(d - stride1 );
                         if(p_value>1)
                             std::cout<<"e3 "<<i<<" "<<j<<std::endl;
@@ -2437,10 +2444,11 @@ namespace QoZ {
                     if( j==m-1){
                         
                         T *d = data + begin1 +(n-1)*stride1+begin2+j*stride2;
+                        /*
                         if(mark[begin1 +(n-1)*stride1+begin2+j*stride2])
                             std::cout<<"e4 "<<n-1<<" "<<j<<std::endl;
                         mark[begin1 +(n-1)*stride1+begin2+j*stride2]=true;
-                        /*
+                        
                         T p_value=*(d - stride1 );
                         if(p_value>1)
                             std::cout<<"e4"<<i<<" "<<j<<std::endl;
@@ -2456,30 +2464,35 @@ namespace QoZ {
                 size_t i,j;
                 T *d;
                 for (i = 3; i + 3 < n; i += 1) {
+                    std::cout<<"ac1 "<<i<<std::endl;
                     for(j=3+(i%2);j+3<m;j+=2){
                         d = data + begin1 + i* stride1+begin2+j*stride2;
                         predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
                                                         ,interp_cubic(*(d - stride3x2), *(d - stride2), *(d+ stride2), *(d + stride3x2)) ),mode);
                     }
                     //j=0
+                    std::cout<<"ac2 "<<i<<std::endl;
                     if(i%2==1 and begin2==0){
                         d = data + begin1 + i* stride1+begin2;
                         predict_error+=quantize_tuning(d - data, *d, interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                     }
                     //j=1 or 2 
+                    std::cout<<"ac3 "<<i<<std::endl;
                     d = data + begin1 + i* stride1+begin2+(1+(i%2))*stride2;
                     predict_error+=quantize_tuning(d - data, *d, interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                     //j=m-3 or m-2, j wont be 2.
-                    
+                    std::cout<<"ac4 "<<i<<std::endl;
                     d = data + begin1 + i* stride1+begin2+j*stride2;
                     predict_error+=quantize_tuning(d - data, *d,  interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                    
                     //j=m-1
-                    j+=2;
-                    if(j==m-1){
-                        d = data + begin1 + i* stride1+begin2+j*stride2;
+                  
+                    if(j+2==m-1){
+                        std::cout<<"ac5 "<<i<<std::endl;
+                        d = data + begin1 + i* stride1+begin2+(m-1)*stride2;
                         predict_error+=quantize_tuning(d - data, *d,  interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                     }
+                   
                 }
                 //continue here.
                 std::vector<size_t> boundary_is=(n>5)?std::vector<size_t>{0,1,2,n-3,n-2,n-1}:std::vector<size_t>{0,1,2,n-2,n-1};
@@ -2487,6 +2500,7 @@ namespace QoZ {
                 for(auto ii:boundary_is){
                     if(ii==0 and begin1!=0)
                         continue;
+                    std::cout<<"ac6 "<<ii<<std::endl;
                     for(j=3;j+3<m;j+=2){
                         d = data + begin1+ii*stride1+begin2+j*stride2;
                         predict_error+=quantize_tuning(d - data, *d,interp_cubic(*(d - stride3x2), *(d - stride2), *(d+ stride2), *(d + stride3x2) ),mode);
@@ -2497,6 +2511,7 @@ namespace QoZ {
                         boundary_js.push_back(m-1);
 
                     for(auto jj:boundary_js){
+                        std::cout<<"ac7 "<<jj<<std::endl;
                         if(begin2!=0 and jj==0)
                             continue;
                         d = data + begin1 + ii* stride1+begin2+jj*stride2;
