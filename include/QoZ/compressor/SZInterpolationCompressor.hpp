@@ -2601,8 +2601,9 @@ namespace QoZ {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             if(direction<2){
+                const std::array<int, N> dims = dimension_sequences[direction];
                 if(!regressive or interp_func!="linear" or stride!=1){
-                    const std::array<int, N> dims = dimension_sequences[direction];
+                    
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
                         predict_error += block_interpolation_1d(data, begin_offset,
@@ -2622,18 +2623,18 @@ namespace QoZ {
 
                     std::vector<size_t> sparsity={2,2};
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
-                        std::vector<size_t> cur_begin=begin;
+                        std::vector<size_t> cur_begin(begin.begin(),begin.end());
                         cur_begin[dims[1]]=j;
-                        std::vector<size_t> cur_end=end;
+                        std::vector<size_t> cur_end(end.begin(),end.end());
                         cur_end[dims[1]]=j;
                         block_interpolation_1d_regressive(data,begin,end,dims[0],cur_begin,cur_end,sparsity,
-                                                        stride,interp_func,pb,tuning)
+                                                        stride,interp_func,pb,tuning);
                     }
                     sparsity[dims[1]]=1;
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
-                        std::vector<size_t> cur_begin=begin;
+                        std::vector<size_t> cur_begin(begin.begin(),begin.end());
                         cur_begin[dims[0]]=i;
-                        std::vector<size_t> cur_end=end;
+                        std::vector<size_t> cur_end(end.begin(),end.end());
                         cur_end[dims[0]]=i;
                         block_interpolation_1d_regressive(data,begin,end,dims[1],cur_begin,cur_end,sparsity,
                                                         stride,interp_func,pb,tuning);
