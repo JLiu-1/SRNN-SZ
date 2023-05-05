@@ -892,7 +892,7 @@ namespace QoZ {
                             prediction_errors[x*dimension_offsets[0]+y]=0;
                         }*/
                         quant_inds.push_back(0);
-                        //mark[x*conf.dims[1]+y]=true;
+                        mark[x*conf.dims[1]+y]=true;
                     }
                 }
             }
