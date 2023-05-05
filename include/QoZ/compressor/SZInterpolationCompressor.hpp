@@ -2209,8 +2209,9 @@ namespace QoZ {
                             std::cout<<"e0 "<<i<<" "<<j<<std::endl;
                         mark[begin1 + i* stride1+begin2+j*stride2]=true;
                         d = data + begin1 + i* stride1+begin2+j*stride2;
-                        predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1-stride3x2), *(d - stride1-stride2), *(d + stride1+stride2), *(d + stride3x1+stride3x2))
-                                                        ,interp_cubic(*(d +stride3x1- stride3x2), *(d +stride1- stride2), *(d -stride1+ stride2), *(d -stride3x1+ stride3x2)) ),mode);
+                        //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1-stride3x2), *(d - stride1-stride2), *(d + stride1+stride2), *(d + stride3x1+stride3x2))
+                        //                                ,interp_cubic(*(d +stride3x1- stride3x2), *(d +stride1- stride2), *(d -stride1+ stride2), *(d -stride3x1+ stride3x2)) ),mode);
+                        predict_error+=quantize_tuning(d - data, *d, 0,mode);
                     }
                     //j=1
                     if(mark[begin1 + i* stride1+begin2+stride2])
