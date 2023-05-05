@@ -2622,23 +2622,24 @@ namespace QoZ {
                     }
                 }
                 else{
-
+                    std::vector<size_t> block_begin(begin.begin(),begin.end());
+                    std::vector<size_t> block_end(end.begin(),end.end());
                     std::vector<size_t> sparsity={2,2};
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
-                        std::vector<size_t> cur_begin(begin.begin(),begin.end());
+                        std::vector<size_t> cur_begin=block_begin;
                         cur_begin[dims[1]]=j;
-                        std::vector<size_t> cur_end(end.begin(),end.end());
+                        std::vector<size_t> cur_end=block_end;
                         cur_end[dims[1]]=j;
-                        block_interpolation_1d_regressive(data,(std::vector<size_t>)begin,(std::vector<size_t>)end,dims[0],cur_begin,cur_end,sparsity,
+                        block_interpolation_1d_regressive(data,block_begin,block_end,dims[0],cur_begin,cur_end,sparsity,
                                                         stride,interp_func,pb,tuning);
                     }
                     sparsity[dims[1]]=1;
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
-                        std::vector<size_t> cur_begin(begin.begin(),begin.end());
+                        std::vector<size_t> cur_begin=block_begin;
                         cur_begin[dims[0]]=i;
-                        std::vector<size_t> cur_end(end.begin(),end.end());
+                        std::vector<size_t> cur_end=block_end;
                         cur_end[dims[0]]=i;
-                        block_interpolation_1d_regressive(data,(std::vector<size_t>)begin,(std::vector<size_t>)end,dims[1],cur_begin,cur_end,sparsity,
+                        block_interpolation_1d_regressive(data,block_begin,block_end,dims[1],cur_begin,cur_end,sparsity,
                                                         stride,interp_func,pb,tuning);
                     }
 
