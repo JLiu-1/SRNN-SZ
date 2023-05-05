@@ -2584,6 +2584,8 @@ namespace QoZ {
                         //std::cout<<"ac7 "<<jj<<std::endl;
                         if(begin2!=0 and jj==0)
                             continue;
+                        if(ii%2==jj%2)
+                            continue;
                         if(mark[begin1 + ii* stride1+begin2+j*stride2])
                             std::cout<<"e22 "<<ii<<" "<<jj<<std::endl;
                         mark[begin1 + ii* stride1+begin2+jj*stride2]=true;
