@@ -1474,7 +1474,8 @@ namespace QoZ {
                         //cur_coord[main_direction]+=i;
                         int status=0;
                         T prediction=regressive_interpolation_1d_linear(data,status,cur_idx,main_direction,sub_directions,strides,strides3x,dimensional_sparsity);
-                        if(status!=0 or fabs(prediction)>100)
+                        status=1;
+                        if(status!=0 )
                             predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride), *(d + stride)),mode);
                         else
                             predict_error+=quantize_integrated(d - data, *d, prediction,mode);
