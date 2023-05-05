@@ -2630,7 +2630,7 @@ namespace QoZ {
                         cur_begin[dims[1]]=j;
                         std::vector<size_t> cur_end=block_end;
                         cur_end[dims[1]]=j;
-                        block_interpolation_1d_regressive(data,block_begin,block_end,dims[0],cur_begin,cur_end,sparsity,
+                        predict_error += block_interpolation_1d_regressive(data,block_begin,block_end,dims[0],cur_begin,cur_end,sparsity,
                                                         stride,interp_func,pb,tuning);
                     }
                     sparsity[dims[1]]=1;
@@ -2639,7 +2639,7 @@ namespace QoZ {
                         cur_begin[dims[0]]=i;
                         std::vector<size_t> cur_end=block_end;
                         cur_end[dims[0]]=i;
-                        block_interpolation_1d_regressive(data,block_begin,block_end,dims[1],cur_begin,cur_end,sparsity,
+                        predict_error += block_interpolation_1d_regressive(data,block_begin,block_end,dims[1],cur_begin,cur_end,sparsity,
                                                         stride,interp_func,pb,tuning);
                     }
 
