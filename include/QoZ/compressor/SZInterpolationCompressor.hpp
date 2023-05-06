@@ -1476,13 +1476,15 @@ namespace QoZ {
                         //cur_coord[main_direction]+=i;
                         int status=0;
                         T prediction=regressive_interpolation_1d_linear(data,status,cur_idx,main_direction,sub_directions,strides,strides3x,dimensional_sparsity);
-                        
+                        /*
                         if(status!=0){
                             std::cout<<begins[0]<<" "<<begins[1]<<" "<<i<<std::endl; 
                         }
                         
                         if(prediction<-1 or prediction>2)
                             std::cout<<cur_idx<<" "<<prediction<<" "<<status<<std::endl;
+                            */
+                        prediction=0;
                             
 
                         if(status!=0 )
