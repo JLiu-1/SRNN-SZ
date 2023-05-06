@@ -134,7 +134,7 @@ namespace QoZ {
     {
         
         double* AT = new double[numPoints*numFeatures]; //transpose
-
+        /*
         for(size_t i=0;i<numPoints*numFeatures;i++){
             if(A[i]<-1 or A[i]>2){
                 std::cout<<A[i]<<std::endl;
@@ -142,6 +142,7 @@ namespace QoZ {
                 return NULL;
             }
         }
+        */
         matrixTranspose(A, AT, numPoints, numFeatures);
         
         double* c = new double [numFeatures];
