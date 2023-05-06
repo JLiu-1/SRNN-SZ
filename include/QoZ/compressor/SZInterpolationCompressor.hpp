@@ -2640,7 +2640,7 @@ namespace QoZ {
                         predict_error += block_interpolation_1d_regressive(data,block_begin,block_end,dims[0],cur_begin,cur_end,sparsity,
                                                         stride,interp_func,pb,tuning);
                     }
-                    sparsity[dims[1]]=1;
+                    sparsity[dims[0]]=1;
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                         std::vector<size_t> cur_begin=block_begin;
                         cur_begin[dims[0]]=i;
