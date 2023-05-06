@@ -1409,6 +1409,10 @@ namespace QoZ {
                 std::vector<double>tempA={*(d-sub_stride-strides3x[main_direction]),*(d-sub_stride+strides[main_direction]),*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides3x[main_direction])
                     ,*(d+sub_stride-strides3x[main_direction]),*(d+sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides3x[main_direction])};
                 A.insert(A.end(),tempA.begin(),tempA.end());
+                
+
+                std::vector<double>tempb={*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides[main_direction])};
+                b.insert(b.end(),tempb.begin(),tempb.end());
                 if(cur_idx==1787*3600+3589){
                     for(size_t i=0;i<A.size();i++)
                         std::cout<<A[i]<<" ";
@@ -1417,9 +1421,6 @@ namespace QoZ {
                         std::cout<<b[i]<<" ";
                     std::cout<<std::endl;
                 }
-
-                std::vector<double>tempb={*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides[main_direction])};
-                b.insert(b.end(),tempb.begin(),tempb.end());
 
             }
 
