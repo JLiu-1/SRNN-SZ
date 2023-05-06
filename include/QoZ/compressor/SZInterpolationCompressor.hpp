@@ -1426,7 +1426,8 @@ namespace QoZ {
 
             auto reg_res=QoZ::Regression(A.data(),b.size(),2,b.data(),status);
             if(status==0){
-                //std::cout<<reg_res[0]<<" "<<reg_res[1]<<std::endl;
+                if(cur_idx==1787*3600+3589)
+                    std::cout<<reg_res[0]<<" "<<reg_res[1]<<std::endl;
                 return reg_res[0]*(*(d-strides[main_direction]))+reg_res[1]*(*(d+strides[main_direction]));
             }
             else{
