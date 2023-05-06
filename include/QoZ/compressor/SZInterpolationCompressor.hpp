@@ -1416,11 +1416,12 @@ namespace QoZ {
 
             auto reg_res=QoZ::Regression(A.data(),b.size(),2,b.data(),status);
             if(status==0){
-                if(isnan(reg_res[0]) or isnan(reg_res[1]) or fabs(reg_res[0])>1 or fabs(reg_res[1])>1){
+                if(isnan(reg_res[0]) or isnan(reg_res[1]) or fabs(reg_res[0])>0.75 or fabs(reg_res[1])>0.75 or fabs(reg_res[0])<0 or fabs(reg_res[1])<0){
                     status=1;
                     return 0;
                 }
-                return reg_res[0]*(*(d-strides[main_direction]))+reg_res[1]*(*(d+strides[main_direction]));
+                else
+                    return reg_res[0]*(*(d-strides[main_direction]))+reg_res[1]*(*(d+strides[main_direction]));
             }
             else{
                 return 0;
@@ -1490,9 +1491,6 @@ namespace QoZ {
                             //std::cout<<cur_idx<<" "<<prediction<<" "<<status<<std::endl;
                             
                         //prediction=0;
-
-                        if(cur_idx==1787*3600+3589)
-                            std::cout<<prediction<<std::endl;
                             
 
                         if(status!=0 )
