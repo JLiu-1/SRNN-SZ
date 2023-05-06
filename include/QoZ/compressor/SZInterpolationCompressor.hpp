@@ -1404,8 +1404,6 @@ namespace QoZ {
             std::vector<double> b={*(d-strides[main_direction]),*(d+strides[main_direction])};
             for(auto sub_direction:sub_directions){
                 size_t sub_stride=dimensional_sparsity[sub_direction]*strides[sub_direction];
-                if(cur_idx==1787*3600+3589)
-                    std::cout<<sub_stride<<std::endl;
                 std::vector<double>tempA={*(d-sub_stride-strides3x[main_direction]),*(d-sub_stride+strides[main_direction]),*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides3x[main_direction])
                     ,*(d+sub_stride-strides3x[main_direction]),*(d+sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides3x[main_direction])};
                 A.insert(A.end(),tempA.begin(),tempA.end());
@@ -1413,21 +1411,15 @@ namespace QoZ {
 
                 std::vector<double>tempb={*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides[main_direction])};
                 b.insert(b.end(),tempb.begin(),tempb.end());
-                if(cur_idx==1787*3600+3589){
-                    for(size_t i=0;i<A.size();i++)
-                        std::cout<<A[i]<<" ";
-                    std::cout<<std::endl;
-                    for(size_t i=0;i<b.size();i++)
-                        std::cout<<b[i]<<" ";
-                    std::cout<<std::endl;
-                }
 
             }
 
             auto reg_res=QoZ::Regression(A.data(),b.size(),2,b.data(),status);
             if(status==0){
-                if(cur_idx==1787*3600+3589)
-                    std::cout<<reg_res[0]<<" "<<reg_res[1]<<std::endl;
+                if(isnan(reg_res[0]) or isnan(reg_res[1]) or fabs(reg_res[0])>1 or fabs(reg_res[1])>1){
+                    status=1;
+                    return 0;
+                }
                 return reg_res[0]*(*(d-strides[main_direction]))+reg_res[1]*(*(d+strides[main_direction]));
             }
             else{
