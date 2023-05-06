@@ -1428,6 +1428,44 @@ namespace QoZ {
                 return 0;
             }
         }
+
+        double regressive_interpolation_1d_cubic(T *data, int &status, const size_t & cur_idx,const size_t &main_direction,const std::vector<size_t> & sub_directions
+                                            , const std::vector<size_t> & strides, const std::vector<size_t> & strides3x,const std::vector<size_t> &dimensional_sparsity){
+            T *d=data+cur_idx;
+            size_t main_stride=strides[main_direction],main_stride3x=main_stride*3,main_stride5x=main_stride*5,main_stride7x=main_stride*7,main_stride9x=main_stride*9;
+            std::vector<double> A={*(d-main_stride9x),*(d-main_stride5x),*(d-main_stride),*(d+main_stride3x),
+                *(d-main_stride7x),*(d-main_stride3x),*(d+main_stride),*(d+main_stride5x),
+                *(d-main_stride5x),*(d-main_stride),*(d+main_stride3x),*(d+main_stride7x),
+                *(d-main_stride3x),*(d+main_stride),*(d+main_stride3x),*(d+main_stride7x)};
+            std::vector<double> b={*(d-main_stride3x),*(d-main_stride),*(d+main_stride),*(d+main_stride3x)};
+            /*
+            for(auto sub_direction:sub_directions){
+                size_t sub_stride=dimensional_sparsity[sub_direction]*strides[sub_direction];
+                std::vector<double>tempA={*(d-sub_stride-strides3x[main_direction]),*(d-sub_stride+strides[main_direction]),*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides3x[main_direction])
+                    ,*(d+sub_stride-strides3x[main_direction]),*(d+sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides3x[main_direction])};
+                A.insert(A.end(),tempA.begin(),tempA.end());
+                
+
+                std::vector<double>tempb={*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides[main_direction])};
+                b.insert(b.end(),tempb.begin(),tempb.end());
+
+            }
+            */
+            auto reg_res=QoZ::Regression(A.data(),b.size(),4,b.data(),status);
+            if(status==0){
+                =
+                for(size_t i=0;i<4;i++){
+                    if(isnan(reg_res[i]) or fabs(reg_res[i])>0.9 or fabs(reg_res[i])<-0.4){
+                        status=1;
+                        return 0;
+                    }
+                }
+                return reg_res[0]*(*(d-main_stride3x))+reg_res[1]*(*(d-main_stride))+reg_res[2]*(*(d+main_stride))+reg_res[3]*(*(d+main_stride3x));
+            }
+            else{
+                return 0;
+            }
+        }
         double block_interpolation_1d_regressive(T *data, const std::vector<size_t> &block_begins,const std::vector<size_t> & block_ends, const size_t & main_direction,const std::vector<size_t> &begins,const std::vector<size_t> & ends,const std::vector<size_t> &dimensional_sparsity,size_t m_stride,const std::string &interp_func,const PredictorBehavior pb,int tuning=0) {
             //all coords and strides are mathematical.
             //ends are included in the interpolations.
@@ -1517,8 +1555,25 @@ namespace QoZ {
                 T *d;
                 size_t i;
                 for (i = 3; i + 3 < n; i += 2) {
-                    d = data + begin + i * stride;
-                    predict_error+=quantize_integrated(d - data, *d,
+
+
+                    size_t cur_idx=begin + i * stride;
+                    d = data + cur_idx;
+
+                    if(reg_along_sub_d and i>=9 and i+9<n){
+                        //std::cout<<begins[0]<<" "<<begins[1]<<" "<<i<<std::endl;
+                        //std::vector<size_t> cur_coord=begins;
+                        //cur_coord[main_direction]+=i;
+                        int status=0;
+                        T prediction=regressive_interpolation_1d_cubic(data,status,cur_idx,main_direction,sub_directions,strides,strides3x,dimensional_sparsity);
+                        if(status!=0 )
+                            predict_error+=quantize_integrated(d - data, *d,
+                                interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                        else
+                            predict_error+=quantize_integrated(d - data, *d, prediction,mode);
+                    }
+                    else
+                        predict_error+=quantize_integrated(d - data, *d,
                                 interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
                 }
                 d = data + begin + stride;
@@ -2625,7 +2680,7 @@ namespace QoZ {
             size_t stride2x = stride * 2;
             if(direction<2){
                 const std::array<int, N> dims = dimension_sequences[direction];
-                if(!regressive or interp_func!="linear" or stride!=1){
+                if(!regressive or stride!=1){
                     
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
