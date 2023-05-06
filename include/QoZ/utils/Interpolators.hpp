@@ -34,7 +34,7 @@ namespace QoZ {
     inline T interp_cubic(T a, T b, T c, T d) {
         //return (-a + 9 * b + 9 * c - d) / 16;
         //return -0.06368435202786181*a+0.5731591682507563*b+0.5731591682507563*c-0.06368435202786181*d;
-        return (-3*a+11*b+11*c-3*d)/16;
+        return (-2*a+10*b+10*c-2*d)/16;
     }
 
     template<class T>
