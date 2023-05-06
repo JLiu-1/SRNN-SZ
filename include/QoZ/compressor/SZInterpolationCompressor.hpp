@@ -1478,6 +1478,7 @@ namespace QoZ {
                         
                         if(status!=0){
                             std::cout<<begin[0]<<" "<<begin[1]<<" "<<i<<std::endl; 
+                        }
                         /*
                         if(prediction<0 or prediction>1)
                             std::cout<<cur_idx<<" "<<prediction<<" "<<status<<std::endl;
