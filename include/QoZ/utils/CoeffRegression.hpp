@@ -61,20 +61,26 @@ namespace QoZ {
         } 
 
         //judge whether we can use Guass(i.e., whether the diagonal elements are all 0.
+        /*
         for(i=0;i<size;i++)
         {
-            if(A[i][i]<1e-10)
+            if(fabs(A[i][i])<1e-10)
             {
                 //printf("This matrix cannot be solved by Gauss\n");
                 return 1; //error
             }
         } 
-
+        */
         float C[size];//Store coefficients
 
-        //Elimitation method
+        //Elimination method
         for(k=0; k<size-1;k++)
         {
+            if(fabs(A[k][k])<1e-5)
+            {
+                //printf("This matrix cannot be solved by Gauss\n");
+                return 1; //error
+            }
             for(i=k+1;i<size;i++)
             {
                 C[i]=A[i][k]/A[k][k];
