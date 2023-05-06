@@ -1470,7 +1470,7 @@ namespace QoZ {
                     T *d = data + cur_idx;
 
                     if(reg_along_sub_d and i>=3 and i+3<n){
-                        std::cout<<begins[0]<<" "<<begins[1]<<" "<<i<<std::endl;
+                        //std::cout<<begins[0]<<" "<<begins[1]<<" "<<i<<std::endl;
                         //std::vector<size_t> cur_coord=begins;
                         //cur_coord[main_direction]+=i;
                         int status=0;
