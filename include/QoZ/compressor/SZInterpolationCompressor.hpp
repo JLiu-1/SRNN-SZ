@@ -1477,7 +1477,7 @@ namespace QoZ {
                         T prediction=regressive_interpolation_1d_linear(data,status,cur_idx,main_direction,sub_directions,strides,strides3x,dimensional_sparsity);
                         
                         if(status!=0){
-                            std::cout<<begin[0]<<" "<<begin[1]<<" "<<i<<std::endl; 
+                            std::cout<<begins[0]<<" "<<begins[1]<<" "<<i<<std::endl; 
                         }
                         /*
                         if(prediction<0 or prediction>1)
