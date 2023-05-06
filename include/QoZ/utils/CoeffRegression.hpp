@@ -1,10 +1,11 @@
 
  
-//#include <stdio.h>
+
 //#include <stdlib.h>
 
 #ifndef SZ_MATRIX_OPERATION_HPP
 #define SZ_MATRIX_OPERATION_HPP
+#include <iostream>
 namespace QoZ {
 
     inline void matrixTranspose(double *a, double *b, size_t row, size_t column)
@@ -133,7 +134,14 @@ namespace QoZ {
     {
         
         double* AT = new double[numPoints*numFeatures]; //transpose
-        
+
+        for(size_t i=0;i<numPoints*numFeatures;i++){
+            if(A[i]<0 or A[i]>1){
+                std::cout<<"eer"<<std::endl;
+                status=1;
+                return NULL;
+            }
+        }
         matrixTranspose(A, AT, numPoints, numFeatures);
         
         double* c = new double [numFeatures];
