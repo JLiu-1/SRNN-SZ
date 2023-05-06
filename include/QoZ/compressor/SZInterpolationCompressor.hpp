@@ -1402,6 +1402,7 @@ namespace QoZ {
             T *d=data+cur_idx;
             std::vector<double> A={*(d-strides3x[main_direction]),*(d+strides[main_direction]),*(d-strides[main_direction]),*(d+strides3x[main_direction])};
             std::vector<double> b={*(d-strides[main_direction]),*(d+strides[main_direction])};
+            /*
             for(auto sub_direction:sub_directions){
                 size_t sub_stride=dimensional_sparsity[sub_direction]*strides[sub_direction];
                 std::vector<double>tempA={*(d-sub_stride-strides3x[main_direction]),*(d-sub_stride+strides[main_direction]),*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides3x[main_direction])
@@ -1413,7 +1414,7 @@ namespace QoZ {
                 b.insert(b.end(),tempb.begin(),tempb.end());
 
             }
-
+        */
             auto reg_res=QoZ::Regression(A.data(),b.size(),2,b.data(),status);
             if(status==0){
                 if(isnan(reg_res[0]) or isnan(reg_res[1]) or fabs(reg_res[0])>0.75 or fabs(reg_res[1])>0.75 or fabs(reg_res[0])<0 or fabs(reg_res[1])<0){
