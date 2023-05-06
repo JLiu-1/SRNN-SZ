@@ -1453,7 +1453,7 @@ namespace QoZ {
             */
             auto reg_res=QoZ::Regression(A.data(),b.size(),4,b.data(),status);
             if(status==0){
-                =
+                
                 for(size_t i=0;i<4;i++){
                     if(isnan(reg_res[i]) or fabs(reg_res[i])>0.9 or fabs(reg_res[i])<-0.4){
                         status=1;
