@@ -32,7 +32,7 @@ namespace QoZ {
 
     template<class T>
     inline T interp_cubic(T a, T b, T c, T d) {
-        return (-a + 9 * b + 9 * c - d) / 16;
+        //return (-a + 9 * b + 9 * c - d) / 16;
         //return -0.06368435202786181*a+0.5731591682507563*b+0.5731591682507563*c-0.06368435202786181*d;
         return (-a+3*b+3*c-d)/4;
     }
