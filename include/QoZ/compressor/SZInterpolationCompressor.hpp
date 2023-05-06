@@ -1454,7 +1454,7 @@ namespace QoZ {
             }
 
             bool reg_along_sub_d=true;
-            std::cout<<block_begins[0]<<" "<<block_begins[1]<<" "<<block_ends[0]<<" "<<block_ends[1]<<std::endl;
+            //std::cout<<block_begins[0]<<" "<<block_begins[1]<<" "<<block_ends[0]<<" "<<block_ends[1]<<std::endl;
             for(auto i:sub_directions){
                 if (begins[i]<block_begins[i]+dimensional_sparsity[i]*m_stride or ends[i]>block_ends[i]-dimensional_sparsity[i]*m_stride){
                     reg_along_sub_d=false;
