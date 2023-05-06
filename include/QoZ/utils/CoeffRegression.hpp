@@ -6,6 +6,7 @@
 #ifndef SZ_MATRIX_OPERATION_HPP
 #define SZ_MATRIX_OPERATION_HPP
 #include <iostream>
+#include<cstdio>
 namespace QoZ {
 
     inline void matrixTranspose(double *a, double *b, size_t row, size_t column)
@@ -97,6 +98,11 @@ namespace QoZ {
         } 
 
         //Use X to store the results
+        if(fabs(A[size-1][size-1])<1e-5)
+            {
+                //printf("This matrix cannot be solved by Gauss\n");
+                return 1; //error
+            }
         float X[size];
         X[size-1]=B[size-1]/A[size-1][size-1];
 
@@ -116,7 +122,7 @@ namespace QoZ {
 
     	return 0;
     } 
-     /*
+     
     void printMatrix(double* matrix, int m, int n)
     {
     	for(int i = 0;i<m;i++)
@@ -135,20 +141,12 @@ namespace QoZ {
     		printf("%f\t", vector[i]);
     	printf("\n");		
     }
-    */
+    
     double* Regression(double * A,size_t numPoints,size_t numFeatures,double * b,int &status)
     {
         
         double* AT = new double[numPoints*numFeatures]; //transpose
-        /*
-        for(size_t i=0;i<numPoints*numFeatures;i++){
-            if(A[i]<-1 or A[i]>2){
-                std::cout<<A[i]<<std::endl;
-                status=1;
-                return NULL;
-            }
-        }
-        */
+
         matrixTranspose(A, AT, numPoints, numFeatures);
         
         double* c = new double [numFeatures];
@@ -156,6 +154,7 @@ namespace QoZ {
         
         double* ATA = new double [numFeatures*numFeatures];
         matrixMul(AT,A, ATA, numFeatures, numFeatures, numPoints);
+        //printMatrix(ATA,numFeatures,numFeatures);
         /*
         printMatrix(ATA, interpSize, interpSize);
         printf("-----------------------------------\n");
