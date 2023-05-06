@@ -1404,9 +1404,20 @@ namespace QoZ {
             std::vector<double> b={*(d-strides[main_direction]),*(d+strides[main_direction])};
             for(auto sub_direction:sub_directions){
                 size_t sub_stride=dimensional_sparsity[sub_direction]*strides[sub_direction];
+                if(cur_idx==1787*3600+3589)
+                    std::cout<<sub_stride<<std::endl;
                 std::vector<double>tempA={*(d-sub_stride-strides3x[main_direction]),*(d-sub_stride+strides[main_direction]),*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides3x[main_direction])
                     ,*(d+sub_stride-strides3x[main_direction]),*(d+sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides3x[main_direction])};
                 A.insert(A.end(),tempA.begin(),tempA.end());
+                if(cur_idx==1787*3600+3589){
+                    for(size_t i=0;i<A.size();i++)
+                        std::cout<<A[i]<<" ";
+                    std::cout<<std::endl;
+                    for(size_t i=0;i<b.size();i++)
+                        std::cout<<b[i]<<" ";
+                    std::cout<<std::endl;
+                }
+
                 std::vector<double>tempb={*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides[main_direction]),*(d+sub_stride-strides[main_direction]),*(d+sub_stride+strides[main_direction])};
                 b.insert(b.end(),tempb.begin(),tempb.end());
 
