@@ -137,7 +137,7 @@ namespace QoZ {
 
         for(size_t i=0;i<numPoints*numFeatures;i++){
             if(A[i]<0 or A[i]>1){
-                std::cout<<"eer"<<std::endl;
+               // std::cout<<"eer"<<std::endl;
                 status=1;
                 return NULL;
             }
