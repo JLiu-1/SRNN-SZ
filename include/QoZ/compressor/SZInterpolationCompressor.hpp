@@ -482,7 +482,7 @@ namespace QoZ {
             }
             if(conf.verbose)
                 timer.stop("prediction");
-            
+            /*
             if(N==2){
                 for(size_t i=0;i<global_dimensions[0];i++){
                     for(size_t j=0;j<global_dimensions[1];j++){
@@ -493,7 +493,7 @@ namespace QoZ {
                     }
                 }
             }
-            
+            */
            
             
             
@@ -3055,6 +3055,7 @@ namespace QoZ {
             bool full_adjacent_interp=false;
             if (direction>=3){
                     full_adjacent_interp=true;
+                    std::cout<<"dwad"<<std::endl;
                     direction-=3;
              }
             if(direction<2){
