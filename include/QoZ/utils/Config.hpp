@@ -229,6 +229,7 @@ namespace QoZ {
             conditioning = cfg.GetInteger("AlgoSettings", "conditioning", conditioning);
             fixWave = cfg.GetInteger("AlgoSettings", "fixWave", fixWave);
             regressiveInterp = cfg.GetInteger("AlgoSettings", "regressiveInterp", regressiveInterp);
+            naturalSpline = cfg.GetInteger("AlgoSettings", "naturalSpline ", naturalSpline );
            // minAnchorLevel = cfg.GetInteger("AlgoSettings", "minAnchorLevel", minAnchorLevel);
 
 
