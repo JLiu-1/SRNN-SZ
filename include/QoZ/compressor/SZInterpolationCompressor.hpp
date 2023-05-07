@@ -1891,12 +1891,18 @@ namespace QoZ {
                     for (i = 3; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?3:5;
                         for(j=j_start;j+3<m;j+=4){
-                            if(mode==-1){
-                                std::cout<<i<<" "<<j<<std::endl;
-                            }
+                            
                             d = data + begin1 + i* stride1+begin2+j*stride2;
-                            predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
-                                                                    ,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  ),mode);
+                            if(mode==-1){
+                                std::cout<<data-d<<std::endl;
+                            }
+                            T prediction=interp_linear( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
+                                                                    ,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  );
+                            if(mode==-1){
+                                std::cout<<prediction<<std::endl;
+                            }
+
+                            predict_error+=quantize_integrated(d - data, *d, prediction,mode);
                         }
                         //j=1
                         if(mode==-1){
