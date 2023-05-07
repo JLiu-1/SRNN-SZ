@@ -1951,7 +1951,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                     delete []cmprData;                              
                                     cur_absloss+=conf.decomp_square_error;
                                 }
-                                std::cout<<(int)interp_op<<" "<<(int)interp_direction<<" "<<(int)cubic_spline_type<<" "<<cur_absloss<<std::endl; 
+                               // std::cout<<(int)interp_op<<" "<<(int)interp_direction<<" "<<(int)cubic_spline_type<<" "<<cur_absloss<<std::endl; 
                                 if (cur_absloss<best_interp_absloss){
                                     best_interp_absloss=cur_absloss;
                                     bestInterpAlgo=interp_op;

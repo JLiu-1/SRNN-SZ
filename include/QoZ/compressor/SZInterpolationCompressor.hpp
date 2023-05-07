@@ -1504,8 +1504,7 @@ namespace QoZ {
             }
         }
 
-        double regressive_interpolation_1d_cubic(T *data, int &status, const size_t & cur_idx,const size_t &main_direction,const std::vector<size_t> & sub_directions
-                                            , const std::vector<size_t> & strides, const std::vector<size_t> & strides3x,const std::vector<size_t> &dimensional_sparsity){
+        double regressive_interpolation_1d_cubic(T *data, int &status, const size_t & cur_idx,const size_t &main_direction,const std::vector<size_t> & sub_directions, const std::vector<size_t> & strides, const std::vector<size_t> & strides3x,const std::vector<size_t> &dimensional_sparsity){
             T *d=data+cur_idx;
             size_t main_stride=strides[main_direction],main_stride3x=main_stride*3,main_stride5x=main_stride*5,main_stride7x=main_stride*7,main_stride9x=main_stride*9;
             std::vector<double> A={*(d-main_stride9x),*(d-main_stride5x),*(d-main_stride),*(d+main_stride3x),
@@ -3906,7 +3905,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[2]], interp_func, pb,tuning,cubicSplineType,full_adjacent_interp);
+                                                                    stride * dimension_offsets[dims[2]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                         }
                     }
                 //}
