@@ -145,9 +145,9 @@ namespace QoZ {
                     quantizer.set_eb(eb*cur_ratio);
                 }
             
-                uint8_t cur_interpolator=interpolator_id;
-                uint8_t cur_direction=direction_sequence_id;
-                uint8_t cur_splinetype=cubicSplineType;
+                uint cur_interpolator=interpolator_id;
+                uint cur_direction=direction_sequence_id;
+                uint cur_splinetype=cubicSplineType;
                 
                 if (levelwise_predictor_levels==0){
                     cur_interpolator=interpolator_id;
@@ -417,7 +417,7 @@ namespace QoZ {
                 }
                 int cur_interpolator;
                 int cur_direction;
-                uint8_t cur_splinetype;
+                uint cur_splinetype;
                 if (levelwise_predictor_levels==0){
                     cur_interpolator=interpolator_id;
                     cur_direction=direction_sequence_id;
@@ -1042,7 +1042,7 @@ namespace QoZ {
         }
 
 
-        double block_interpolation_1d_cross(T *data, size_t begin, size_t end, size_t stride, const std::string &interp_func, const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0,size_t cross_block=0,size_t axis_begin=0,size_t axis_stride=0,size_t cur_axis=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
+        double block_interpolation_1d_cross(T *data, size_t begin, size_t end, size_t stride, const std::string &interp_func, const PredictorBehavior pb,const uint cubicSplineType,int tuning=0,size_t cross_block=0,size_t axis_begin=0,size_t axis_stride=0,size_t cur_axis=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
             size_t n = (end - begin) / stride + 1;
             if (n <= 1) {
                 return 0;
@@ -1366,7 +1366,7 @@ namespace QoZ {
             return predict_error;
         }
         
-        double block_interpolation_1d(T *data, size_t begin, size_t end, size_t stride,const std::string &interp_func,const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0,bool full_adjacent_interp=false) {
+        double block_interpolation_1d(T *data, size_t begin, size_t end, size_t stride,const std::string &interp_func,const PredictorBehavior pb,const uint cubicSplineType,int tuning=0,bool full_adjacent_interp=false) {
             size_t n = (end - begin) / stride + 1;
             if (n <= 1) {
                 return 0;
@@ -1541,7 +1541,7 @@ namespace QoZ {
                 return 0;
             }
         }
-        double block_interpolation_1d_regressive(T *data, const std::vector<size_t> &block_begins,const std::vector<size_t> & block_ends, const size_t & main_direction,const std::vector<size_t> &begins,const std::vector<size_t> & ends,const std::vector<size_t> &dimensional_sparsity,size_t m_stride,const std::string &interp_func,const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0) {
+        double block_interpolation_1d_regressive(T *data, const std::vector<size_t> &block_begins,const std::vector<size_t> & block_ends, const size_t & main_direction,const std::vector<size_t> &begins,const std::vector<size_t> & ends,const std::vector<size_t> &dimensional_sparsity,size_t m_stride,const std::string &interp_func,const PredictorBehavior pb,const uint cubicSplineType,int tuning=0) {
             //all coords and strides are mathematical.
             //ends are included in the interpolations.
             //dimensional offsets are in the global scale.
@@ -1664,7 +1664,7 @@ namespace QoZ {
             }
             return predict_error;
         } 
-        double block_interpolation_2d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2,const std::string &interp_func,const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0,bool full_adjacent_interp=false) {
+        double block_interpolation_2d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2,const std::string &interp_func,const PredictorBehavior pb,const uint cubicSplineType,int tuning=0,bool full_adjacent_interp=false) {
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
                 return 0;
@@ -2067,7 +2067,7 @@ namespace QoZ {
             }      
             return predict_error;
         }
-        double block_interpolation_3d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t begin3, size_t end3, size_t stride1,size_t stride2,size_t stride3, const std::string &interp_func, const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0,bool full_adjacent_interp=false) {
+        double block_interpolation_3d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t begin3, size_t end3, size_t stride1,size_t stride2,size_t stride3, const std::string &interp_func, const PredictorBehavior pb,const uint cubicSplineType,int tuning=0,bool full_adjacent_interp=false) {
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
                 return 0;
@@ -3398,7 +3398,7 @@ namespace QoZ {
             return predict_error;
         }
 
-        double block_interpolation_2d_cross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0) {
+        double block_interpolation_2d_cross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,const uint cubicSplineType,int tuning=0) {
            // std::cout<<"cst"<<std::endl;
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
@@ -3574,7 +3574,7 @@ namespace QoZ {
             return predict_error;
         }
 
-        double block_interpolation_2d_aftercross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0) {
+        double block_interpolation_2d_aftercross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,const uint cubicSplineType,int tuning=0) {
             size_t n = (end1 - begin1) / stride1 + 1;
             
             size_t m = (end2 - begin2) / stride2 + 1;
@@ -3744,7 +3744,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 1, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const uint8_t cubicSplineType, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func,const uint cubicSplineType, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
             return block_interpolation_1d(data, begin[0], end[0], stride, interp_func, pb,cubicSplineType,tuning);
         }
 
@@ -3752,7 +3752,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 2, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const uint8_t cubicSplineType, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func,const uint cubicSplineType, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             bool full_adjacent_interp=false;
@@ -3864,7 +3864,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 3, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const uint8_t cubicSplineType, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {//cross block: 0 or conf.num
+                            const std::string &interp_func,const uint cubicSplineType, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
@@ -4089,7 +4089,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 4, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const uint8_t cubicSplineType,int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func,const uint cubicSplineType,int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             //max_error = 0;
@@ -4169,7 +4169,7 @@ namespace QoZ {
 
 
         double block_interpolation_block3d(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const uint8_t cubicSplineType,  int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {//cross block: 0 or conf.num
+                            const std::string &interp_func,const uint cubicSplineType,  int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
@@ -4373,7 +4373,7 @@ namespace QoZ {
         int interpolation_level = -1;
         uint blocksize;
         int interpolator_id;
-        uint8_t cubicSplineType=0;
+        uint cubicSplineType=0;
 
         double eb_ratio = 0.5;
         double alpha;
