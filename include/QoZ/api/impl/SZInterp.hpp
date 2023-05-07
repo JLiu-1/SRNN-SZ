@@ -2264,10 +2264,12 @@ double Tuning(QoZ::Config &conf, T *data){
             if(conf.levelwisePredictionSelection>0){
                 conf.interpAlgo_list=interpAlgo_lists[wave_idx];
                 conf.interpDirection_list=interpDirection_lists[wave_idx];
+                conf.cubicSplineType_list=cubicSplineType_lists[wave_idx];
             }
             else{
                 conf.interpAlgo=bestInterpAlgos[wave_idx];
                 conf.interpDirection=bestInterpDirections[wave_idx];
+                conf.cubicSplineType=bestCubicSplineTypes[wave_idx];
             }
             std::vector <std::vector<T> > waveleted_input;
             if (wave_idx>0 and (wave_idx>1 or !use_sperr<T,N>(conf)) ){
