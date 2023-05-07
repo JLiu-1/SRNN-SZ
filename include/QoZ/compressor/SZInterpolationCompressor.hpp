@@ -513,7 +513,7 @@ namespace QoZ {
             //timer.start();
             assert(quant_inds.size() == num_elements);
             encoder.preprocess_encode(quant_inds, 0);
-            size_t bufferSize = 1.3 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
+            size_t bufferSize = 1.2 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
             write(global_dimensions.data(), N, buffer_pos);
@@ -540,7 +540,7 @@ namespace QoZ {
             }
             else if(levelwise_predictor_levels>0){
                 for (auto x:conf.cubicSplineType_list)
-                    std::cout<<x<<std::endl; 
+                    std::cout<<int(x)<<std::endl; 
                 write(conf.interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
                 write(conf.interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
                 write(conf.cubicSplineType_list.data(),levelwise_predictor_levels,buffer_pos);
