@@ -163,6 +163,7 @@ namespace QoZ {
             lorenzo2 = cfg.GetBoolean("AlgoSettings", "Lorenzo2ndOrder", lorenzo2);
             regression = cfg.GetBoolean("AlgoSettings", "Regression", regression);
             regression2 = cfg.GetBoolean("AlgoSettings", "Regression2ndOrder", regression2);
+            fullAdjacentInterp = cfg.GetBoolean("AlgoSettings", "fullAdjacentInterp", fullAdjacentInterp);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -501,6 +502,7 @@ namespace QoZ {
         bool pybind_activated=false;
         bool FZ=false;
         int regressiveInterp=0;
+        bool fullAdjacentInterp=0;
         //bool profilingFix=true;//only for test
 
        // double anchorThreshold=0.0;

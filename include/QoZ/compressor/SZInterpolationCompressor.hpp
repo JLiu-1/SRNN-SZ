@@ -1351,7 +1351,7 @@ namespace QoZ {
             return predict_error;
         }
         
-        double block_interpolation_1d(T *data, size_t begin, size_t end, size_t stride,const std::string &interp_func,const PredictorBehavior pb,int tuning=0) {
+        double block_interpolation_1d(T *data, size_t begin, size_t end, size_t stride,const std::string &interp_func,const PredictorBehavior pb,int tuning=0,bool full_adjacent_interp=false) {
             size_t n = (end - begin) / stride + 1;
             if (n <= 1) {
                 return 0;
@@ -1361,7 +1361,6 @@ namespace QoZ {
             size_t stride5x = 5 * stride;
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
             if (interp_func == "linear" || n < 5) {
-               
                 for (size_t i = 1; i + 1 < n; i += 2) {
                     T *d = data + begin + i * stride;
                     predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride), *(d + stride)),mode);
@@ -1378,13 +1377,31 @@ namespace QoZ {
                 
                 T *d;
                 size_t i;
-                for (i = 3; i + 3 < n; i += 2) {
-                    d = data + begin + i * stride;
-                    predict_error+=quantize_integrated(d - data, *d,
-                                interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                if(!full_adjacent_interp){
+                    for (i = 3; i + 3 < n; i += 2) {
+                        d = data + begin + i * stride;
+                        predict_error+=quantize_integrated(d - data, *d,
+                                    interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    }
+                }
+                else{
+                    size_t stride2x=2*stride;
+                    for (i = 3; i + 3 < n; i += 4) {
+                        d = data + begin + i * stride;
+                        predict_error+=quantize_integrated(d - data, *d,
+                                    interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    }
+                    for (i = 5; i + 3 < n; i += 4) {
+                        d = data + begin + i * stride;
+                        predict_error+=quantize_integrated(d - data, *d,
+                                    interp_cubic_2(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x),*(d + stride3x)),mode);
+                    }
+                    i=n-3+(n%2);
+
                 }
                 d = data + begin + stride;
                 predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
+
                 d = data + begin + i * stride;
                 predict_error+=quantize_integrated(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
                 if (n % 2 == 0) {
@@ -2678,8 +2695,13 @@ namespace QoZ {
                             const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
-            if(direction<2){
+            if(direction<4){
                 const std::array<int, N> dims = dimension_sequences[direction];
+                bool full_adjacent_interp=false;
+                if (direction>=2){
+                    full_adjacent_interp=true;
+                    direction-=2;
+                }
                 if(!regressive or stride!=1){
                     
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
@@ -2687,14 +2709,14 @@ namespace QoZ {
                         predict_error += block_interpolation_1d(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[0]] - begin[dims[0]]) * dimension_offsets[dims[0]],
-                                                                stride * dimension_offsets[dims[0]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[0]], interp_func, pb,tuning,full_adjacent_interp);
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                         size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]];
                         predict_error += block_interpolation_1d(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
-                                                                stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
                     }
                 }
                 else{
@@ -2722,21 +2744,21 @@ namespace QoZ {
                 }
             }
             
-            else if (direction==2){
+            else if (direction==4){
                 const std::array<int, N> dims = dimension_sequences[0];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
                     predict_error += block_interpolation_1d(data, begin_offset,
                                                             begin_offset +
                                                             (end[dims[0]] - begin[dims[0]]) * dimension_offsets[dims[0]],
-                                                            stride * dimension_offsets[dims[0]], interp_func, pb,tuning);
+                                                            stride * dimension_offsets[dims[0]], interp_func, pb,tuning,full_adjacent_interp);
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
                     size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]];
                     predict_error += block_interpolation_1d(data, begin_offset,
                                                             begin_offset +
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
-                                                            stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
+                                                            stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
                 }
                 size_t begin_offset1=begin[dims[0]]*dimension_offsets[dims[0]];
                 size_t begin_offset2=begin[dims[1]]*dimension_offsets[dims[1]];
@@ -2750,7 +2772,7 @@ namespace QoZ {
                                                             stride * dimension_offsets[dims[0]],
                                                             stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
             }
-            else if(direction==3){
+            else if(direction==5){
                 const std::array<int, N> dims = dimension_sequences[0];
                 size_t begin_offset1=begin[dims[0]]*dimension_offsets[dims[0]];
                 size_t begin_offset2=begin[dims[1]]*dimension_offsets[dims[1]];
@@ -2784,8 +2806,13 @@ namespace QoZ {
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
-            if(direction<6){
+            if(direction<12){
                 const std::array<int, N> dims = dimension_sequences[direction];
+                bool full_adjacent_interp=false;
+                if (direction>=6){
+                    full_adjacent_interp=true;
+                    direction-=6;
+                }
                 //if (cross_block==0){
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
@@ -2795,7 +2822,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[0]] - begin[dims[0]]) *
                                                                     dimension_offsets[dims[0]],
-                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,tuning);
+                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,tuning,full_adjacent_interp);
                         }
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -2806,7 +2833,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
+                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
                         }
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -2817,7 +2844,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[2]], interp_func, pb,tuning);
+                                                                    stride * dimension_offsets[dims[2]], interp_func, pb,tuning,full_adjacent_interp);
                         }
                     }
                 //}
@@ -2897,7 +2924,7 @@ namespace QoZ {
                 */
             }
             
-            else if (direction>=6){
+            else if (direction>=12){
                 const std::array<int, N> dims = dimension_sequences[0];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
@@ -2907,7 +2934,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[0]] - begin[dims[0]]) *
                                                                 dimension_offsets[dims[0]],
-                                                                stride * dimension_offsets[dims[0]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[0]], interp_func, pb,tuning,full_adjacent_interp);
                     }
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
@@ -2918,7 +2945,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[1]] - begin[dims[1]]) *
                                                                 dimension_offsets[dims[1]],
-                                                                stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
                     }
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
@@ -2929,7 +2956,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
-                                                                stride * dimension_offsets[dims[2]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[2]], interp_func, pb,tuning,full_adjacent_interp);
                     }
                 }
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {

@@ -1894,12 +1894,17 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
             //std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_CUBIC};//temp. 
             std::vector<int> interpDirection_Candidates={0, QoZ::factorial(N) -1};
+            if(conf.fullAdjacentInterp){
+                interpDirection_Candidates.push_back(QoZ::factorial(N));
+                interpDirection_Candidates.push_back(2*QoZ::factorial(N)-1);
+
+            }
             //std::vector<int> interpDirection_Candidates={};//temp. 
             if(conf.multiDimInterp)
               
-                interpDirection_Candidates.push_back(QoZ::factorial(N));
+                interpDirection_Candidates.push_back(2*QoZ::factorial(N));
             if(conf.mdCrossInterp)
-                interpDirection_Candidates.push_back(QoZ::factorial(N)+1);
+                interpDirection_Candidates.push_back(2*QoZ::factorial(N)+1);
             if(conf.levelwisePredictionSelection>0){
                 std::vector<uint8_t> interpAlgo_list(conf.levelwisePredictionSelection,0);
                 std::vector<uint8_t> interpDirection_list(conf.levelwisePredictionSelection,0);
