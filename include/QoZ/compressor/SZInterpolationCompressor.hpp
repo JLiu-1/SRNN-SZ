@@ -1813,7 +1813,7 @@ namespace QoZ {
                     }
                     // std::cout<<"f2"<<std::endl;
                     //i=1
-                    for(j=3;j+3<m;j+=4){
+                    for(j=5;j+3<m;j+=4){
                         d = data + begin1 + stride1+begin2+j*stride2;
                         //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)),interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ),tuning);
                         predict_error+=quantize_integrated(d - data, *d, interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)),mode);
@@ -1896,10 +1896,7 @@ namespace QoZ {
                             
                             T prediction=interp_linear( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
                                                                     ,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  );
-                            if(d-data==33759669){
-                                std::cout<<prediction<<std::endl;
-                            }
-
+                            
                             predict_error+=quantize_integrated(d - data, *d, prediction,mode);
                         }
                         //j=1
