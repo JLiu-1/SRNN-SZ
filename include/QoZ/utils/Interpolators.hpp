@@ -53,7 +53,7 @@ namespace QoZ {
     }
 
     template<class T>
-    inline T interp_cubic_2(T a, T b, T c, T d) {
+    inline T interp_cubic_1(T a, T b, T c, T d) {
         T p=(-3 * a + 23 * b + 23 * c - 3 * d) / 40//nat
         return p;
     }
