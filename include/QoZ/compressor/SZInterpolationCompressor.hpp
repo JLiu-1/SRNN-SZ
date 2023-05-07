@@ -4373,7 +4373,7 @@ namespace QoZ {
         int interpolation_level = -1;
         uint blocksize;
         int interpolator_id;
-        uint8_t cubicSplineType;
+        uint8_t cubicSplineType=0;
 
         double eb_ratio = 0.5;
         double alpha;
