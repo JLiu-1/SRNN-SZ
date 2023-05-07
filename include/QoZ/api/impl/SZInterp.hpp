@@ -2,9 +2,6 @@
 #define SZ3_SZINTERP_HPP
 
 #include "QoZ/compressor/SZInterpolationCompressor.hpp"
-
-#include "QoZ/compressor/deprecated/SZBlockInterpolationCompressor.hpp"
-
 #include "QoZ/preprocessor/Wavelet.hpp"
 
 #include "QoZ/quantizer/IntegerQuantizer.hpp"
