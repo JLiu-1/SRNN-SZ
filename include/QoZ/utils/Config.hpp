@@ -164,6 +164,7 @@ namespace QoZ {
             regression = cfg.GetBoolean("AlgoSettings", "Regression", regression);
             regression2 = cfg.GetBoolean("AlgoSettings", "Regression2ndOrder", regression2);
             fullAdjacentInterp = cfg.GetBoolean("AlgoSettings", "fullAdjacentInterp", fullAdjacentInterp);
+            naturalSpline = cfg.GetBoolean("AlgoSettings", "naturalSpline", naturalSpline);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -420,9 +421,11 @@ namespace QoZ {
         uint8_t interpAlgo = INTERP_ALGO_CUBIC;
     
         uint8_t interpDirection = 0;
+        uint8_t cubicSplineType=0;
         int levelwisePredictionSelection=0;
         std::vector <uint8_t> interpAlgo_list;
         std::vector <uint8_t> interpDirection_list;
+        std::vector <uint8_t> cubicSplineType_list;
         
         size_t maxStep=0;
         int interpBlockSize = 32;
@@ -503,6 +506,7 @@ namespace QoZ {
         bool FZ=false;
         int regressiveInterp=0;
         bool fullAdjacentInterp=0;
+        bool naturalSpline=0;
         //bool profilingFix=true;//only for test
 
        // double anchorThreshold=0.0;

@@ -338,6 +338,7 @@ namespace QoZ {
             maxStep=conf.maxStep;
             interpolator_id = conf.interpAlgo;
             direction_sequence_id = conf.interpDirection;
+            cubicSplineType=conf.cubicSplineType;
             alpha=conf.alpha;
             beta=conf.beta;
             std::vector<uint8_t>interp_ops;
@@ -408,18 +409,22 @@ namespace QoZ {
                 }
                 int cur_interpolator;
                 int cur_direction;
+                uint8_t cur_splinetype;
                 if (levelwise_predictor_levels==0){
                     cur_interpolator=interpolator_id;
                     cur_direction=direction_sequence_id;
+                    cur_splinetype=cubicSplineType;
                 }
                 else{
                     if (level-1<levelwise_predictor_levels){
                         cur_interpolator=conf.interpAlgo_list[level-1];
                         cur_direction=conf.interpDirection_list[level-1];
+                        cur_splinetype=conf.cubicSplineType_list[level-1];
                     }
                     else{
                         cur_interpolator=conf.interpAlgo_list[levelwise_predictor_levels-1];
                         cur_direction=conf.interpDirection_list[levelwise_predictor_levels-1];
+                        cur_splinetype=conf.cubicSplineType_list[levelwise_predictor_levels-1];
                     }
                 }
                 
@@ -449,10 +454,10 @@ namespace QoZ {
                     if(peTracking)
                         
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                    interpolators[cur_interpolator], cur_direction, stride,3,cross_block,regressiveInterp);
+                                    interpolators[cur_interpolator],cur_splinetype, cur_direction, stride,3,cross_block,regressiveInterp);
                     else
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                    interpolators[cur_interpolator], cur_direction, stride,tuning,cross_block,regressiveInterp);
+                                    interpolators[cur_interpolator],cur_splinetype, cur_direction, stride,tuning,cross_block,regressiveInterp);
 
                     
                         
@@ -507,6 +512,7 @@ namespace QoZ {
             write(blocksize, buffer_pos);
             write(interpolator_id, buffer_pos);
             write(direction_sequence_id, buffer_pos);
+            write(cubicSplineType, buffer_pos);
             write(alpha,buffer_pos);
             write(beta,buffer_pos);
             write(maxStep,buffer_pos);
@@ -527,6 +533,7 @@ namespace QoZ {
             else if(levelwise_predictor_levels>0){
                 write(conf.interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
                 write(conf.interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
+                write(conf.cubicSplineType_list.data(),levelwise_predictor_levels,buffer_pos);
             }
             quantizer.save(buffer_pos);
             quantizer.postcompress_data();
@@ -1025,7 +1032,7 @@ namespace QoZ {
         }
 
 
-        double block_interpolation_1d_cross(T *data, size_t begin, size_t end, size_t stride, const std::string &interp_func, const PredictorBehavior pb,int tuning=0,size_t cross_block=0,size_t axis_begin=0,size_t axis_stride=0,size_t cur_axis=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
+        double block_interpolation_1d_cross(T *data, size_t begin, size_t end, size_t stride, const std::string &interp_func, const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0,size_t cross_block=0,size_t axis_begin=0,size_t axis_stride=0,size_t cur_axis=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
             size_t n = (end - begin) / stride + 1;
             if (n <= 1) {
                 return 0;
@@ -1099,6 +1106,7 @@ namespace QoZ {
                     }
                 }
             } else {
+                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 if (pb == PB_predict_overwrite) {
 
                     if(tuning){
@@ -1348,7 +1356,7 @@ namespace QoZ {
             return predict_error;
         }
         
-        double block_interpolation_1d(T *data, size_t begin, size_t end, size_t stride,const std::string &interp_func,const PredictorBehavior pb,int tuning=0,bool full_adjacent_interp=false) {
+        double block_interpolation_1d(T *data, size_t begin, size_t end, size_t stride,const std::string &interp_func,const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0,bool full_adjacent_interp=false) {
             size_t n = (end - begin) / stride + 1;
             if (n <= 1) {
                 return 0;
@@ -1372,7 +1380,7 @@ namespace QoZ {
                     }
                 }
             } else {
-                
+                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 T *d;
                 size_t i;
                 if(!full_adjacent_interp){
@@ -1394,6 +1402,7 @@ namespace QoZ {
                     }
                 }
                 else{
+
                     //i=1
                     d = data + begin + stride;
                     predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
@@ -1425,7 +1434,7 @@ namespace QoZ {
                     for (i = 3; i + 3 < n; i += 4) {
                         d = data + begin + i * stride;
                         predict_error+=quantize_integrated(d - data, *d,
-                                   interp_cubic_2(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x),*(d + stride3x)),mode);
+                                   interp_cubic_adj(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x),*(d + stride3x)),mode);
                         //predict_error+=quantize_integrated(d - data, *d,
                          //           interp_cubic_3(*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x)),mode);
                     }
@@ -1522,7 +1531,7 @@ namespace QoZ {
                 return 0;
             }
         }
-        double block_interpolation_1d_regressive(T *data, const std::vector<size_t> &block_begins,const std::vector<size_t> & block_ends, const size_t & main_direction,const std::vector<size_t> &begins,const std::vector<size_t> & ends,const std::vector<size_t> &dimensional_sparsity,size_t m_stride,const std::string &interp_func,const PredictorBehavior pb,int tuning=0) {
+        double block_interpolation_1d_regressive(T *data, const std::vector<size_t> &block_begins,const std::vector<size_t> & block_ends, const size_t & main_direction,const std::vector<size_t> &begins,const std::vector<size_t> & ends,const std::vector<size_t> &dimensional_sparsity,size_t m_stride,const std::string &interp_func,const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0) {
             //all coords and strides are mathematical.
             //ends are included in the interpolations.
             //dimensional offsets are in the global scale.
@@ -1607,7 +1616,7 @@ namespace QoZ {
                     }
                 }
             } else {
-                
+                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 T *d;
                 size_t i;
                 for (i = 3; i + 3 < n; i += 2) {
@@ -1645,7 +1654,7 @@ namespace QoZ {
             }
             return predict_error;
         } 
-        double block_interpolation_2d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2,const std::string &interp_func,const PredictorBehavior pb,int tuning=0,bool full_adjacent_interp=false) {
+        double block_interpolation_2d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2,const std::string &interp_func,const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0,bool full_adjacent_interp=false) {
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
                 return 0;
@@ -1688,6 +1697,7 @@ namespace QoZ {
             }
                     
             else{//cubic
+                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t stride3x1=3*stride1,stride3x2=3*stride2,stride5x1=5*stride1,stride5x2=5*stride2,stride2x1=2*stride1,stride2x2=2*stride2;
                 //adaptive todo
               
@@ -1919,8 +1929,8 @@ namespace QoZ {
                             
                             d = data + begin1 + i* stride1+begin2+j*stride2;
              
-                            T prediction=interp_linear( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
-                                                                    ,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  );
+                            T prediction=interp_linear( interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
+                                                                    ,interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  );
                             
                             predict_error+=quantize_integrated(d - data, *d, prediction,mode);
                         }
@@ -1935,7 +1945,7 @@ namespace QoZ {
                             d = data + begin1 + i* stride1+ begin2+stride2;
                             //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
                             //                                , interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)) ),tuning);
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
                                                             ,mode);//to determine
                         }
                         /*
@@ -1949,7 +1959,7 @@ namespace QoZ {
                             d = data +begin1 + i* stride1+ begin2+j*stride2;
                             //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
                             //                                , interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) ),tuning);
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
                                                             ,mode);//to determine
                         }
                         /*
@@ -1970,7 +1980,7 @@ namespace QoZ {
                     for(j=3;j+3<m;j+=4){
                       
                         d = data + begin1 + stride1+begin2+j*stride2;
-                        predict_error+=quantize_integrated(d - data, *d,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  ,mode);
+                        predict_error+=quantize_integrated(d - data, *d,interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  ,mode);
                     }
                     /*
                     //j=1
@@ -1996,7 +2006,7 @@ namespace QoZ {
                     for(j=j_start;j+3<m;j+=4){
                         
                         d = data + begin1 + i* stride1+begin2+j*stride2;
-                        predict_error+=quantize_integrated(d - data, *d,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  ,mode);
+                        predict_error+=quantize_integrated(d - data, *d,interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  ,mode);
                     }
                     //j=1
                     if(j_start==5){
@@ -2024,7 +2034,7 @@ namespace QoZ {
                         for(j=j_start;j+3<m;j+=4){
                             
                             d = data + begin1 + (n-1)* stride1+begin2+j*stride2;
-                            predict_error+=quantize_integrated(d - data, *d,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  ,mode);
+                            predict_error+=quantize_integrated(d - data, *d,interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  ,mode);
                         }
                         //j=1
                         if(j_start==5){
@@ -2047,7 +2057,7 @@ namespace QoZ {
             }      
             return predict_error;
         }
-        double block_interpolation_3d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t begin3, size_t end3, size_t stride1,size_t stride2,size_t stride3, const std::string &interp_func, const PredictorBehavior pb,int tuning=0,bool full_adjacent_interp=false) {
+        double block_interpolation_3d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t begin3, size_t end3, size_t stride1,size_t stride2,size_t stride3, const std::string &interp_func, const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0,bool full_adjacent_interp=false) {
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
                 return 0;
@@ -2111,6 +2121,7 @@ namespace QoZ {
                 }
             }
             else{//cubic
+                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t stride3x1=3*stride1,stride3x2=3*stride2,stride5x1=5*stride1,stride5x2=5*stride2,stride3x3=3*stride3,stride5x3=5*stride3,stride2x1=2*stride1,stride2x2=2*stride2,stride2x3=2*stride3;
                 //adaptive todo
               
@@ -3015,24 +3026,24 @@ namespace QoZ {
                             k_start=(i+j)%4==0?5:3;
                             for(k=k_start;k+3<p;k+=4){
                                 d = data + begin1 + i* stride1+begin2+j*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, interp_ave3( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
-                                    interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) , 
-                                    interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
+                                predict_error+=quantize_integrated(d - data, *d, interp_ave3( interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
+                                    interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) , 
+                                    interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
                             }
                             //k=1
                             if(k_start==5){
                                 d = data + begin1 + i* stride1+begin2+j*stride2+begin3+stride3;
                                 
-                                predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
-                                    interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) ),mode);
+                                predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
+                                    interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) ),mode);
                             }
                         
                             //k=p-3 or p-2 or p-1
                             if(k<p){
                                 d = data + begin1 + i* stride1+begin2+j*stride2+begin3+k*stride3;
                                
-                                predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
-                                    interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) ),mode);
+                                predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
+                                    interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) ),mode);
                             }
 
                         }
@@ -3041,21 +3052,21 @@ namespace QoZ {
                         for(k=k_start;k+3<p;k+=4){
                             d = data + begin1 + i* stride1+ begin2+stride2+begin3+k*stride3;
                             
-                            predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
-                                interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
+                                interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
                         }
                         //k=1
                         if(k_start==5){
                             d = data + begin1 + i* stride1+begin2+stride2+begin3+stride3;
                            
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
                         }
 
                         //k=p-3 or p-2 or p-1
                         if(k<p){
                             d = data + begin1 + i* stride1+begin2+stride2+begin3+k*stride3;
                             
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
                         }
 
                         //j=m-3 or m-2 or m-1
@@ -3064,20 +3075,20 @@ namespace QoZ {
                             for(k=k_start;k+3<p;k+=4){
                                 d = data + begin1 + i* stride1+ begin2+j*stride2+begin3+k*stride3;
                                
-                                predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
-                                interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
+                                predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),
+                                interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
                             }
                             //k=1
                             if(k_start==5){
                                  d = data + begin1 + i* stride1+begin2+j*stride2+begin3+stride3;
                                 
-                                predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
                             }
                            
                             //k=p-3 or p-2 or p-1
                             if(k<p){
                                 d = data + begin1 + i* stride1+begin2+j*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
                             }
                             j+=2;
                         }
@@ -3088,19 +3099,19 @@ namespace QoZ {
                         for(k=k_start;k+3<p;k+=4){
                             d = data + begin1 +  stride1+begin2+j*stride2+begin3+k*stride3;
                             
-                            predict_error+=quantize_integrated(d - data, *d, interp_linear(interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) , 
-                                    interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ) ,mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_linear(interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) , 
+                                    interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ) ,mode);
                         }
                         //k=1
                         if(k_start==5){
                             d = data + begin1 +  stride1+begin2+j*stride2+begin3+stride3;
                             
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) ,mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) ,mode);
                         }
                         //k=p-3 or p-2 or p-1
                         if (k<p){
                             d = data + begin1 + stride1+begin2+j*stride2+begin3+k*stride3;
-                            predict_error+=quantize_integrated(d - data, *d,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) ,mode);
+                            predict_error+=quantize_integrated(d - data, *d,interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) ,mode);
                         }
     
                     }
@@ -3112,7 +3123,7 @@ namespace QoZ {
                             interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)),
                             interp_cubic(*(d - stride3x3), *(d - stride3), *(d + stride3), *(d + stride3x3)) ),mode);
                         */
-                        predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                        predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                     }
                     /*
                     //k=1
@@ -3139,7 +3150,7 @@ namespace QoZ {
                     k_start=(1+j)%4==0?5:3;
                     for(k=k_start;k+3<p;k+=4){
                         d = data + begin1 +  stride1+ begin2+j*stride2+begin3+k*stride3;
-                        predict_error+=quantize_integrated(d - data, *d,  interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                        predict_error+=quantize_integrated(d - data, *d,  interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                     }
                     //k=1
                     if(k_start==5){
@@ -3166,7 +3177,7 @@ namespace QoZ {
                         k_start=(m%4==0)?5:3;
                         for(k=k_start;k+3<p;k+=4){
                             d = data + begin1 +  stride1+ begin2+(m-1)*stride2+begin3+k*stride3;
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                         }
                         //k=1
                         if(k_start==5){
@@ -3191,25 +3202,25 @@ namespace QoZ {
                         k_start=(i+j)%4==0?5:3;
                         for(k=k_start;k+3<p;k+=4){
                             d = data + begin1 + i* stride1+begin2+j*stride2+begin3+k*stride3;
-                            predict_error+=quantize_integrated(d - data, *d, interp_linear(interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)), 
-                                interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_linear(interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)), 
+                                interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
                         }
                         //k=1
                         if(k_start==5){
                             d = data + begin1 + i*stride1+begin2+j*stride2+begin3+stride3;
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
                         }
                         //k=p-3 or p-2 or p-1
                         if(k<p){
                             d = data + begin1 +i* stride1+begin2+j*stride2+begin3+k*stride3;
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
                         }
                     }
                     //j=1
                     k_start=(i+1)%4==0?5:3;
                     for(k=k_start;k+3<p;k+=4){
                         d = data + begin1 +  i*stride1+ begin2+stride2+begin3+k*stride3;
-                        predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                        predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                     }
                     //k=1
                     if(k_start==5){
@@ -3235,7 +3246,7 @@ namespace QoZ {
                     k_start=(i+j)%4==0?5:3;
                     for(k=k_start;k+3<p;k+=4){
                         d = data + begin1 +  i*stride1+ begin2+j*stride2+begin3+k*stride3;
-                        predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                        predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                     }
                     //k=1
                     if(k_start==5){
@@ -3261,7 +3272,7 @@ namespace QoZ {
                         k_start=(i+m-1)%4==0?5:3;
                         for(k=k_start;k+3<p;k+=4){
                             d = data + begin1 +  i*stride1+ begin2+(m-1)*stride2+begin3+k*stride3;
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                         }
                         //k=1
                         if(k_start==5){
@@ -3287,18 +3298,18 @@ namespace QoZ {
                             k_start=(n-1+j)%4==0?5:3;
                             for(k=k_start;k+3<p;k+=4){
                                 d = data + begin1 + (n-1)* stride1+begin2+j*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, interp_linear(interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)), 
-                                    interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
+                                predict_error+=quantize_integrated(d - data, *d, interp_linear(interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)), 
+                                    interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)) ),mode);
                             }
                             //k=1
                             if(k_start==5){
                                 d = data + begin1 +  (n-1)*stride1+begin2+j*stride2+begin3+stride3;
-                                predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
                             }
                             //k=p-3 or p-2 or p-1
                             if(k<p){
                                 d = data + begin1 +(n-1)* stride1+begin2+j*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
                             }
                             
                         }
@@ -3306,7 +3317,7 @@ namespace QoZ {
                         k_start=(n%4==0)?5:3;
                         for(k=k_start;k+3<p;k+=4){
                             d = data + begin1 + (n-1)*stride1+ begin2+stride2+begin3+k*stride3;
-                            predict_error+=quantize_integrated(d - data, *d,  interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                            predict_error+=quantize_integrated(d - data, *d,  interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                         }
                         //k=1
                         if(k_start==5){
@@ -3330,7 +3341,7 @@ namespace QoZ {
                         k_start=(n-1+j)%4==0?5:3;
                         for(k=k_start;k+3<p;k+=4){
                             d = data + begin1 + (n-1)*stride1+ begin2+j*stride2+begin3+k*stride3;
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                            predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                         }
                         //k=1
                         if(k_start==5){
@@ -3353,7 +3364,7 @@ namespace QoZ {
                             k_start=(n+m-2)%4==0?3:5;
                             for(k=k_start;k+3<p;k+=4){
                                 d = data + begin1 +  (n-1)*stride1+ begin2+(m-1)*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d,  interp_cubic_2(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d,  interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                             }
                             //k=1
                             if(k_start==5){
@@ -3377,7 +3388,7 @@ namespace QoZ {
             return predict_error;
         }
 
-        double block_interpolation_2d_cross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,int tuning=0) {
+        double block_interpolation_2d_cross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0) {
            // std::cout<<"cst"<<std::endl;
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
@@ -3432,7 +3443,7 @@ namespace QoZ {
             }
             else{//cubic
                 //adaptive todo
-              
+                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t i,j;
                 T *d;
                 for (i = 3; i + 3 < n; i += 2) {
@@ -3553,7 +3564,7 @@ namespace QoZ {
             return predict_error;
         }
 
-        double block_interpolation_2d_aftercross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,int tuning=0) {
+        double block_interpolation_2d_aftercross(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2, const std::string &interp_func, const PredictorBehavior pb,const uint8_t cubicSplineType,int tuning=0) {
             size_t n = (end1 - begin1) / stride1 + 1;
             
             size_t m = (end2 - begin2) / stride2 + 1;
@@ -3620,7 +3631,7 @@ namespace QoZ {
             }
             else{//cubic
                 //adaptive todo
-              
+                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t i,j;
                 T *d;
                 for (i = 3; i + 3 < n; i += 1) {
@@ -3723,15 +3734,15 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 1, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
-            return block_interpolation_1d(data, begin[0], end[0], stride, interp_func, pb,tuning);
+                            const std::string &interp_func,const uint8_t cubicSplineType, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+            return block_interpolation_1d(data, begin[0], end[0], stride, interp_func, pb,cubicSplineType,tuning);
         }
 
 
         template<uint NN = N>
         typename std::enable_if<NN == 2, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func,const uint8_t cubicSplineType, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             bool full_adjacent_interp=false;
@@ -3750,14 +3761,14 @@ namespace QoZ {
                         predict_error += block_interpolation_1d(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[0]] - begin[dims[0]]) * dimension_offsets[dims[0]],
-                                                                stride * dimension_offsets[dims[0]], interp_func, pb,tuning,full_adjacent_interp);
+                                                                stride * dimension_offsets[dims[0]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                         size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]];
                         predict_error += block_interpolation_1d(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
-                                                                stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                     }
                 }
                 else{
@@ -3770,7 +3781,7 @@ namespace QoZ {
                         std::vector<size_t> cur_end=block_end;
                         cur_end[dims[1]]=j;
                         predict_error += block_interpolation_1d_regressive(data,block_begin,block_end,dims[0],cur_begin,cur_end,sparsity,
-                                                        stride,interp_func,pb,tuning);
+                                                        stride,interp_func,pb,cubicSplineType,tuning);
                     }
                     sparsity[dims[0]]=1;
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -3779,7 +3790,7 @@ namespace QoZ {
                         std::vector<size_t> cur_end=block_end;
                         cur_end[dims[0]]=i;
                         predict_error += block_interpolation_1d_regressive(data,block_begin,block_end,dims[1],cur_begin,cur_end,sparsity,
-                                                        stride,interp_func,pb,tuning);
+                                                        stride,interp_func,pb,cubicSplineType,tuning);
                     }
 
                 }
@@ -3792,14 +3803,14 @@ namespace QoZ {
                     predict_error += block_interpolation_1d(data, begin_offset,
                                                             begin_offset +
                                                             (end[dims[0]] - begin[dims[0]]) * dimension_offsets[dims[0]],
-                                                            stride * dimension_offsets[dims[0]], interp_func, pb,tuning,full_adjacent_interp);
+                                                            stride * dimension_offsets[dims[0]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
                     size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]];
                     predict_error += block_interpolation_1d(data, begin_offset,
                                                             begin_offset +
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
-                                                            stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
+                                                            stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                 }
                 size_t begin_offset1=begin[dims[0]]*dimension_offsets[dims[0]];
                 size_t begin_offset2=begin[dims[1]]*dimension_offsets[dims[1]];
@@ -3811,7 +3822,7 @@ namespace QoZ {
                                                             begin_offset2 +
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
                                                             stride * dimension_offsets[dims[0]],
-                                                            stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
+                                                            stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
             }
             else if(direction==3){
                 const std::array<int, N> dims = dimension_sequences[0];
@@ -3824,7 +3835,7 @@ namespace QoZ {
                                                             begin_offset2 +
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
                                                             stride * dimension_offsets[dims[0]],
-                                                            stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
+                                                            stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning);
                 predict_error+=block_interpolation_2d_aftercross(data, begin_offset1,
                                                             begin_offset1 +
                                                             (end[dims[0]] - begin[dims[0]]) * dimension_offsets[dims[0]],
@@ -3832,7 +3843,7 @@ namespace QoZ {
                                                             begin_offset2 +
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
                                                             stride * dimension_offsets[dims[0]],
-                                                            stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
+                                                            stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning);
             }
             return predict_error;
         }
@@ -3843,7 +3854,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 3, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {//cross block: 0 or conf.num
+                            const std::string &interp_func,const uint8_t cubicSplineType, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
@@ -3863,7 +3874,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[0]] - begin[dims[0]]) *
                                                                     dimension_offsets[dims[0]],
-                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,tuning,full_adjacent_interp);
+                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                         }
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -3874,7 +3885,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
+                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                         }
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -3885,7 +3896,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[2]], interp_func, pb,tuning,full_adjacent_interp);
+                                                                    stride * dimension_offsets[dims[2]], interp_func, pb,tuning,cubicSplineType,full_adjacent_interp);
                         }
                     }
                 //}
@@ -3975,7 +3986,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[0]] - begin[dims[0]]) *
                                                                 dimension_offsets[dims[0]],
-                                                                stride * dimension_offsets[dims[0]], interp_func, pb,tuning,full_adjacent_interp);
+                                                                stride * dimension_offsets[dims[0]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                     }
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
@@ -3986,7 +3997,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[1]] - begin[dims[1]]) *
                                                                 dimension_offsets[dims[1]],
-                                                                stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                     }
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
@@ -3997,7 +4008,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
-                                                                stride * dimension_offsets[dims[2]], interp_func, pb,tuning,full_adjacent_interp);
+                                                                stride * dimension_offsets[dims[2]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                     }
                 }
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
@@ -4012,7 +4023,7 @@ namespace QoZ {
                                                                 begin_offset2 +
                                                                 (end[dims[1]] - begin[dims[1]]) *
                                                                 dimension_offsets[dims[1]],
-                                                                stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[1]],interp_func, pb,tuning,full_adjacent_interp);
+                                                                stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[1]],interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                     }
 
 
@@ -4028,7 +4039,7 @@ namespace QoZ {
                                                                 begin_offset2 +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
-                                                                stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[2]],interp_func, pb,tuning,full_adjacent_interp);
+                                                                stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[2]],interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
                         size_t begin_offset1 = begin[dims[1]] * dimension_offsets[dims[1]] + i * dimension_offsets[dims[0]];
@@ -4042,7 +4053,7 @@ namespace QoZ {
                                                                 begin_offset2 +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
-                                                                stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,tuning,full_adjacent_interp);
+                                                                stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
                     }
                     size_t begin_offset1 = begin[dims[0]] * dimension_offsets[dims[0]] ;
                     size_t begin_offset2 = begin[dims[1]] * dimension_offsets[dims[1]] ;
@@ -4059,7 +4070,7 @@ namespace QoZ {
                                                                 begin_offset3 +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
-                                                                stride * dimension_offsets[dims[0]],stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,full_adjacent_interp);
+                                                                stride * dimension_offsets[dims[0]],stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,cubicSplineType,full_adjacent_interp);
             }
             return predict_error;
         }
@@ -4068,7 +4079,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 4, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func,const uint8_t cubicSplineType,int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             //max_error = 0;
@@ -4085,7 +4096,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[0]] - begin[dims[0]]) *
                                                                 dimension_offsets[dims[0]],
-                                                                stride * dimension_offsets[dims[0]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[0]], interp_func, pb,cubicSplineType,tuning);
                     }
                 }
             }
@@ -4103,7 +4114,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[1]] - begin[dims[1]]) *
                                                                 dimension_offsets[dims[1]],
-                                                                stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning);
                     }
                 }
             }
@@ -4120,7 +4131,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
-                                                                stride * dimension_offsets[dims[2]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[2]], interp_func, pb,cubicSplineType,tuning);
                     }
                 }
             }
@@ -4138,7 +4149,7 @@ namespace QoZ {
                                                                 begin_offset +
                                                                 (end[dims[3]] - begin[dims[3]]) *
                                                                 dimension_offsets[dims[3]],
-                                                                stride * dimension_offsets[dims[3]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[3]], interp_func, pb,cubicSplineType,tuning);
                     }
                 }
             }
@@ -4148,7 +4159,7 @@ namespace QoZ {
 
 
         double block_interpolation_block3d(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {//cross block: 0 or conf.num
+                            const std::string &interp_func,const uint8_t cubicSplineType,  int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
@@ -4164,7 +4175,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[0]] - begin[dims[0]]) *
                                                                     dimension_offsets[dims[0]],
-                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,tuning);
+                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,cubicSplineType,tuning);
                         }
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -4175,7 +4186,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
+                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning);
                         }
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -4186,7 +4197,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[2]], interp_func, pb,tuning);
+                                                                    stride * dimension_offsets[dims[2]], interp_func, pb,cubicSplineType,tuning);
                         }
                     }
                 }
@@ -4201,7 +4212,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[0]] - begin[dims[0]]) *
                                                                     dimension_offsets[dims[0]],
-                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,tuning,2,begin[dims[0]],stride,dims[0]);
+                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,cubicSplineType,tuning,2,begin[dims[0]],stride,dims[0]);
                         }
                     }
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -4213,14 +4224,14 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,2,begin[dims[1]],stride,dims[1]);
+                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning,2,begin[dims[1]],stride,dims[1]);
                             }
                             else{
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
                                                                     begin_offset +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,1,begin[dims[1]],stride,dims[1]);
+                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning,1,begin[dims[1]],stride,dims[1]);
                             }
                            
                         }
@@ -4234,14 +4245,14 @@ namespace QoZ {
                                                                         begin_offset +
                                                                         (end[dims[2]] - begin[dims[2]]) *
                                                                         dimension_offsets[dims[2]],
-                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,tuning,2,begin[dims[2]],stride,dims[2]);
+                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,cubicSplineType,tuning,2,begin[dims[2]],stride,dims[2]);
                             }
                             else{ 
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
                                                                         begin_offset +
                                                                         (end[dims[2]] - begin[dims[2]]) *
                                                                         dimension_offsets[dims[2]],
-                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,tuning,1,begin[dims[2]],stride,dims[2]);
+                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,cubicSplineType,tuning,1,begin[dims[2]],stride,dims[2]);
                             } 
                         }
                     }
@@ -4352,6 +4363,8 @@ namespace QoZ {
         int interpolation_level = -1;
         uint blocksize;
         int interpolator_id;
+        uint8_t cubicSplineType;
+
         double eb_ratio = 0.5;
         double alpha;
         double beta;

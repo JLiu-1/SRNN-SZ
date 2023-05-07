@@ -1644,8 +1644,10 @@ double Tuning(QoZ::Config &conf, T *data){
 
     std::vector<std::vector<uint8_t> > interpAlgo_lists(conf.waveletAutoTuning+1);
     std::vector<std::vector<uint8_t> > interpDirection_lists(conf.waveletAutoTuning+1);
+    std::vector<std::vector<uint8_t> > cubicSplineType_lists(conf.waveletAutoTuning+1);
     std::vector<uint8_t> bestInterpAlgos(conf.waveletAutoTuning+1);
     std::vector<uint8_t> bestInterpDirections(conf.waveletAutoTuning+1);
+    std::vector<uint8_t> bestCubicSplineTypes(conf.waveletAutoTuning+1);
 
     size_t shortest_edge=conf.dims[0];
     for (size_t i=0;i<N;i++){
@@ -1894,6 +1896,10 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
             //std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_CUBIC};//temp. 
             std::vector<int> interpDirection_Candidates={0, QoZ::factorial(N) -1};
+            std::vector<int> cubic_spline_types={0};
+            if (conf.naturalSpline){
+                cubic_spline_types.push_back(1);
+            }
             
            // std::vector<int> interpDirection_Candidates={};//temp. 
             
@@ -1911,6 +1917,7 @@ double Tuning(QoZ::Config &conf, T *data){
             if(conf.levelwisePredictionSelection>0){
                 std::vector<uint8_t> interpAlgo_list(conf.levelwisePredictionSelection,0);
                 std::vector<uint8_t> interpDirection_list(conf.levelwisePredictionSelection,0);
+                std::vector<uint8_t> cubicSplineType_list(conf.levelwisePredictionSelection,0);
                 auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
                                         QoZ::LinearQuantizer<T>(conf.absErrorBound),
                                         QoZ::HuffmanEncoder<int>(),
@@ -1921,34 +1928,43 @@ double Tuning(QoZ::Config &conf, T *data){
                     int end_level=level-1;
                     uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
                     uint8_t bestDirection = 0;
+                    uint8_t bestSplineType=0;
                     double best_interp_absloss=std::numeric_limits<double>::max();
                     //conf.cmprAlgo = QoZ::ALGO_INTERP;                  
                     for (auto &interp_op: interpAlgo_Candidates) {
                         for (auto &interp_direction: interpDirection_Candidates) {
-                            /*
-                            if (interp_direction==2 and level<=2)//???
-                                continue;
-                            */
-                            conf.interpAlgo=interp_op;
-                            conf.interpDirection=interp_direction;
-                            double cur_absloss=0;
-                            for (int i=0;i<num_sampled_blocks;i++){
-                                cur_block=sampled_blocks[i];                
-                                size_t outSize=0;                              
-                                auto cmprData =sz.compress(conf, cur_block.data(), outSize,2,start_level,end_level);
-                                delete []cmprData;                              
-                                cur_absloss+=conf.decomp_square_error;
-                            }
-                            //std::cout<<interp_direction<<" "<<cur_absloss<<std::endl; 
-                            if (cur_absloss<best_interp_absloss){
-                                best_interp_absloss=cur_absloss;
-                                bestInterpAlgo=interp_op;
-                                bestDirection=interp_direction;
+                            for(auto &cubic_spline_type:cubic_spline_types){
+                                if (interp_op!=QoZ::INTERP_ALGO_CUBIC and cubic_spline_type!=0)
+                                    continue;
+                                /*
+                                if (interp_direction==2 and level<=2)//???
+                                    continue;
+                                */
+                                conf.interpAlgo=interp_op;
+                                conf.interpDirection=interp_direction;
+                                conf.cubicSplineType=cubic_spline_type;
+                                double cur_absloss=0;
+                                for (int i=0;i<num_sampled_blocks;i++){
+                                    cur_block=sampled_blocks[i];                
+                                    size_t outSize=0;                              
+                                    auto cmprData =sz.compress(conf, cur_block.data(), outSize,2,start_level,end_level);
+                                    delete []cmprData;                              
+                                    cur_absloss+=conf.decomp_square_error;
+                                }
+                                //std::cout<<interp_direction<<" "<<cur_absloss<<std::endl; 
+                                if (cur_absloss<best_interp_absloss){
+                                    best_interp_absloss=cur_absloss;
+                                    bestInterpAlgo=interp_op;
+                                    bestDirection=interp_direction;
+                                    bestSplineType=cubic_spline_type;
+
+                                }
                             }
                         }
                     }   
                     interpAlgo_list[level-1]=bestInterpAlgo;
                     interpDirection_list[level-1]=bestDirection;
+                    cubicSplineType_list[level-1]=bestSplineType;
                     /*
                     if(conf.pdTuningRealComp){
                         //place to add real compression,need to deal the problem that the sampled_blocks are changed.                   
@@ -1970,6 +1986,8 @@ double Tuning(QoZ::Config &conf, T *data){
                 //conf.interpDirection_list=interpDirection_list;
                 interpAlgo_lists[wave_idx]=interpAlgo_list;
                 interpDirection_lists[wave_idx]=interpDirection_list;
+                cubicSplineType_lists[wave_idx]=cubicSplineType_list;
+
                 /*
                 if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
                         //recover sample if real compression used                  
@@ -1989,6 +2007,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         best_interp_cr=cur_best_interp_cr;
                         conf.interpAlgo_list=interpAlgo_list;
                         conf.interpDirection_list=interpDirection_list;
+                        conf.cubicSplineType_list=cubicSplineType_list;
                         bestWave=wave_idx;
 
                     }
@@ -2001,6 +2020,7 @@ double Tuning(QoZ::Config &conf, T *data){
             else{
                 uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
                 uint8_t bestDirection = 0;
+                uint8_t BestCubicSplineType =0;
                 
 
                     
@@ -2008,29 +2028,36 @@ double Tuning(QoZ::Config &conf, T *data){
                 double cur_best_interp_cr=0.0;
                 for (auto &interp_op: interpAlgo_Candidates) {
                     for (auto &interp_direction: interpDirection_Candidates) {
-                        conf.interpAlgo=interp_op;
-                        conf.interpDirection=interp_direction;
-                        double cur_ratio=0;
-         
-                     
+                        for(auto &cubic_spline_type:cubic_spline_types){
+                            if (interp_op!=QoZ::INTERP_ALGO_CUBIC and cubic_spline_type!=0)
+                                continue;
+                            conf.interpAlgo=interp_op;
+                            conf.interpDirection=interp_direction;
+                            double cur_ratio=0;
+             
+                         
+                                
+                            std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);
+                            cur_ratio=sizeof(T)*8.0/results.first;
                             
-                        std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);
-                        cur_ratio=sizeof(T)*8.0/results.first;
-                        
-                        if (cur_ratio>cur_best_interp_cr){
-                            cur_best_interp_cr=cur_ratio;
-                            bestInterpAlgo=interp_op;
-                            bestDirection=interp_direction;
+                            if (cur_ratio>cur_best_interp_cr){
+                                cur_best_interp_cr=cur_ratio;
+                                bestInterpAlgo=interp_op;
+                                bestDirection=interp_direction;
+                                bestCubicSplineType=cubic_spline_type;
+                            }
                         }
                     }
                 }
                 //delete sz;
                 bestInterpAlgos[wave_idx]=bestInterpAlgo;
                 bestInterpDirections[wave_idx]=bestDirection;
+                bestCubicSplineTypes[wave_idx]=bestCubicSplineType;
                 if(conf.autoTuningRate==0){
                     if(cur_best_interp_cr>best_interp_cr){
                         conf.interpAlgo=bestInterpAlgo;
                         conf.interpDirection=bestDirection;
+                        conf.cubicSplineType=bestCubicSplineType;
                         bestWave=wave_idx;
                     }
                 }
