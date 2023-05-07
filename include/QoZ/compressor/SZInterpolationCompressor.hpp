@@ -1393,10 +1393,10 @@ namespace QoZ {
                     }
                     for (i = 5; i + 5 < n; i += 4) {
                         d = data + begin + i * stride;
-                        //predict_error+=quantize_integrated(d - data, *d,
-                        //            interp_cubic_2(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x),*(d + stride3x)),mode);
                         predict_error+=quantize_integrated(d - data, *d,
-                                    interp_cubic_3(*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x)),mode);
+                                   interp_cubic_2(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x),*(d + stride3x)),mode);
+                        //predict_error+=quantize_integrated(d - data, *d,
+                         //           interp_cubic_3(*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x)),mode);
                     }
                     if(i+3<n){
                         d = data + begin + i * stride;
