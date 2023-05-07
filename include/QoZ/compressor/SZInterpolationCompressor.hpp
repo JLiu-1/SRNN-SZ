@@ -198,7 +198,7 @@ namespace QoZ {
                     }
                  
                     block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
-                                        interpolators[cur_interpolator], cur_direction, stride,0,cross_block,regressiveInterp);
+                                        interpolators[cur_interpolator], cur_splinetype,cur_direction, stride,0,cross_block,regressiveInterp);
 
                 }
                
