@@ -1957,7 +1957,6 @@ namespace QoZ {
                     //i=1
                      //std::cout<<"f6"<<std::endl;
                     for(j=3;j+3<m;j+=4){
-                        d = data + begin1 + stride1+begin2+j*stride2;
                       
                         d = data + begin1 + stride1+begin2+j*stride2;
                         predict_error+=quantize_integrated(d - data, *d,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  ,mode);
