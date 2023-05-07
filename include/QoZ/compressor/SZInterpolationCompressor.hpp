@@ -1386,11 +1386,13 @@ namespace QoZ {
                     
                     for (i = 3; i + 3 < n; i += 4) {
                         d = data + begin + i * stride;
+                        mark[begin + i * stride]=true;
                         predict_error+=quantize_integrated(d - data, *d,
                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
                     }
                     for (i = 5; i + 5 < n; i += 4) {
                         d = data + begin + i * stride;
+                        mark[begin + i * stride]=true;
                         predict_error+=quantize_integrated(d - data, *d,
                                    interp_cubic_2(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x),*(d + stride3x)),mode);
                         //predict_error+=quantize_integrated(d - data, *d,
@@ -1398,6 +1400,7 @@ namespace QoZ {
                     }
                     if(i+3<n){
                         d = data + begin + i * stride;
+                        mark[begin + i * stride]=true;
                         predict_error+=quantize_integrated(d - data, *d,
                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
 
@@ -1420,6 +1423,8 @@ namespace QoZ {
                 }
                 else{
                     d = data + begin + stride;
+                    mark[begin +  stride]=true;
+                    mark[begin + i * stride]=true;
                     predict_error+=quantize_integrated(d - data, *d, interp_quad_1_adj(*(d - stride), *(d + stride), *(d + stride2x)),mode);
                     //predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride),*(d + stride), *(d+stride2x), *(d + stride3x)),mode);
                     d = data + begin + i * stride;
@@ -1427,6 +1432,7 @@ namespace QoZ {
                      //predict_error+=quantize_integrated(d - data, *d, interp_cubic_back_adj(*(d -stride3x),*(d - stride2x), *(d-stride), *(d + stride)),mode);
                     if (n % 2 == 0) {
                         d = data + begin + (n - 1) * stride;
+                        mark[begin + (n-1) * stride]=true;
                         predict_error+=
                         //quantize_integrated(d - data, *d, interp_quad_3_adj(*(d - stride3x), *(d - stride2x), *(d - stride)),mode);
                         quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);//to determine
