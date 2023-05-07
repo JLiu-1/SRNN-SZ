@@ -482,7 +482,7 @@ namespace QoZ {
             }
             if(conf.verbose)
                 timer.stop("prediction");
-            /*
+            
             if(N==2){
                 for(size_t i=0;i<global_dimensions[0];i++){
                     for(size_t j=0;j<global_dimensions[1];j++){
@@ -493,7 +493,7 @@ namespace QoZ {
                     }
                 }
             }
-            */
+            
            
             
             
@@ -1773,7 +1773,7 @@ namespace QoZ {
                 else{
                     size_t j_start;
                     //first half (non-adj)
-                    //std::cout<<"f1"<<std::endl;
+                    std::cout<<"f1"<<std::endl;
                     for (i = 3; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?5:3;
                         for(j=j_start;j+3<m;j+=4){
