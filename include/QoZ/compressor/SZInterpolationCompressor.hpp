@@ -1686,7 +1686,7 @@ namespace QoZ {
                    
                 size_t i,j;
                 T *d;
-                if(!full_adjacent_interp)
+                if(!full_adjacent_interp){
                     for (i = 3; i + 3 < n; i += 2) {
                        
                         for(j=3;j+3<m;j+=2){
