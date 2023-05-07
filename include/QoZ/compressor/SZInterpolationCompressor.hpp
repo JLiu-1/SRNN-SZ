@@ -1427,7 +1427,7 @@ namespace QoZ {
                     predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride),*(d + stride), *(d+stride2x), *(d + stride3x)),mode);
                     d = data + begin + i * stride;
                    // predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d - stride2x), *(d - stride), *(d + stride)),mode);
-                     predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride3x),*(d - stride2x), *(d-stridex), *(d + stridex)),mode);
+                     predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride3x),*(d - stride2x), *(d-stride), *(d + stride)),mode);
                     if (n % 2 == 0) {
                         d = data + begin + (n - 1) * stride;
                         predict_error+=
