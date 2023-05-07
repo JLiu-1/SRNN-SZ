@@ -1893,12 +1893,10 @@ namespace QoZ {
                         for(j=j_start;j+3<m;j+=4){
                             
                             d = data + begin1 + i* stride1+begin2+j*stride2;
-                            if(mode==-1){
-                                std::cout<<data-d<<std::endl;
-                            }
+                            
                             T prediction=interp_linear( interp_cubic_2(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1),*(d + stride2x1), *(d + stride3x1))
                                                                     ,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  );
-                            if(mode==-1){
+                            if(d-data==33759669){
                                 std::cout<<prediction<<std::endl;
                             }
 
