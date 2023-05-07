@@ -1357,6 +1357,7 @@ namespace QoZ {
                 return 0;
             }
             double predict_error = 0;
+            size_t stride2x=2*stride;
             size_t stride3x = 3 * stride;
             size_t stride5x = 5 * stride;
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
@@ -1385,7 +1386,7 @@ namespace QoZ {
                     }
                 }
                 else{
-                    size_t stride2x=2*stride;
+                    
                     for (i = 3; i + 3 < n; i += 4) {
                         d = data + begin + i * stride;
                         predict_error+=quantize_integrated(d - data, *d,
@@ -1408,7 +1409,10 @@ namespace QoZ {
 
                 }
                 d = data + begin + stride;
-                predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
+                if(!full_adjacent_interp)
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
+                else
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_1_adj(*(d - stride), *(d + stride), *(d + stride2x)),mode);
 
                 d = data + begin + i * stride;
                 predict_error+=quantize_integrated(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
