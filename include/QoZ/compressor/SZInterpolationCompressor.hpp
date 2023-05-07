@@ -2004,7 +2004,7 @@ namespace QoZ {
                         if(mark[begin1 +  stride1+begin2+j*stride2])
                             std::cout<<"e17 "<<j<<" "<<std::endl;
                         mark[begin1 +  stride1+begin2+j*stride2]=true;
-                        d = data + begin1 + i* stride1+begin2+j*stride2;
+                        d = data + begin1 + stride1+begin2+j*stride2;
                         predict_error+=quantize_integrated(d - data, *d,interp_cubic_2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2),*(d + stride2x2), *(d + stride3x2))  ,mode);
                     }
                     /*
