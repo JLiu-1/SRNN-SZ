@@ -2128,7 +2128,7 @@ namespace QoZ {
                 }
             }
             else{//cubic
-                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
+                //auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t stride3x1=3*stride1,stride3x2=3*stride2,stride5x1=5*stride1,stride5x2=5*stride2,stride3x3=3*stride3,stride5x3=5*stride3,stride2x1=2*stride1,stride2x2=2*stride2,stride2x3=2*stride3;
                 //adaptive todo
               
@@ -3450,7 +3450,7 @@ namespace QoZ {
             }
             else{//cubic
                 //adaptive todo
-                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
+                //auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t i,j;
                 T *d;
                 for (i = 3; i + 3 < n; i += 2) {
@@ -3638,7 +3638,7 @@ namespace QoZ {
             }
             else{//cubic
                 //adaptive todo
-                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
+                //auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t i,j;
                 T *d;
                 for (i = 3; i + 3 < n; i += 1) {
