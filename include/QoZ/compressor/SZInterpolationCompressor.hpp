@@ -482,7 +482,7 @@ namespace QoZ {
             }
             if(conf.verbose)
                 timer.stop("prediction");
-            /*
+            
             if(N==2){
                 for(size_t i=0;i<global_dimensions[0];i++){
                     for(size_t j=0;j<global_dimensions[1];j++){
@@ -493,7 +493,7 @@ namespace QoZ {
                     }
                 }
             }
-            */
+            
            
             
             
@@ -3103,7 +3103,7 @@ namespace QoZ {
                 }
             }
             
-            else if (direction==4){
+            else if (direction==2){
                 const std::array<int, N> dims = dimension_sequences[0];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
@@ -3131,7 +3131,7 @@ namespace QoZ {
                                                             stride * dimension_offsets[dims[0]],
                                                             stride * dimension_offsets[dims[1]], interp_func, pb,tuning,full_adjacent_interp);
             }
-            else if(direction==2){
+            else if(direction==3){
                 const std::array<int, N> dims = dimension_sequences[0];
                 size_t begin_offset1=begin[dims[0]]*dimension_offsets[dims[0]];
                 size_t begin_offset2=begin[dims[1]]*dimension_offsets[dims[1]];
