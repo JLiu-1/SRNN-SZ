@@ -59,7 +59,7 @@ namespace QoZ {
     }
 
     template<class T>
-    inline T interp_cubic_adj_1(T a, T b, T c, T d,T e,T f) {//adj6 nat
+    inline T interp_cubic_adj(T a, T b, T c, T d,T e,T f) {//adj6 nat
         T p=(3*a-18*b+46*c+46*d-18*e+3*f)/62;
         return p;
     }
