@@ -539,8 +539,6 @@ namespace QoZ {
 
             }
             else if(levelwise_predictor_levels>0){
-                for (auto x:conf.cubicSplineType_list)
-                    std::cout<<(int)x<<std::endl; 
                 write(conf.interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
                 write(conf.interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
                 write(conf.cubicSplineType_list.data(),levelwise_predictor_levels,buffer_pos);
