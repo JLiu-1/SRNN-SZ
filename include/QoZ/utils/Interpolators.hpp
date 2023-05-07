@@ -95,6 +95,11 @@ namespace QoZ {
     }
 
     template<class T>
+    inline T interp_cubic_front_adj(T a, T b, T c, T d) {
+        return (17 * a + 44 * b - 18 * c + 3) / 46;
+    }
+
+    template<class T>
     inline T interp_cubic_front_2(T a, T b, T c, T d) {
         return ( a + 6 * b - 4 * c + d) / 4;
     }
@@ -102,6 +107,11 @@ namespace QoZ {
     template<class T>
     inline T interp_cubic_back_1(T a, T b, T c, T d) {
         return (a - 5 * b + 15 * c + 5 * d) / 16;
+    }
+
+    template<class T>
+    inline T interp_cubic_back_adj(T a, T b, T c, T d) {
+        return (3*a - 18 * b + 44 * c + 17 * d) / 46;
     }
 
     template<class T>

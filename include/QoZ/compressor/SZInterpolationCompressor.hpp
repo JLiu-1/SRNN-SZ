@@ -1430,8 +1430,8 @@ namespace QoZ {
                         d = data + begin + (n - 1) * stride;
                         predict_error+=
                         //quantize_integrated(d - data, *d, interp_quad_3_adj(*(d - stride3x), *(d - stride2x), *(d - stride)),mode);
-                        //quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
-                        quantize_integrated(d - data, *d, *(d - stride),mode);
+                        quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);//to determine
+                        //quantize_integrated(d - data, *d, *(d - stride),mode);
                     }
                 }
 
