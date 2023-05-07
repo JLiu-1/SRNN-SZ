@@ -2020,7 +2020,7 @@ double Tuning(QoZ::Config &conf, T *data){
             else{
                 uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
                 uint8_t bestDirection = 0;
-                uint8_t BestCubicSplineType =0;
+                uint8_t bestCubicSplineType =0;
                 
 
                     
@@ -2088,6 +2088,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     std::cout << "Level: " << (unsigned) level<<std::endl;
                     std::cout << "\tinterp best interpAlgo = " << (interpAlgo_lists[0][level-1] == 0 ? "LINEAR" : "CUBIC") << std::endl;
                     std::cout << "\tinterp best direction = " << (unsigned) interpDirection_lists[0][level-1] << std::endl;
+                    if(interpAlgo_lists[0][level-1]!=0)
+                        std::cout << "\tinterp best cubic spline = " << (unsigned) cubicSplineType_lists[0][level-1] << std::endl;
                 }
             }
             if(conf.autoTuningRate==0){
