@@ -1779,7 +1779,7 @@ namespace QoZ {
                 else{
                     size_t j_start;
                     //first half (non-adj)
-                    std::cout<<"f1"<<std::endl;
+                    //std::cout<<"f1"<<std::endl;
                     for (i = 3; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?5:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -3061,7 +3061,6 @@ namespace QoZ {
             bool full_adjacent_interp=false;
             if (direction>=3){
                     full_adjacent_interp=true;
-                    std::cout<<"dwad"<<std::endl;
                     direction-=3;
              }
             if(direction<2){
