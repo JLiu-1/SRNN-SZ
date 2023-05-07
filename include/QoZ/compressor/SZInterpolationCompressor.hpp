@@ -1443,7 +1443,7 @@ namespace QoZ {
                         quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x),*(d - stride)) ,mode);//to determine
                         //quantize_integrated(d - data, *d, *(d - stride),mode);
                     }
-                    
+                }
 
                 
                 
