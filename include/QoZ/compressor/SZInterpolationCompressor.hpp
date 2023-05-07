@@ -1429,7 +1429,8 @@ namespace QoZ {
                     if (n % 2 == 0) {
                         d = data + begin + (n - 1) * stride;
                         predict_error+=
-                        quantize_integrated(d - data, *d, interp_quad_3_adj(*(d - stride3x), *(d - stride2x), *(d - stride)),mode);
+                        //quantize_integrated(d - data, *d, interp_quad_3_adj(*(d - stride3x), *(d - stride2x), *(d - stride)),mode);
+                        quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
                     }
                 }
 

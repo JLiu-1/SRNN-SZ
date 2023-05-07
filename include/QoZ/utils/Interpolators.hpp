@@ -70,6 +70,11 @@ namespace QoZ {
     }
 
     template<class T>
+    inline T lorenzo_1d(T a, T b) {
+        return 2*b-a;
+    }
+
+    template<class T>
     inline T lorenzo_2d(T a, T b, T c) {
         return (b+c-a);
     }
