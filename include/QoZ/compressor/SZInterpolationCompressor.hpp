@@ -48,13 +48,15 @@ namespace QoZ {
             uchar const *buffer_pos = buffer;
             std::vector <uint8_t> interpAlgo_list;
             std::vector <uint8_t> interpDirection_list;
+            std::vector <uint8_t> cubicSplineType_list;
             int fixBlockSize;
             int trimToZero;
            
             read(global_dimensions.data(), N, buffer_pos, remaining_length);        
             read(blocksize, buffer_pos, remaining_length);
             read(interpolator_id, buffer_pos, remaining_length);           
-            read(direction_sequence_id, buffer_pos, remaining_length);           
+            read(direction_sequence_id, buffer_pos, remaining_length);  
+            read(cubicSplineType, buffer_pos, remaining_length);         
             read(alpha,buffer_pos,remaining_length);
             read(beta,buffer_pos,remaining_length);
             read(maxStep,buffer_pos,remaining_length);
@@ -86,8 +88,10 @@ namespace QoZ {
             else if(levelwise_predictor_levels>0){
                 interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
+                cubicSplineType_list.resize(levelwise_predictor_levels);
                 read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
                 read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
+                read(cubicSplineType_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
             }           
             init();   
           
@@ -143,19 +147,23 @@ namespace QoZ {
             
                 uint8_t cur_interpolator=interpolator_id;
                 uint8_t cur_direction=direction_sequence_id;
+                uint8_t cur_splinetype=cubicSplineType;
                 
                 if (levelwise_predictor_levels==0){
                     cur_interpolator=interpolator_id;
                     cur_direction=direction_sequence_id;
+                    cur_splinetype=cubicSplineType;
                 }
                 else{
                     if (level-1<levelwise_predictor_levels){
                         cur_interpolator=interpAlgo_list[level-1];
                         cur_direction=interpDirection_list[level-1];
+                        cur_splinetype=cubicSplineType_list[level-1];
                     }
                     else{
                         cur_interpolator=interpAlgo_list[levelwise_predictor_levels-1];
                         cur_direction=interpDirection_list[levelwise_predictor_levels-1];
+                        cur_splinetype=cubicSplineType_list[levelwise_predictor_levels-1];
                     }
                 }
                      
