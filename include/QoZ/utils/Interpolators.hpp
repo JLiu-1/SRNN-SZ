@@ -19,6 +19,7 @@ namespace QoZ {
     inline T interp_quad_1(T a, T b, T c) {
         return (3 * a + 6 * b - c) / 8;
     }
+    template<class T>
     inline T interp_quad_1_adj(T a, T b, T c) {
         return ( a + 3 * b - c) / 3;
     }
