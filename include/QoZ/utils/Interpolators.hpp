@@ -36,7 +36,7 @@ namespace QoZ {
         //return -0.06368435202786181*a+0.5731591682507563*b+0.5731591682507563*c-0.06368435202786181*d;
         return (-3*a+23*b+23*c-3*d)/40;
     }
-    inline T interp_cubic_2(T a, T b, T c, T d,T e,T,f) {
+    inline T interp_cubic_2(T a, T b, T c, T d,T e,T f) {
         return (3*a-18*b+46*c+46*d-18*e+3*f)/62;
     }
     inline T interp_cubic_3(T a, T b, T c, T d) {

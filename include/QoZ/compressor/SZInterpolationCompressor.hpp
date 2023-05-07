@@ -2684,7 +2684,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 1, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
             return block_interpolation_1d(data, begin[0], end[0], stride, interp_func, pb,tuning);
         }
 
@@ -2692,16 +2692,18 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 2, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
-            if(direction<4){
-                const std::array<int, N> dims = dimension_sequences[direction];
-                bool full_adjacent_interp=false;
-                if (direction>=2){
+            bool full_adjacent_interp=false;
+            if (direction>=3){
                     full_adjacent_interp=true;
-                    direction-=2;
-                }
+                    direction-=3;
+             }
+            if(direction<2){
+                const std::array<int, N> dims = dimension_sequences[direction];
+                
+                
                 if(!regressive or stride!=1){
                     
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
@@ -2772,7 +2774,7 @@ namespace QoZ {
                                                             stride * dimension_offsets[dims[0]],
                                                             stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
             }
-            else if(direction==5){
+            else if(direction==2){
                 const std::array<int, N> dims = dimension_sequences[0];
                 size_t begin_offset1=begin[dims[0]]*dimension_offsets[dims[0]];
                 size_t begin_offset2=begin[dims[1]]*dimension_offsets[dims[1]];
@@ -2802,17 +2804,17 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 3, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {//cross block: 0 or conf.num
+                            const std::string &interp_func, int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
-            if(direction<12){
-                const std::array<int, N> dims = dimension_sequences[direction];
-                bool full_adjacent_interp=false;
-                if (direction>=6){
+            bool full_adjacent_interp=false;
+            if (direction>=7){
                     full_adjacent_interp=true;
-                    direction-=6;
-                }
+                    direction-=7;
+             }
+            if(direction<6){
+                const std::array<int, N> dims = dimension_sequences[direction];
                 //if (cross_block==0){
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
@@ -2924,7 +2926,7 @@ namespace QoZ {
                 */
             }
             
-            else if (direction>=12){
+            else if (direction>=6){
                 const std::array<int, N> dims = dimension_sequences[0];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
@@ -3027,7 +3029,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 4, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func,int direction, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             //max_error = 0;
