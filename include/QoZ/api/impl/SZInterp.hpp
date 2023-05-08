@@ -1945,7 +1945,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                 conf.cubicSplineType=cubic_spline_type;
                                 double cur_absloss=0;
                                 for (int i=0;i<num_sampled_blocks;i++){
-                                    cur_block=sampled_blocks[i];                
+                                    cur_block=sampled_blocks[i];  //not so efficient              
                                     size_t outSize=0;                              
                                     auto cmprData =sz.compress(conf, cur_block.data(), outSize,2,start_level,end_level);
                                     delete []cmprData;                              
@@ -1965,11 +1965,12 @@ double Tuning(QoZ::Config &conf, T *data){
                     interpAlgo_list[level-1]=bestInterpAlgo;
                     interpDirection_list[level-1]=bestDirection;
                     cubicSplineType_list[level-1]=bestSplineType;
-                    /*
+                    
                     if(conf.pdTuningRealComp){
                         //place to add real compression,need to deal the problem that the sampled_blocks are changed.                   
                         conf.interpAlgo=bestInterpAlgo;
                         conf.interpDirection=bestDirection;
+                        conf.cubicSplineType=bestSplineType;
                         for (int i=0;i<num_sampled_blocks;i++){
 
                             size_t outSize=0;
@@ -1979,7 +1980,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         }
                         
                     } 
-                    */ 
+                    
 
                 }
                 //conf.interpAlgo_list=interpAlgo_list;
@@ -1988,12 +1989,12 @@ double Tuning(QoZ::Config &conf, T *data){
                 interpDirection_lists[wave_idx]=interpDirection_list;
                 cubicSplineType_lists[wave_idx]=cubicSplineType_list;
 
-                /*
+                
                 if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
                         //recover sample if real compression used                  
                     sampleBlocks<T,N>(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
                 }
-                */
+                
                     
                 if(conf.autoTuningRate==0){              
                     std::pair<double,double> results=CompressTest<T,N>(conf,sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);
