@@ -1666,7 +1666,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         for (auto &interp_pd: interpParadigm_Candidates) {
                             cur_meta.interpParadigm=interp_pd;
                             for (auto &interp_direction: interpDirection_Candidates) {
-                                if (interp_pd==1 or  (interp_pd==2 and N<=2) and interp_direction!=0)
+                                if ((interp_pd==1 or  (interp_pd==2 and N<=2)) and interp_direction!=0)
                                     continue;
                                 cur_meta.interpDirection=interp_direction;
                                 for(auto &cubic_spline_type:cubicSplineType_Candidates){
