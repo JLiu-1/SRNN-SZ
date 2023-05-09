@@ -241,8 +241,8 @@ char * outlier_compress(QoZ::Config &conf,T *data,size_t &outSize){
     }
 
     else if (conf.offsetPredictor == 3){
-        conf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-        conf.interpDirection=0;
+        conf.interpMeta.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+        conf.interpMeta.interpDirection=0;
         auto sz = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
         QoZ::LinearQuantizer<T>(conf.absErrorBound),
         QoZ::HuffmanEncoder<int>(),
@@ -254,8 +254,8 @@ char * outlier_compress(QoZ::Config &conf,T *data,size_t &outSize){
     else if (conf.offsetPredictor == 4){
             
         conf.setDims(conf.dims.begin(),conf.dims.end());
-        conf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-        conf.interpDirection=0;
+        conf.interpMeta.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+        conf.interpMeta.interpDirection=0;
         auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
         QoZ::LinearQuantizer<T>(conf.absErrorBound),
         QoZ::HuffmanEncoder<int>(),
@@ -310,8 +310,8 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
     }
 
     else if (conf.offsetPredictor == 3){
-        conf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-        conf.interpDirection=0;
+        conf.interpMeta.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+        conf.interpMeta.interpDirection=0;
 
            
         auto sz = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
@@ -325,8 +325,8 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
     else if (conf.offsetPredictor == 4){
             
         conf.setDims(conf.dims.begin(),conf.dims.end());
-        conf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-        conf.interpDirection=0;          
+        conf.interpMeta.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+        conf.interpMeta.interpDirection=0;          
         auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
         QoZ::LinearQuantizer<T>(),
         QoZ::HuffmanEncoder<int>(),

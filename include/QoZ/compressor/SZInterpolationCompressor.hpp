@@ -229,7 +229,7 @@ namespace QoZ {
             quantizer.postdecompress_data();
             return decData;
         }
-        /*
+        
         T *decompress_block(uchar const *cmpData, const size_t &cmpSize, T *decData) {
 
             size_t remaining_length = cmpSize;
@@ -353,7 +353,7 @@ namespace QoZ {
             quantizer.postdecompress_data();
             return decData;
         }
-        */
+        
         uchar *compress(Config &conf, T *data, size_t &compressed_size,int tuning=0) {
             return compress(conf,data,compressed_size,tuning,0,0);
         }
@@ -596,7 +596,7 @@ namespace QoZ {
             return lossless_data;
         }
 
-        /*
+        
         // compress given the error bound
         uchar *compress_block( Config &conf, T *data, size_t &compressed_size,int tuning=0,int start_level=0,int end_level=0) {
             
@@ -610,8 +610,8 @@ namespace QoZ {
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
             blocksize = conf.interpBlockSize;    
             maxStep=conf.maxStep;    
-            interpolator_id = conf.interpAlgo;
-            direction_sequence_id = conf.interpDirection;
+            interpolator_id = conf.interpMeta.interpAlgo;
+            direction_sequence_id = conf.interpMeta.interpDirection;
             alpha=conf.alpha;
             beta=conf.beta;
             size_t cross_block=conf.crossBlock;
@@ -825,8 +825,9 @@ namespace QoZ {
                 write(interp_dirs.data(),ops_num,buffer_pos);
             }
             else if(levelwise_predictor_levels>0){
-                write(conf.interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
-                write(conf.interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
+                //write(conf.interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
+                //write(conf.interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
+                 write(conf.interpMeta_list.data(),levelwise_predictor_levels,buffer_pos);
             }
            
             quantizer.save(buffer_pos);
@@ -847,7 +848,7 @@ namespace QoZ {
             compressed_size += interp_compressed_size;
             return lossless_data;
         }
-        */
+        
 
         uchar *encoding_lossless(size_t &compressed_size,const std::vector<int> &q_inds=std::vector<int>()) {
 

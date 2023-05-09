@@ -254,8 +254,8 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
         }
 
         else if (conf.offsetPredictor == 3){
-            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-            newconf.interpDirection=0;
+            newconf.interpMeta.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+            newconf.interpMeta.interpDirection=0;
 
            
             auto sz2 = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
@@ -270,8 +270,8 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
         else if (conf.offsetPredictor == 4){
             
             newconf.setDims(conf.dims.begin(),conf.dims.end());
-            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-            newconf.interpDirection=0;
+            newconf.interpMeta.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+            newconf.interpMeta.interpDirection=0;
            
             auto sz2 = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
             QoZ::LinearQuantizer<T>(newconf.absErrorBound),
