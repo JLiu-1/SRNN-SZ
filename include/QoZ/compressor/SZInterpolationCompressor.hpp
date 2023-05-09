@@ -3056,7 +3056,7 @@ namespace QoZ {
                             //k=1
                             if(k_start==5){
                                 d = data + begin1 +  (n-1)*stride1+begin2+(m-1)*stride2+begin3+stride3;
-                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//,interp_quad_1(*(d - stride3), *(d + stride3), *(d + stride3x3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, 0,mode,interp_quad_1(*(d - stride3), *(d + stride3), *(d + stride3x3)),mode);
                             }
                             //k=p-3 or p-2
                             if(k<p-1){
