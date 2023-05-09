@@ -3848,14 +3848,14 @@ namespace QoZ {
                     predict_error += block_interpolation_1d(data, begin_offset,
                                                             begin_offset +
                                                             (end[dims[0]] - begin[dims[0]]) * dimension_offsets[dims[0]],
-                                                            stride * dimension_offsets[dims[0]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
+                                                            stride * dimension_offsets[dims[0]], interp_func, pb,meta,tuning);
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
                     size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]];
                     predict_error += block_interpolation_1d(data, begin_offset,
                                                             begin_offset +
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
-                                                            stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
+                                                            stride * dimension_offsets[dims[1]], interp_func, pb,meta,tuning);
                 }
                 size_t begin_offset1=begin[dims[0]]*dimension_offsets[dims[0]];
                 size_t begin_offset2=begin[dims[1]]*dimension_offsets[dims[1]];
@@ -3867,7 +3867,7 @@ namespace QoZ {
                                                             begin_offset2 +
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
                                                             stride * dimension_offsets[dims[0]],
-                                                            stride * dimension_offsets[dims[1]], interp_func, pb,cubicSplineType,tuning,full_adjacent_interp);
+                                                            stride * dimension_offsets[dims[1]], interp_func, pb,meta,tuning);
             }
            
             else if(paradigm==3){//cross
