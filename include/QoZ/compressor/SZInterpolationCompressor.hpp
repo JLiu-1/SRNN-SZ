@@ -3832,7 +3832,7 @@ namespace QoZ {
                         std::vector<size_t> cur_end=block_end;
                         cur_end[dims[1]]=j;
                         predict_error += block_interpolation_1d_regressive(data,block_begin,block_end,dims[0],cur_begin,cur_end,sparsity,
-                                                        stride,interp_func,pb,meta.cubicSplineType,tuning);
+                                                        stride,interp_func,pb,meta,tuning);
                     }
                     sparsity[dims[0]]=1;
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -3841,7 +3841,7 @@ namespace QoZ {
                         std::vector<size_t> cur_end=block_end;
                         cur_end[dims[0]]=i;
                         predict_error += block_interpolation_1d_regressive(data,block_begin,block_end,dims[1],cur_begin,cur_end,sparsity,
-                                                        stride,interp_func,pb,meta.cubicSplineType,tuning);
+                                                        stride,interp_func,pb,meta,tuning);
                     }
 
                 }
