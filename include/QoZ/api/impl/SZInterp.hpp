@@ -1693,6 +1693,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                         std::cout<<(int)interp_op<<" "<<(int)interp_pd<<" "<<(int)interp_direction<<" "<<(int)cubic_spline_type<<" "<<(int)adj_interp<<" "<<cur_absloss<<std::endl; 
                                         if (cur_absloss<best_interp_absloss){
                                             best_meta=cur_meta;
+                                            best_interp_absloss=cur_absloss;
                                         }
                                     }
                                 }
@@ -1705,6 +1706,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     interpDirection_list[level-1]=bestDirection;
                     cubicSplineType_list[level-1]=bestSplineType;
                     */
+
                     interpMeta_list[level-1]=best_meta;
                         
                     if(conf.pdTuningRealComp){
@@ -1806,6 +1808,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                         bestCubicSplineType=cubic_spline_type;
                                         */
                                         best_meta=cur_meta;
+                                        
                                     }
                                 }
                             }
