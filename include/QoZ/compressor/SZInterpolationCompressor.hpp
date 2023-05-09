@@ -3051,7 +3051,7 @@ namespace QoZ {
                             k_start=(n+m-2)%4==0?3:5;
                             for(k=k_start;k+3<p;k+=4){
                                 d = data + begin1 +  (n-1)*stride1+ begin2+(m-1)*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//interp_cubic(*(d - stride3x3), *(d - stride3), *(d + stride3), *(d + stride3x3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d,interp_cubic(*(d - stride3x3), *(d - stride3), *(d + stride3), *(d + stride3x3)),mode);
                             }
                             //k=1
                             if(k_start==5){
