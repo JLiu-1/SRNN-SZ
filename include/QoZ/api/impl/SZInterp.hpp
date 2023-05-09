@@ -1619,7 +1619,7 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<uint8_t> interpDirection_Candidates={0, QoZ::factorial(N) -1};
             std::vector<uint8_t> adjInterp_Candidates={0};
             if(conf.multiDimInterp>0){
-                for(size_t i=1;i<=multiDimInterp)
+                for(size_t i=1;i<=conf.multiDimInterp)
                     interpParadigm_Candidates.push_back(i);
             }
 
@@ -1638,7 +1638,7 @@ double Tuning(QoZ::Config &conf, T *data){
             //if(conf.mdCrossInterp)
              //   interpDirection_Candidates.push_back(2*QoZ::factorial(N)+1);
             if(conf.levelwisePredictionSelection>0){
-                std::vector<uint8_t> interpMeta_list(conf.levelwisePredictionSelection,0);
+                std::vector<QoZ::Interp_Meta> interpMeta_list(conf.levelwisePredictionSelection,0);
                 /*
                 std::vector<uint8_t> interpDirection_list(conf.levelwisePredictionSelection,0);
                 std::vector<uint8_t> cubicSplineType_list(conf.levelwisePredictionSelection,0);
@@ -1669,7 +1669,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                 if (interp_pd==1 or  (interp_pd==2 and N<=2) and interp_direction!=0)
                                     continue;
                                 cur_meta.interpDirection=interp_direction;
-                                for(auto &cubic_spline_type:cubic_spline_types){
+                                for(auto &cubic_spline_type:cubicSplineType_Candidates){
                                     if (interp_op!=QoZ::INTERP_ALGO_CUBIC and cubic_spline_type!=0)
                                         break;
                                     cur_meta.cubicSplineType=cubic_spline_type;
@@ -1680,7 +1680,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                         if (interp_direction==2 and level<=2)//???
                                             continue;
                                         */
-                                        cur_meta.adjInterp=adj_interp
+                                        cur_meta.adjInterp=adj_interp;
                                         conf.interpMeta=cur_meta;
                                         double cur_absloss=0;
                                         for (int i=0;i<num_sampled_blocks;i++){
@@ -1785,14 +1785,14 @@ double Tuning(QoZ::Config &conf, T *data){
                             if (interp_pd==1 or  (interp_pd==2 and N<=2) and interp_direction!=0)
                                 continue;
                             cur_meta.interpDirection=interp_direction;
-                            for(auto &cubic_spline_type:cubic_spline_types){
+                            for(auto &cubic_spline_type:cubicSplineType_Candidates){
                                 if (interp_op!=QoZ::INTERP_ALGO_CUBIC and cubic_spline_type!=0)
                                     break;
                                 cur_meta.cubicSplineType=cubic_spline_type;
                                 for(auto adj_interp:adjInterp_Candidates){
                                     if (interp_op!=QoZ::INTERP_ALGO_CUBIC and adj_interp!=0)
                                         break;
-                                    cur_meta.adjInterp=adj_interp           
+                                    cur_meta.adjInterp=adj_interp;       
                                     conf.interpMeta=cur_meta;
                                     double cur_ratio=0;
                                     std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);
@@ -1864,7 +1864,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     std::cout << "\tinterp best interpAlgo = " << (interpMeta_lists[0][level-1].interpAlgo == 0 ? "LINEAR" : "CUBIC") << std::endl;
                     std::cout << "\tinterp best interpParadigm = " << (interpMeta_lists[0][level-1].interpParadigm == 0 ? "1D" : (interpMeta_lists[0][level-1].interpParadigm == 1 ? "MD" : "HD") ) << std::endl;
                     if(interpMeta_lists[0][level-1].interpParadigm!=1)
-                        std::cout << "\tinterp best direction = " << (unsigned) interpDirection_lists[0][level-1].interpDirection << std::endl;
+                        std::cout << "\tinterp best direction = " << (unsigned) interpMeta_lists[0][level-1].interpDirection << std::endl;
                     if(interpMeta_lists[0][level-1].interpAlgo!=0){
                         std::cout << "\tinterp best cubic spline = " << (unsigned) interpMeta_lists[0][level-1].cubicSplineType << std::endl;
                         std::cout << "\tinterp best adj = " << (unsigned) interpMeta_lists[0][level-1].adjInterp << std::endl;
@@ -2047,7 +2047,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 conf.interpDirection_list=interpDirection_lists[wave_idx];
                 conf.cubicSplineType_list=cubicSplineType_lists[wave_idx];
                 */
-                conf.interpMeta=interpMeta_lists[wave_idx];
+                conf.interpMeta_list=interpMeta_lists[wave_idx];
             }
             else{
                 /*
@@ -2314,7 +2314,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 conf.interpAlgo=bestInterpAlgos[bestWave];
                 conf.interpDirection=bestInterpDirections[bestWave];
                 */
-                conf.interpMeta=bestInterpMetas[bestWave]
+                conf.interpMeta=bestInterpMetas[bestWave];
             }
         }
     }
@@ -2550,7 +2550,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             std::cout << "====================================== END TUNING ======================================" << std::endl;
         }
 
-        if (conf.predictorTuningRate<1){      
+        //if (conf.predictorTuningRate<1){      
             if(conf.wavelet >1)
                 if(use_sperr<T,N>(conf)){
                     compress_output = SPERR_Compress<T,N>(conf, coeffData, outSize);
@@ -2565,7 +2565,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 else
                     compress_output = SZ_compress_Interp<T, N>(conf, data, outSize);        
             }
-        }
+       // }
+        /*
         else {
             std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
             std::vector<int> dir_candidates={0,QoZ::factorial(N)-1};
@@ -2578,6 +2579,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             else
                 compress_output = SZ_compress_AutoSelectiveInterp<T,N>(conf,data,outSize,op_candidates,dir_candidates,0);
         }
+        */
     } 
 
     else {
