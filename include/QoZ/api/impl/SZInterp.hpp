@@ -1276,8 +1276,8 @@ double Tuning(QoZ::Config &conf, T *data){
         }
         //testLorenzo?
         //deactivate FZ-related parts.
-        conf.profiling=0;
-        conf.var_first=0;
+        //conf.profiling=0;
+        //conf.var_first=0;
         conf.testLorenzo=0;
         conf.waveletAutoTuning=0;
         conf.waveletTest=0;
@@ -1808,7 +1808,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                         bestCubicSplineType=cubic_spline_type;
                                         */
                                         best_meta=cur_meta;
-                                        
+
                                     }
                                 }
                             }
