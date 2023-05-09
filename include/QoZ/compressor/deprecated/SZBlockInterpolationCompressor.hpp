@@ -111,8 +111,8 @@ namespace QoZ {
 
             block_size = conf.blockSize;
             num_elements = conf.num;
-            interpolator_id = conf.interpAlgo;
-            direction_sequence_id = conf.interpDirection;
+            interpolator_id = conf.interpMeta.interpAlgo;
+            direction_sequence_id = conf.interpMeta.interpDirection;
 
 
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());

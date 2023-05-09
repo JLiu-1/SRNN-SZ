@@ -15,6 +15,9 @@
 
 namespace QoZ {
 
+
+
+
     enum EB {
         EB_ABS, EB_REL, EB_PSNR, EB_L2NORM, EB_ABS_AND_REL, EB_ABS_OR_REL
     };
@@ -39,6 +42,17 @@ namespace QoZ {
     constexpr const char *TUNING_TARGET_STR[] = {"TUNING_TARGET_RD", "TUNING_TARGET_CR", "TUNING_TARGET_SSIM", "TUNING_TARGET_AC"};
     constexpr const TUNING_TARGET TUNING_TARGET_OPTIONS[] = {
         TUNING_TARGET_RD, TUNING_TARGET_CR, TUNING_TARGET_SSIM, TUNING_TARGET_AC
+    };
+
+
+    struct Interp_Meta{
+        uint8_t interpAlgo = INTERP_ALGO_CUBIC;
+        uint8_t interpParadigm = 0;//1D, MD,HD
+        uint8_t cubicSplineType = 0;//noknot,nat
+        uint8_t interpDirection = 0;//0,N!-1
+        uint8_t adjInterp=0;//0,1
+
+
     };
 
     template<class T>
@@ -172,11 +186,14 @@ namespace QoZ {
             
             auto interpAlgoStr = cfg.Get("AlgoSettings", "InterpolationAlgo", "");
             if (interpAlgoStr == INTERP_ALGO_STR[INTERP_ALGO_LINEAR]) {
-                interpAlgo = INTERP_ALGO_LINEAR;
+                interpMeta.interpAlgo = INTERP_ALGO_LINEAR;
             } else if (interpAlgoStr == INTERP_ALGO_STR[INTERP_ALGO_CUBIC]) {
-                interpAlgo = INTERP_ALGO_CUBIC;
+                interpMeta.interpAlgo = INTERP_ALGO_CUBIC;
             }
-            interpDirection = cfg.GetInteger("AlgoSettings", "InterpDirection", interpDirection);
+            interpMeta.interpParadigm = cfg.GetInteger("AlgoSettings", "interpParadigm", interpMeta.interpParadigm);
+            interpMeta.cubicSplineType = cfg.GetInteger("AlgoSettings", "cubicSplineType", interpMeta.cubicSplineType);
+            interpMeta.interpDirection = cfg.GetInteger("AlgoSettings", "InterpDirection", interpMeta.interpDirection);
+            interpMeta.adjInterp = cfg.GetInteger("AlgoSettings", "adjInterp", interpMeta.adjInterp);
             interpBlockSize = cfg.GetInteger("AlgoSettings", "InterpBlockSize", interpBlockSize);
             blockSize = cfg.GetInteger("AlgoSettings", "BlockSize", blockSize);
             quantbinCnt = cfg.GetInteger("AlgoSettings", "QuantizationBinTotal", quantbinCnt);
@@ -259,8 +276,14 @@ namespace QoZ {
             write(lorenzo2, c);
             write(regression, c);
             write(regression2, c);
-            write(interpAlgo, c);
-            write(interpDirection, c);
+            /*
+            write(interpMeta.interpAlgo, c);
+            write(interpMeta.interpParadigm, c);
+            write(interpMeta.cubicSplineType, c);
+            write(interpMeta.interpDirection, c);
+            write(interpMeta.adjInterp, c);
+            */
+            write(interpMeta,c);
             write(interpBlockSize, c);
             write(lossless, c);
             write(encoder, c);
@@ -331,8 +354,11 @@ namespace QoZ {
             read(lorenzo2, c);
             read(regression, c);
             read(regression2, c);
-            read(interpAlgo, c);
-            read(interpDirection, c);
+            read(interpMeta.interpAlgo, c);
+            read(interpMeta.interpParadigm, c);
+            read(interpMeta.cubicSplineType, c);
+            read(interpMeta.interpDirection, c);
+            read(interpMeta.adjInterp, c);
             read(interpBlockSize, c);
             read(lossless, c);
             read(encoder, c);
@@ -419,14 +445,24 @@ namespace QoZ {
         bool openmp = false;
         uint8_t lossless = 1; // 0-> skip lossless(use lossless_bypass); 1-> zstd
         uint8_t encoder = 1;// 0-> skip encoder; 1->HuffmanEncoder; 2->ArithmeticEncoder
+        /*
         uint8_t interpAlgo = INTERP_ALGO_CUBIC;
-    
-        uint8_t interpDirection = 0;
-        uint8_t cubicSplineType=0;
+        uint8_t interpParadigm = 0;//1D, MD,HD
+        uint8_t cubicSplineType = 0;//noknot,nat
+        uint8_t interpDirection = 0;//0,N!-1
+        uint8_t adjInterp=0;//0,1
+        */
+        Interp_Meta interpMeta;
+
+        
         int levelwisePredictionSelection=0;
+        /*
         std::vector <uint8_t> interpAlgo_list;
         std::vector <uint8_t> interpDirection_list;
         std::vector <uint8_t> cubicSplineType_list;
+        */
+
+        std::vector <Interp_Meta> interpMeta_list;
         
         size_t maxStep=0;
         int interpBlockSize = 32;
