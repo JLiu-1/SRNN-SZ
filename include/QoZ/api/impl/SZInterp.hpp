@@ -1619,7 +1619,7 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<uint8_t> interpDirection_Candidates={0, QoZ::factorial(N) -1};
             std::vector<uint8_t> adjInterp_Candidates={0};
             if(conf.multiDimInterp>0){
-                for(size_t i=1;i<=conf.multiDimInterp)
+                for(size_t i=1;i<=conf.multiDimInterp;i++)
                     interpParadigm_Candidates.push_back(i);
             }
 
@@ -1638,7 +1638,7 @@ double Tuning(QoZ::Config &conf, T *data){
             //if(conf.mdCrossInterp)
              //   interpDirection_Candidates.push_back(2*QoZ::factorial(N)+1);
             if(conf.levelwisePredictionSelection>0){
-                std::vector<QoZ::Interp_Meta> interpMeta_list(conf.levelwisePredictionSelection,0);
+                std::vector<QoZ::Interp_Meta> interpMeta_list(conf.levelwisePredictionSelection);
                 /*
                 std::vector<uint8_t> interpDirection_list(conf.levelwisePredictionSelection,0);
                 std::vector<uint8_t> cubicSplineType_list(conf.levelwisePredictionSelection,0);
