@@ -108,7 +108,7 @@ namespace QoZ {
                 */
                 interpMeta_list.resize(levelwise_predictor_levels);
                 read(interpMeta_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
-                for(auto meta:interpMeta_list):
+                for(auto meta:interpMeta_list)
                     QoZ::print_meta(meta);
 
             }           
