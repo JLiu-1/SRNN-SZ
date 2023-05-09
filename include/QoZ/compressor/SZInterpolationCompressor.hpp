@@ -231,7 +231,7 @@ namespace QoZ {
         }
         
         T *decompress_block(uchar const *cmpData, const size_t &cmpSize, T *decData) {
-
+            /*
             size_t remaining_length = cmpSize;
             uchar *buffer = lossless.decompress(cmpData, remaining_length);
             int levelwise_predictor_levels;
@@ -351,6 +351,7 @@ namespace QoZ {
                     }    
             }
             quantizer.postdecompress_data();
+            */
             return decData;
         }
         
@@ -601,6 +602,7 @@ namespace QoZ {
         uchar *compress_block( Config &conf, T *data, size_t &compressed_size,int tuning=0,int start_level=0,int end_level=0) {
             
             //tuning 0: normal compress 1:tuning to return qbins and psnr 2: tuning to return prediction loss
+            /*
             Timer timer;
             timer.start();
             if (conf.trimToZero>0){
@@ -846,7 +848,10 @@ namespace QoZ {
             lossless.postcompress_data(buffer);
             //timer.stop("Lossless") ;
             compressed_size += interp_compressed_size;
+
             return lossless_data;
+            */
+            return NULL;
         }
         
 
