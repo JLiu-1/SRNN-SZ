@@ -52,8 +52,12 @@ namespace QoZ {
         uint8_t interpDirection = 0;//0,N!-1
         uint8_t adjInterp=0;//0,1
 
-
     };
+
+    void print_meta(Interp_Meta meta){
+        std::cout<<(int)meta.interpAlgo<<" "<<(int)meta.interpParadigm<<" "<<(int)meta.cubicSplineType<<" "<<(int)meta.interpDirection<<" "<<(int)meta.adjInterp<<std::endl;
+
+    }
 
     template<class T>
     const char *enum2Str(T e) {
@@ -354,11 +358,14 @@ namespace QoZ {
             read(lorenzo2, c);
             read(regression, c);
             read(regression2, c);
+            /*
             read(interpMeta.interpAlgo, c);
             read(interpMeta.interpParadigm, c);
             read(interpMeta.cubicSplineType, c);
             read(interpMeta.interpDirection, c);
             read(interpMeta.adjInterp, c);
+            */
+            read(interpMeta,c);
             read(interpBlockSize, c);
             read(lossless, c);
             read(encoder, c);
