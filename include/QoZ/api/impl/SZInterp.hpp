@@ -1623,7 +1623,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 for(size_t i=1;i<=conf.multiDimInterp;i++)
                     interpParadigm_Candidates.push_back(i);
                 */
-                interpParadigm_Candidates.push_back(multiDimInterp);
+                interpParadigm_Candidates.push_back(conf.multiDimInterp);
             }
 
             if (conf.naturalSpline){
