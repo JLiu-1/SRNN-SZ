@@ -108,8 +108,8 @@ namespace QoZ {
                 */
                 interpMeta_list.resize(levelwise_predictor_levels);
                 read(interpMeta_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
-                for(auto meta:interpMeta_list)
-                    QoZ::print_meta(meta);
+                //for(auto meta:interpMeta_list)
+                //    QoZ::print_meta(meta);
 
             }           
             init();   
@@ -3051,24 +3051,24 @@ namespace QoZ {
                             k_start=(n+m-2)%4==0?3:5;
                             for(k=k_start;k+3<p;k+=4){
                                 d = data + begin1 +  (n-1)*stride1+ begin2+(m-1)*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, interp_cubic(*(d - stride3x3), *(d - stride3), *(d + stride3), *(d + stride3x3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//interp_cubic(*(d - stride3x3), *(d - stride3), *(d + stride3), *(d + stride3x3)),mode);
                             }
                             //k=1
                             if(k_start==5){
                                 d = data + begin1 +  (n-1)*stride1+begin2+(m-1)*stride2+begin3+stride3;
-                                predict_error+=quantize_integrated(d - data, *d,interp_quad_1(*(d - stride3), *(d + stride3), *(d + stride3x3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//,interp_quad_1(*(d - stride3), *(d + stride3), *(d + stride3x3)),mode);
                             }
                             //k=p-3 or p-2
                             if(k<p-1){
                                 d = data + begin1 + (n-1)*stride1+begin2+(m-1)*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, interp_quad_2(*(d - stride3x3), *(d - stride3), *(d + stride3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//, interp_quad_2(*(d - stride3x3), *(d - stride3), *(d + stride3)),mode);
                             }
                             //k=p-1
                             else if(k<p){
                                 d = data + begin1 + (n-1)*stride1+begin2+(m-1)*stride2+begin3+(p-1)*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, interp_ave3( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)),
-                                    interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)),
-                                    interp_quad_3(*(d - stride5x3), *(d - stride3x3), *(d - stride3)) ),mode);
+                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//, interp_ave3( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)),
+                                    //interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)),
+                                    //interp_quad_3(*(d - stride5x3), *(d - stride3x3), *(d - stride3)) ),mode);
                             }
                         }
                     }
@@ -3418,22 +3418,22 @@ namespace QoZ {
                             k_start=(n+m-2)%4==0?3:5;
                             for(k=k_start;k+3<p;k+=4){
                                 d = data + begin1 +  (n-1)*stride1+ begin2+(m-1)*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d,  interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//,  interp_cubic_adj(*(d - stride3x3),*(d - stride2x3), *(d - stride3), *(d + stride3), *(d + stride2x3), *(d + stride3x3)),mode);
                             }
                             //k=1
                             if(k_start==5){
                                 d = data + begin1 +  (n-1)*stride1+begin2+(m-1)*stride2+begin3+stride3;
-                                predict_error+=quantize_integrated(d - data, *d,interp_quad_1_adj(*(d - stride3), *(d + stride3), *(d + stride2x3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//,interp_quad_1_adj(*(d - stride3), *(d + stride3), *(d + stride2x3)),mode);
                             }
                             //k=p-3 or p-2
                             if(k<p-1){
                                 d = data + begin1 + (n-1)*stride1+begin2+(m-1)*stride2+begin3+k*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, interp_quad_2_adj(*(d - stride2x3), *(d - stride3), *(d + stride3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//, interp_quad_2_adj(*(d - stride2x3), *(d - stride3), *(d + stride3)),mode);
                             }
                             //k=p-1
                             else if(k<p){
                                 d = data + begin1 + (n-1)*stride1+begin2+(m-1)*stride2+begin3+(p-1)*stride3;
-                                predict_error+=quantize_integrated(d - data, *d, lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3)),mode);
+                                predict_error+=quantize_integrated(d - data, *d, 0,mode);//, lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3)),mode);
                             }
                         }
                     }
