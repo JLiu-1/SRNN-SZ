@@ -46,11 +46,17 @@ namespace QoZ {
             int levelwise_predictor_levels;
             bool blockwiseTuning;
             uchar const *buffer_pos = buffer;
-            /*
+
+
+            
+
+
             std::vector <uint8_t> interpAlgo_list;
             std::vector <uint8_t> interpDirection_list;
             std::vector <uint8_t> cubicSplineType_list;
-            */
+            
+
+
             std::vector <QoZ::Interp_Meta> interpMeta_list;
             int fixBlockSize;
             int trimToZero;
@@ -569,7 +575,7 @@ namespace QoZ {
 
             }
             else if(levelwise_predictor_levels>0){
-                write(conf.interpMeta.data(),levelwise_predictor_levels,buffer_pos);
+                write(conf.interpMeta_list.data(),levelwise_predictor_levels,buffer_pos);
                
             }
             quantizer.save(buffer_pos);
@@ -1440,7 +1446,7 @@ namespace QoZ {
                     }
                 }
                 else{
-                    auto interp_cubic_adj=cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
+                    auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                     //i=1
                     d = data + begin + stride;
                     predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
@@ -1653,7 +1659,7 @@ namespace QoZ {
                     }
                 }
             } else {
-                auto interp_cubic=cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
+                auto interp_cubic=meta.cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
 
                 T *d;
                 size_t i;
@@ -2688,7 +2694,7 @@ namespace QoZ {
                     }
                 }
                 else{
-                    auto interp_cubic_adj=meta.EcubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
+                    auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                     size_t k_start;
                     //first half (non-adj)
                     for (i = 3; i + 3 < n; i += 2) {
@@ -3835,7 +3841,7 @@ namespace QoZ {
                 }
             }
             
-            else(paradigm<3){//md or hd
+            else if(paradigm<3){//md or hd
                 const std::array<int, N> dims = dimension_sequences[0];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
@@ -4126,7 +4132,7 @@ namespace QoZ {
                                                                 stride * dimension_offsets[dims[0]], interp_func, pb,meta,tuning);
                     }
                 }
-                for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stridex : 0); i <= end[dims[0]]; i += stridex) {
+                for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                         size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
                                               k * dimension_offsets[dims[2]];
@@ -4137,7 +4143,7 @@ namespace QoZ {
                                                                 stride * dimension_offsets[dims[1]], interp_func, pb,meta,tuning);
                     }
                 }
-                for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stridex : 0); i <= end[dims[0]]; i += stridex) {
+                for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
                                               begin[dims[2]] * dimension_offsets[dims[2]];
@@ -4150,7 +4156,7 @@ namespace QoZ {
                 }
                     
 
-                for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stridex : 0); i <= end[dims[0]]; i += stridex) {
+                for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                     size_t begin_offset1 = begin[dims[1]] * dimension_offsets[dims[1]] + i * dimension_offsets[dims[0]];
                     size_t begin_offset2 =  begin[dims[2]] * dimension_offsets[dims[2]];
                                             
