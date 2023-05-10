@@ -3242,7 +3242,7 @@ namespace QoZ {
                     if(k_start==5){
                         d = data + begin1 + stride1+begin2+j*stride2+begin3+stride3;
                         predict_error+=quantize_integrated(d - data, *d, coeff_x*interp_quad_1_adj(*(d - stride1), *(d + stride1), *(d + stride2x1))
-                                                                        +coeff_y*interp_quad_2_adj(*(d - stride22), *(d - stride2), *(d + stride2))  
+                                                                        +coeff_y*interp_quad_2_adj(*(d - stride2x2), *(d - stride2), *(d + stride2))  
                                                                         +coeff_z*interp_quad_1_adj(*(d - stride3), *(d + stride3), *(d + stride2x3)) ,mode);
                     }
                     //k=p-3 or p-2
