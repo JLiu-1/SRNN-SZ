@@ -32,7 +32,7 @@ namespace QoZ {
         vars.resize(N,0.0);
         size_t count=0;
         if(N==3){
-            dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
+            size_t dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
             for (size_t i = 3; i < dimx-3; i+=stride) {
                 for (size_t j = 3; j < dimy-3; j+=stride) {
                     for (size_t k = 3; k < dimz-3; k+=stride) {
@@ -63,7 +63,7 @@ namespace QoZ {
 
         }
         else if(N==2){
-            dimx=dims[0],dimy=dims[1];
+            size_t  dimx=dims[0],dimy=dims[1];
             for (size_t i = 3; i < dimx-3; i+=stride) {
                 for (size_t j = 3; j < dimy-3; j+=stride) {
                  
