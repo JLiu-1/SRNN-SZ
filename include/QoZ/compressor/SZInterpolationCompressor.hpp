@@ -1863,7 +1863,7 @@ namespace QoZ {
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                     size_t j_start;
                     //first half (non-adj)
-                    //std::cout<<"f1"<<std::endl;
+                    std::cout<<"f1"<<std::endl;
                     for (i = 3; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?5:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -1908,7 +1908,7 @@ namespace QoZ {
                         }
                         */
                     }
-                    // std::cout<<"f2"<<std::endl;
+                    std::cout<<"f2"<<std::endl;
                     //i=1
                     for(j=5;j+3<m;j+=4){
                         d = data + begin1 + stride1+begin2+j*stride2;
@@ -1936,7 +1936,7 @@ namespace QoZ {
 
 
                     //i=n-3 or n-2
-                     //std::cout<<"f3"<<std::endl;
+                     std::cout<<"f3"<<std::endl;
                     j_start= (i%4==1)?5:3;
                     for(j=j_start;j+3<m;j+=4){
    
@@ -1970,7 +1970,7 @@ namespace QoZ {
 
 
                     //i=n-1 (odd)
-                     //std::cout<<"f4"<<std::endl;
+                     std::cout<<"f4"<<std::endl;
                     if (n % 2 == 0) {
                         j_start= ((n-1)%4==1)?5:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -2002,7 +2002,7 @@ namespace QoZ {
                     }
 
                     //second half (adj)
-                     //std::cout<<"f5"<<std::endl;
+                     std::cout<<"f5"<<std::endl;
                     for (i = 3; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?3:5;
                         for(j=j_start;j+3<m;j+=4){
@@ -2056,7 +2056,7 @@ namespace QoZ {
                     }
 
                     //i=1
-                     //std::cout<<"f6"<<std::endl;
+                     std::cout<<"f6"<<std::endl;
                     for(j=3;j+3<m;j+=4){
                       
                         d = data + begin1 + stride1+begin2+j*stride2;
@@ -2083,7 +2083,7 @@ namespace QoZ {
                     }
 
                     //i= n-3 or n-2
-                     //std::cout<<"f7"<<std::endl;
+                     std::cout<<"f7"<<std::endl;
                     j_start= (i%4==1)?3:5;
                     for(j=j_start;j+3<m;j+=4){
                         
@@ -2115,7 +2115,7 @@ namespace QoZ {
                     }
                     
                     //i==n-1
-                     //std::cout<<"f8"<<std::endl;
+                     std::cout<<"f8"<<std::endl;
                     if (n % 2 == 0) {
                         j_start= ((n-1)%4==1)?3:5;
                         for(j=j_start;j+3<m;j+=4){
