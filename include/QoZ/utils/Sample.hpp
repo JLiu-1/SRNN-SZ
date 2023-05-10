@@ -46,10 +46,10 @@ namespace QoZ {
                         if(interp_op==1){
                             auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
                             T interp_err=interp_cubic(*(d - 3*dimyz), *(d - dimyz), *(d + dimyz), *(d + 3*dimyz))-cur_value;
-                            vars[0]+=iinterp_err*interp_err;
-                            interp_value=interp_cubic(*(d - 3*dimz), *(d - dimz), *(d + dimz), *(d + 3*dimz))-cur_value;
+                            vars[0]+=interp_err*interp_err;
+                            interp_err=interp_cubic(*(d - 3*dimz), *(d - dimz), *(d + dimz), *(d + 3*dimz))-cur_value;
                             vars[1]+=interp_err*interp_err;
-                            interp_value=interp_cubic(*(d - 3), *(d - 1), *(d + 1), *(d + 3))-cur_value;
+                            interp_err=interp_cubic(*(d - 3), *(d - 1), *(d + 1), *(d + 3))-cur_value;
                             vars[2]+=interp_err*interp_err;
                         }
                         else{
