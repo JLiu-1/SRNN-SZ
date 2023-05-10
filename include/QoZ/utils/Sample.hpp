@@ -41,6 +41,7 @@ namespace QoZ {
                         count+=1;
                         size_t idx=i*dimyz+j*dimz+k;
                         T cur_value=data[idx];
+                        std::cout<<cur_value<<std::endl;
                         if(interp_op==1){
                             auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
                             T interp_value=interp_cubic(*(data - 3*dimyz), *(data - dimyz), *(data + dimyz), *(data + 3*dimyz));
@@ -52,10 +53,13 @@ namespace QoZ {
                         }
                         else{
                             T interp_value=interp_linear<T>( *(data - dimyz), *(data + dimyz));
+                            std::cout<<interp_value<<std::endl;
                             vars[0]+=interp_value*interp_value;
                             interp_value=interp_linear<T>( *(data - dimz), *(data + dimz));
+                            std::cout<<interp_value<<std::endl;
                             vars[1]+=interp_value*interp_value;
                             interp_value=interp_linear<T>( *(data - 1), *(data + 1) );
+                            std::cout<<interp_value<<std::endl;
                             vars[2]+=interp_value*interp_value;
 
                         }
