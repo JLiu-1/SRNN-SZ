@@ -1456,10 +1456,11 @@ namespace QoZ {
                     predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
                     //predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride),*(d + stride), *(d+stride2x), *(d + stride3x)),mode);
                     for (i = 5; i + 3 < n; i += 4) {
+                        
+                        d = data + begin + i * stride;
                         if(mark[d-data])
                                 std::cout<<"e-1 "<<d-data<<std::endl;
                             mark[d-data]=true;
-                        d = data + begin + i * stride;
                         predict_error+=quantize_integrated(d - data, *d,
                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
                     }
