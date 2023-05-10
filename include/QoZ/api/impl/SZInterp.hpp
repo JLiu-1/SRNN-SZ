@@ -1614,18 +1614,18 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<uint8_t> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
 
             //std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_CUBIC};//temp. 
-            std::vector<uint8_t> interpParadigm_Candidates={};
+            std::vector<uint8_t> interpParadigm_Candidates={0};
             std::vector<uint8_t> cubicSplineType_Candidates={0};
             std::vector<uint8_t> interpDirection_Candidates={0, QoZ::factorial(N) -1};
             /*
             if(N>2)
                 interpDirection_Candidates={0,1, 2,3,4,QoZ::factorial(N) -1};
             */
-            std::vector<uint8_t> adjInterp_Candidates={};
+            std::vector<uint8_t> adjInterp_Candidates={0};
             if(conf.multiDimInterp>0){
-               // for(size_t i=1;i<=conf.multiDimInterp;i++)
-                //    interpParadigm_Candidates.push_back(i);
-                interpParadigm_Candidates.push_back(conf.multiDimInterp);
+                for(size_t i=1;i<=conf.multiDimInterp;i++)
+                    interpParadigm_Candidates.push_back(i);
+                //interpParadigm_Candidates.push_back(conf.multiDimInterp);
             }
 
             if (conf.naturalSpline){
