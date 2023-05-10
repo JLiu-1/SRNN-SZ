@@ -15,6 +15,7 @@
 #include "QoZ/def.hpp"
 #include "QoZ/utils/Config.hpp"
 #include "QoZ/utils/CoeffRegression.hpp"
+#include "QoZ/utils/Sample.hpp"
 #include <cstring>
 #include <cmath>
 #include <limits>
@@ -466,6 +467,14 @@ namespace QoZ {
                     }
                     else{
                         cur_meta=conf.interpMeta_list[levelwise_predictor_levels-1];
+                    }
+                    if(level==1 and conf.adaptiveMultiDimStride>0){
+                        std::vector<double> vars;
+                        QoZ::calculate_interp_error_vars<T,N>(data, global_dimensions,vars,cur_meta.interpAlgo,cur_meta.cubicSplineType,conf.adaptiveMultiDimStride,0);
+                        QoZ::preprocess_vars<N>(vars);
+                        for(size_t i=0;i<N;i++)
+                            cur_meta.dimCoeffs[i]=vars[i];
+                        conf.interpMeta_list[0]=cur_meta;
                     }
                 }
                 
