@@ -37,6 +37,7 @@ namespace QoZ {
             for (size_t i = 3; i < dimx-3; i+=stride) {
                 for (size_t j = 3; j < dimy-3; j+=stride) {
                     for (size_t k = 3; k < dimz-3; k+=stride) {
+                        std::cout<<i<<" "<<j<<" "<<k<<std::endl;
                         count+=1;
                         size_t idx=i*dimyz+j*dimz+k;
                         T cur_value=data[idx];
