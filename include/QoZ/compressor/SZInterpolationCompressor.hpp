@@ -1718,7 +1718,7 @@ namespace QoZ {
             double predict_error = 0;
             
             double coeff_x=(dim_coeffs[0])/((dim_coeffs[0])+(dim_coeffs[1])),coeff_y=1-coeff_x;
-            std::cout<<coeff_x<<" "<<coeff_y<<std::endl;
+            //std::cout<<coeff_x<<" "<<coeff_y<<std::endl;
             //coeff_x=0.5; coeff_y=0.5;
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
             if (interp_func == "linear"||n<5 ||m<5) {//nm cond temp added
@@ -4255,7 +4255,7 @@ namespace QoZ {
             else if(paradigm<3){//md or hd
                 const std::array<int, N> dims = dimension_sequences[0];
                 std::array<double,3>dim_coeffs=meta.dimCoeffs;
-
+                
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
                     predict_error += block_interpolation_1d(data, begin_offset,
@@ -4438,7 +4438,7 @@ namespace QoZ {
             else if (paradigm==1){
                 const std::array<int, N> dims = dimension_sequences[0];
                 std::array<double,3>dim_coeffs=meta.dimCoeffs;
-                
+                std::cout<<dim_coeffs[0]<<std::endl;
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                         size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
