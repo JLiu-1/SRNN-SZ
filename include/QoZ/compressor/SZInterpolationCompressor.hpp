@@ -2717,7 +2717,7 @@ namespace QoZ {
                         }
                     }
                 }
-                else
+                else{
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
 
                     size_t k_start;
