@@ -528,18 +528,11 @@ namespace QoZ {
             }
             if(conf.verbose)
                 timer.stop("prediction");
-            /*
-            if(N==2){
-                for(size_t i=0;i<global_dimensions[0];i++){
-                    for(size_t j=0;j<global_dimensions[1];j++){
-                        size_t idx=i*global_dimensions[1]+j;
-                        if(!mark[idx]){
-                            std::cout<<i<<" "<<j<<std::endl;
-                        }
-                    }
-                }
+            
+            for(size_t i=0;i<num_elements;i++){
+                if(!mark[i])
+                    std::cout<<i<<std::endl;
             }
-            */
            
             
             
