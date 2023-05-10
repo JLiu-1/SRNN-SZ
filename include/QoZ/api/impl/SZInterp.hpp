@@ -1742,6 +1742,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                             best_meta=cur_meta;
                                             best_interp_absloss=cur_absloss;
                                         }
+                                        cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
                         
                                     }
                                 }
