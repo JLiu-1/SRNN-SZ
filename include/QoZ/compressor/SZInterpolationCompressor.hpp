@@ -1978,7 +1978,7 @@ namespace QoZ {
                                 std::cout<<"e8 "<<d-data<<std::endl;
                             mark[d-data]=true;
                         //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)) ,interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ),tuning);
-                        predict_error+=quantize_integrated(d - data, *d, interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)),mode);
+                        predict_error+=quantize_integrated(d - data, *d,  0,mode);//, interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)),mode);
 
                     }
                     
@@ -1990,7 +1990,7 @@ namespace QoZ {
                                 std::cout<<"e9 "<<d-data<<std::endl;
                             mark[d-data]=true;
                         //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)), interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)) ),mode);
-                        predict_error+=quantize_integrated(d - data, *d, coeff_x*interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1))+coeff_y*interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)) ,mode);
+                        predict_error+=quantize_integrated(d - data, *d,  0,mode);//, coeff_x*interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1))+coeff_y*interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)) ,mode);
                     }
                     //j=m-3 or m-2
                     if(j<m-1){
@@ -2000,7 +2000,7 @@ namespace QoZ {
                                 std::cout<<"e10 "<<d-data<<std::endl;
                             mark[d-data]=true;
                         //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)), interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) ),mode);
-                        predict_error+=quantize_integrated(d - data, *d, coeff_x*interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1))+coeff_y*interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) ,mode);
+                        predict_error+=quantize_integrated(d - data, *d,  0,mode);//, coeff_x*interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1))+coeff_y*interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) ,mode);
                     }                    
                     //j=m-1
                     else if(j<m){
@@ -2009,7 +2009,7 @@ namespace QoZ {
                         if(mark[d-data])
                                 std::cout<<"e11 "<<d-data<<std::endl;
                             mark[d-data]=true;
-                        predict_error+=quantize_integrated(d - data, *d,  interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)),mode);
+                        predict_error+=quantize_integrated(d - data, *d,  0,mode);//,  interp_quad_2(*(d - stride3x1), *(d - stride1), *(d + stride1)),mode);
                     }
 
 
@@ -2024,7 +2024,7 @@ namespace QoZ {
                                 std::cout<<"e12 "<<d-data<<std::endl;
                             mark[d-data]=true;
                             //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)) ,interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ),tuning);
-                            predict_error+=quantize_integrated(d - data, *d, interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ,mode);
+                            predict_error+=quantize_integrated(d - data, *d,  0,mode);//, interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ,mode);
                         }
 
                         //j=1
@@ -2034,7 +2034,7 @@ namespace QoZ {
                             if(mark[d-data])
                                 std::cout<<"e13 "<<d-data<<std::endl;
                             mark[d-data]=true;
-                            predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)) ,mode);
+                            predict_error+=quantize_integrated(d - data, *d,  0,mode);//, interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)) ,mode);
                         }
                         //j=m-3 or m-2
                         if(j<m-1){
@@ -2043,7 +2043,7 @@ namespace QoZ {
                             if(mark[d-data])
                                 std::cout<<"e14 "<<d-data<<std::endl;
                             mark[d-data]=true;
-                            predict_error+=quantize_integrated(d - data, *d, interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) ,mode);
+                            predict_error+=quantize_integrated(d - data, *d,  0,mode);//, interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) ,mode);
                         }
                         //j=m-1
                         else if(j<m){
@@ -2053,7 +2053,7 @@ namespace QoZ {
                                 std::cout<<"e15 "<<d-data<<std::endl;
                             mark[d-data]=true;
                             //redict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)), interp_quad_3(*(d - stride5x2), *(d - stride3x2), *(d - stride2)) ),mode);
-                            predict_error+=quantize_integrated(d - data, *d, lorenzo_2d(*(d-stride1-stride2),*(d-stride1),*(d-stride2)), mode);
+                            predict_error+=quantize_integrated(d - data, *d,  0,mode);//, lorenzo_2d(*(d-stride1-stride2),*(d-stride1),*(d-stride2)), mode);
                         } 
                     }
 
