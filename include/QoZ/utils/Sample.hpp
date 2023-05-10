@@ -4,7 +4,6 @@
 #define SZ_SAMPLE_HPP
 
 #include "QoZ/utils/Interpolators.hpp"
-#include<cmath>
 namespace QoZ {
 
     
@@ -47,21 +46,21 @@ namespace QoZ {
                         if(interp_op==1){
                             auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
                             T interp_err=interp_cubic(*(d - 3*dimyz), *(d - dimyz), *(d + dimyz), *(d + 3*dimyz))-cur_value;
-                            vars[0]+=fabs(interp_err);//*interp_err;
+                            vars[0]+=interp_err*interp_err;
                             interp_err=interp_cubic(*(d - 3*dimz), *(d - dimz), *(d + dimz), *(d + 3*dimz))-cur_value;
-                            vars[1]+=fabs(interp_err);//*interp_err;
+                            vars[1]+=interp_err*interp_err;
                             interp_err=interp_cubic(*(d - 3), *(d - 1), *(d + 1), *(d + 3))-cur_value;
-                            vars[2]+=fabs(interp_err);//*interp_err;
+                            vars[2]+=interp_err*interp_err;
                         }
                         else{
                             T interp_err=interp_linear<T>( *(d - dimyz), *(d + dimyz))-cur_value;
                             //std::cout<<interp_value<<std::endl;
-                            vars[0]+=fabs(interp_err);//*interp_err;
+                            vars[0]+=interp_err*interp_err;
                             interp_err=interp_linear<T>( *(d - dimz), *(d + dimz))-cur_value;
                             //std::cout<<interp_value<<std::endl;
-                            vars[1]+=fabs(interp_err);//*interp_err;
+                            vars[1]+=interp_err*interp_err;
                             interp_err=interp_linear<T>( *(d - 1), *(d + 1) )-cur_value;
-                            vars[2]+=fabs(interp_err);//*interp_err;
+                            vars[2]+=interp_err*interp_err;
 
                         }
                     }
