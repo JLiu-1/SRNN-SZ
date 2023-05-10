@@ -1939,7 +1939,7 @@ namespace QoZ {
                             mark[d-data]=true;
 
                         //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_quad_1(*(d - stride1), *(d + stride1), *(d + stride3x1)),interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ),tuning);
-                        predict_error+=quantize_integrated(d - data, *, interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)),mode);
+                        predict_error+=quantize_integrated(d - data, *d, interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)),mode);
                     }
                     //j=1
                     d = data + begin1 + stride1+ begin2+stride2;
