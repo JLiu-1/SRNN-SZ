@@ -51,11 +51,11 @@ namespace QoZ {
                             vars[2]+=interp_value*interp_value;
                         }
                         else{
-                            T interp_value=interp_linear( *(data - dimyz), *(data + dimyz));
+                            T interp_value=interp_linear<T>( *(data - dimyz), *(data + dimyz));
                             vars[0]+=interp_value*interp_value;
-                            interp_value=interp_linear( *(data - dimz), *(data + dimz));
+                            interp_value=interp_linear<T>( *(data - dimz), *(data + dimz));
                             vars[1]+=interp_value*interp_value;
-                            interp_value=interp_linear( *(data - 1), *(data + 1) );
+                            interp_value=interp_linear<T>( *(data - 1), *(data + 1) );
                             vars[2]+=interp_value*interp_value;
 
                         }
