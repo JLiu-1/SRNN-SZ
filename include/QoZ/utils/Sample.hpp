@@ -33,11 +33,11 @@ namespace QoZ {
         size_t count=0;
         if(N==3){
             size_t dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
-            std::cout<<dimx<<" "<<dimy<<" "<<dimz<<std::endl;
+           // std::cout<<dimx<<" "<<dimy<<" "<<dimz<<std::endl;
             for (size_t i = 3; i < dimx-3; i+=stride) {
                 for (size_t j = 3; j < dimy-3; j+=stride) {
                     for (size_t k = 3; k < dimz-3; k+=stride) {
-                        std::cout<<i<<" "<<j<<" "<<k<<std::endl;
+                        //std::cout<<i<<" "<<j<<" "<<k<<std::endl;
                         count+=1;
                         size_t idx=i*dimyz+j*dimz+k;
                         T *d= data+idx;
