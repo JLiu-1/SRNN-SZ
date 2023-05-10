@@ -1621,7 +1621,7 @@ double Tuning(QoZ::Config &conf, T *data){
             if(N>2)
                 interpDirection_Candidates={0,1, 2,3,4,QoZ::factorial(N) -1};
             */
-            std::vector<uint8_t> adjInterp_Candidates={0};
+            std::vector<uint8_t> adjInterp_Candidates={};
             if(conf.multiDimInterp>0){
                // for(size_t i=1;i<=conf.multiDimInterp;i++)
                 //    interpParadigm_Candidates.push_back(i);
