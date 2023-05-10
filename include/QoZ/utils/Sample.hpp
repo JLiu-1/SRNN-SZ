@@ -40,26 +40,26 @@ namespace QoZ {
                         std::cout<<i<<" "<<j<<" "<<k<<std::endl;
                         count+=1;
                         size_t idx=i*dimyz+j*dimz+k;
-                        T cur_value=data[idx];
-                        std::cout<<cur_value<<std::endl;
+                        T *d= data+idx;
+                        T cur_value=*d;
+                        //std::cout<<cur_value<<std::endl;
                         if(interp_op==1){
-                            auto interp_cubic=nat?QoZ::interp_cubic_2<T>:QoZ::interp_cubic_1<T>;
-                            T interp_value=interp_cubic(*(data - 3*dimyz), *(data - dimyz), *(data + dimyz), *(data + 3*dimyz));
+                            auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
+                            T interp_value=interp_cubic(*(d - 3*dimyz), *(d - dimyz), *(d + dimyz), *(d + 3*dimyz));
                             vars[0]+=interp_value*interp_value;
-                            interp_value=interp_cubic(*(data - 3*dimz), *(data - dimz), *(data + dimz), *(data + 3*dimz));
+                            interp_value=interp_cubic(*(d - 3*dimz), *(d - dimz), *(d + dimz), *(d + 3*dimz));
                             vars[1]+=interp_value*interp_value;
-                            interp_value=interp_cubic(*(data - 3), *(data - 1), *(data + 1), *(data + 3));
+                            interp_value=interp_cubic(*(d - 3), *(d - 1), *(d + 1), *(d + 3));
                             vars[2]+=interp_value*interp_value;
                         }
                         else{
-                            T interp_value=QoZ::interp_linear<T>( *(data - dimyz), *(data + dimyz));
-                            std::cout<<interp_value<<std::endl;
+                            T interp_value=interp_linear<T>( *(d - dimyz), *(d + dimyz));
+                            //std::cout<<interp_value<<std::endl;
                             vars[0]+=interp_value*interp_value;
-                            interp_value=QoZ::interp_linear<T>( *(data - dimz), *(data + dimz));
-                            std::cout<<interp_value<<std::endl;
+                            interp_value=interp_linear<T>( *(d - dimz), *(d + dimz));
+                            //std::cout<<interp_value<<std::endl;
                             vars[1]+=interp_value*interp_value;
-                            interp_value=QoZ::interp_linear<T>( *(data - 1), *(data + 1) );
-                            std::cout<<interp_value<<std::endl;
+                            interp_value=interp_linear<T>( *(d - 1), *(d + 1) );
                             vars[2]+=interp_value*interp_value;
 
                         }
