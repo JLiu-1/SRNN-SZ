@@ -2726,7 +2726,7 @@ namespace QoZ {
                     for(size_t round=0;round<=1;round++){
 
                         size_t ks1=(round==0)?3:5,ks2=8-ks1;
-                        auto interp_cubic_func=round==0?interp_cubic<T>:interp_cubic_adj;
+                        auto interp_cubic_func=round==0?interp_cubic:interp_cubic_adj;
                         auto interp_quad_1_func=round==0?interp_quad_1<T>:interp_quad_1_adj<T>;
                         auto interp_quad_2_func=round==0?interp_quad_2<T>:interp_quad_2_adj<T>;
 
