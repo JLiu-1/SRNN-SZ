@@ -251,8 +251,8 @@ namespace QoZ {
             conditioning = cfg.GetInteger("AlgoSettings", "conditioning", conditioning);
             fixWave = cfg.GetInteger("AlgoSettings", "fixWave", fixWave);
             regressiveInterp = cfg.GetInteger("AlgoSettings", "regressiveInterp", regressiveInterp);
-            naturalSpline = cfg.GetInteger("AlgoSettings", "naturalSpline ", naturalSpline );
-            adaptiveMultiDimStride = cfg.GetInteger("AlgoSettings", "adaptiveMultiDimStride ", adaptiveMultiDimStride);
+            naturalSpline = cfg.GetInteger("AlgoSettings", "naturalSpline", naturalSpline );
+            adaptiveMultiDimStride = cfg.GetInteger("AlgoSettings", "adaptiveMultiDimStride", adaptiveMultiDimStride);
            // minAnchorLevel = cfg.GetInteger("AlgoSettings", "minAnchorLevel", minAnchorLevel);
 
 
