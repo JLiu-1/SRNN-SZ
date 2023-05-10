@@ -965,7 +965,7 @@ namespace QoZ {
                                 prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=0;
                             }*/
                             //if(tuning==0)
-                                //mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
+                                mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
                             quant_inds.push_back(0);
                         }           
                     }
@@ -1450,9 +1450,15 @@ namespace QoZ {
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                     //i=1
                     d = data + begin + stride;
+                    if(mark[d-data])
+                                std::cout<<"e0 "<<d-data<<std::endl;
+                            mark[d-data]=true;
                     predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
                     //predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride),*(d + stride), *(d+stride2x), *(d + stride3x)),mode);
                     for (i = 5; i + 3 < n; i += 4) {
+                        if(mark[d-data])
+                                std::cout<<"e-1 "<<d-data<<std::endl;
+                            mark[d-data]=true;
                         d = data + begin + i * stride;
                         predict_error+=quantize_integrated(d - data, *d,
                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
@@ -1462,12 +1468,18 @@ namespace QoZ {
 
                     if(i<n-1){
                         d = data + begin + i * stride;
+                        if(mark[d-data])
+                                std::cout<<"e-2 "<<d-data<<std::endl;
+                            mark[d-data]=true;
                         predict_error+=quantize_integrated(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
                         //predict_error+=quantize_integrated(d - data, *d, interp_cubic_back_adj(*(d -stride3x),*(d - stride2x), *(d-stride), *(d + stride)),mode);
                     }
                     //i=n-1
                     else if(i<n){
                          d = data + begin + (n - 1) * stride;
+                         if(mark[d-data])
+                                std::cout<<"e-3 "<<d-data<<std::endl;
+                            mark[d-data]=true;
                         predict_error+=
                         //quantize_integrated(d - data, *d, interp_quad_3_adj(*(d - stride3x), *(d - stride2x), *(d - stride)),mode);
                         quantize_integrated(d - data, *d, *(d - stride),mode);//to determine
@@ -1478,6 +1490,9 @@ namespace QoZ {
 
                     for (i = 3; i + 3 < n; i += 4) {
                         d = data + begin + i * stride;
+                        if(mark[d-data])
+                                std::cout<<"e-4 "<<d-data<<std::endl;
+                            mark[d-data]=true;
                         predict_error+=quantize_integrated(d - data, *d,
                                    interp_cubic_adj(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x),*(d + stride3x)),mode);
                         //predict_error+=quantize_integrated(d - data, *d,
@@ -1486,12 +1501,18 @@ namespace QoZ {
                     //i=n-3 or n-2
                     if(i<n-1){
                         d = data + begin + i * stride;
+                        if(mark[d-data])
+                                std::cout<<"e-5 "<<d-data<<std::endl;
+                            mark[d-data]=true;
                         predict_error+=quantize_integrated(d - data, *d, interp_quad_2_adj(*(d - stride2x), *(d - stride), *(d + stride)),mode);
                         //predict_error+=quantize_integrated(d - data, *d, interp_cubic_back_adj(*(d -stride3x),*(d - stride2x), *(d-stride), *(d + stride)),mode);
                     }
                     //i=n-1
                     else if(i<n){
                          d = data + begin + (n - 1) * stride;
+                         if(mark[d-data])
+                                std::cout<<"e-6 "<<d-data<<std::endl;
+                            mark[d-data]=true;
                         predict_error+=
                         //quantize_integrated(d - data, *d, interp_quad_3_adj(*(d - stride3x), *(d - stride2x), *(d - stride)),mode);
                         quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x),*(d - stride)) ,mode);//to determine
