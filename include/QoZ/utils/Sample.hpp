@@ -43,7 +43,7 @@ namespace QoZ {
                         T cur_value=data[idx];
                         std::cout<<cur_value<<std::endl;
                         if(interp_op==1){
-                            auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
+                            auto interp_cubic=nat?QoZ::interp_cubic_2<T>:QoZ::interp_cubic_1<T>;
                             T interp_value=interp_cubic(*(data - 3*dimyz), *(data - dimyz), *(data + dimyz), *(data + 3*dimyz));
                             vars[0]+=interp_value*interp_value;
                             interp_value=interp_cubic(*(data - 3*dimz), *(data - dimz), *(data + dimz), *(data + 3*dimz));
@@ -52,13 +52,13 @@ namespace QoZ {
                             vars[2]+=interp_value*interp_value;
                         }
                         else{
-                            T interp_value=interp_linear<T>( *(data - dimyz), *(data + dimyz));
+                            T interp_value=QoZ::interp_linear<T>( *(data - dimyz), *(data + dimyz));
                             std::cout<<interp_value<<std::endl;
                             vars[0]+=interp_value*interp_value;
-                            interp_value=interp_linear<T>( *(data - dimz), *(data + dimz));
+                            interp_value=QoZ::interp_linear<T>( *(data - dimz), *(data + dimz));
                             std::cout<<interp_value<<std::endl;
                             vars[1]+=interp_value*interp_value;
-                            interp_value=interp_linear<T>( *(data - 1), *(data + 1) );
+                            interp_value=QoZ::interp_linear<T>( *(data - 1), *(data + 1) );
                             std::cout<<interp_value<<std::endl;
                             vars[2]+=interp_value*interp_value;
 
