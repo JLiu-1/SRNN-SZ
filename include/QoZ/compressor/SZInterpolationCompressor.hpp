@@ -468,9 +468,9 @@ namespace QoZ {
                     else{
                         cur_meta=conf.interpMeta_list[levelwise_predictor_levels-1];
                     }
-                    if(level==1 and conf.adaptiveMultiDimStride>0){
+                    if(level==1 and conf.adaptiveMultiDimStride>0 and tuning==0){
                         std::vector<double> vars;
-                        QoZ::calculate_interp_error_vars<T,N>(data, global_dimensions,vars,cur_meta.interpAlgo,cur_meta.cubicSplineType,conf.adaptiveMultiDimStride,0);
+                        QoZ::calculate_interp_error_vars<T,N>(data,  conf.dims,vars,cur_meta.interpAlgo,cur_meta.cubicSplineType,conf.adaptiveMultiDimStride,0);
                         QoZ::preprocess_vars<N>(vars);
                         for(size_t i=0;i<N;i++)
                             cur_meta.dimCoeffs[i]=vars[i];
