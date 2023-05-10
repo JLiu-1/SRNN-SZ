@@ -3,7 +3,7 @@
 #ifndef SZ_SAMPLE_HPP
 #define SZ_SAMPLE_HPP
 
-
+#include "QoZ/utils/Interpolators.hpp"
 namespace QoZ {
 
     
@@ -24,6 +24,91 @@ namespace QoZ {
         //return sampling_data;
     }
     
+
+    template<class T, uint N>
+    inline void
+    calculate_interp_error_vars(T *data, std::vector<size_t> &dims,std::vector<double> &vars,uint8_t interp_op=0,uint8_t nat=0, size_t stride=6){
+
+        vars.resize(N,0.0);
+        size_t count=0;
+        if(N==3){
+            dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
+            for (size_t i = 3; i < dimx-3; i+=stride) {
+                for (size_t j = 3; j < dimy-3; j+=stride) {
+                    for (size_t k = 3; k < dimz-3; k+=stride) {
+                        count+=1;
+                        size_t idx=i*dimyz+j*dimz+k;
+                        T cur_value=data[idx];
+                        if(interp_op==1){
+                            auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
+                            T interp_value=interp_cubic(*(data - 3*dimyz), *(data - dimyz), *(data + dimyz), *(data + 3*dimyz));
+                            vars[0]+=interp_value*interp_value;
+                            interp_value=interp_cubic(*(data - 3*dimz), *(data - dimz), *(data + dimz), *(data + 3*dimz));
+                            vars[1]+=interp_value*interp_value;
+                            interp_value=interp_cubic(*(data - 3), *(data - 1), *(data + 1), *(data + 3));
+                            vars[2]+=interp_value*interp_value;
+                        }
+                        else{
+                            T interp_value=interp_linear( *(data - dimyz), *(data + dimyz));
+                            vars[0]+=interp_value*interp_value;
+                            interp_value=interp_linear( *(data - dimz), *(data + dimz));
+                            vars[1]+=interp_value*interp_value;
+                            interp_value=interp_linear( *(data - 1), *(data + 1) );
+                            vars[2]+=interp_value*interp_value;
+
+                        }
+                    }
+                }
+            }
+
+        }
+        else if(N==2){
+            dimx=dims[0],dimy=dims[1];
+            for (size_t i = 3; i < dimx-3; i+=stride) {
+                for (size_t j = 3; j < dimy-3; j+=stride) {
+                 
+                    count+=1;
+                    size_t idx=i*dimy+j;
+                    T cur_value=data[idx];
+                    if(interp_op==1){
+                        auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
+                        T interp_value=interp_cubic(*(data - 3*dimy), *(data - dimy), *(data + dimy), *(data + 3*dimy));
+                        vars[0]+=interp_value*interp_value;
+                        interp_value=interp_cubic(*(data - 3), *(data - 1), *(data + 1), *(data + 3));
+                        vars[1]+=interp_value*interp_value;
+                    }
+                    else{
+                        T interp_value=interp_linear( *(data - dimy), *(data + dimy));
+                        vars[0]+=interp_value*interp_value;
+                        interp_value=interp_linear( *(data -1), *(data + 1));
+                        vars[1]+=interp_value*interp_value;
+                    }
+                }
+            }
+
+        }
+        for (size_t i=0;i<N;i++)
+            vars[i]/=double(count);
+
+    }
+
+    template<uint N>
+    inline void
+    preprocess_vars(std::vector<double>&vars){
+        if(N==2){
+            double a=vars[1],b=vars[0];
+            vars[0]=a/(a+b);
+            vars[1]=b/(a+b);
+        }
+        else if (N==3){
+            double a=vars[1]*vars[2],b=vars[0]*vars[2],c=vars[0]*vars[1];
+            vars[0]=a/(a+b+c);
+            vars[1]=b/(a+b+c);
+            vars[2]=c/(a+b+c);
+        }
+
+
+    }
 
     template<class T, uint N>
     inline void

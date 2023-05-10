@@ -1605,7 +1605,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     std::pair<double,double> ab=setABwithRelBound(rel_bound,0);//ori pdtuningqabconf
                     conf.alpha=ab.first;
                     conf.beta=ab.second;
-                //}               
+               //}               
                // else{
                 //    conf.alpha=conf.pdAlpha;
                //     conf.beta=conf.pdBeta;
@@ -1622,10 +1622,31 @@ double Tuning(QoZ::Config &conf, T *data){
                 interpDirection_Candidates={0,1, 2,3,4,QoZ::factorial(N) -1};
             */
             std::vector<uint8_t> adjInterp_Candidates={0};
+
+            std::vector<double> linear_interp_vars,cubic_noknot_vars,cubic_nat_vars;
             if(conf.multiDimInterp>0){
                 for(size_t i=1;i<=conf.multiDimInterp;i++)
                     interpParadigm_Candidates.push_back(i);
                 //interpParadigm_Candidates.push_back(conf.multiDimInterp);
+                if(conf.adaptiveMultiDimStride>0){
+                    QoZ::calculate_interp_error_vars<T,N>(data, global_dims,linear_interp_vars,0,0,conf.adaptiveMultiDimStride);\
+                    QoZ::preprocess_vars<N>(linear_interp_vars);
+                    for(auto x:linear_interp_vars)
+                        std::cout<<x<<" ";
+                    std::cout<<std::endl;
+                    QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride);
+                    QoZ::preprocess_vars<N>(cubic_noknot_vars);
+                    for(auto x:cubic_noknot_vars)
+                        std::cout<<x<<" ";
+                    std::cout<<std::endl;
+                    if (conf.naturalSpline){
+                        QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_nat_vars,1,0,conf.adaptiveMultiDimStride);
+                        QoZ::preprocess_vars<N>(cubic_nat_vars);
+                        for(auto x:cubic_nat_vars)
+                            std::cout<<x<<" ";
+                        std::cout<<std::endl;
+                    }
+                }
             }
 
             if (conf.naturalSpline){
@@ -1670,6 +1691,9 @@ double Tuning(QoZ::Config &conf, T *data){
                         cur_meta.interpAlgo=interp_op;
                         for (auto &interp_pd: interpParadigm_Candidates) {
                             cur_meta.interpParadigm=interp_pd;
+
+                            
+
                             for (auto &interp_direction: interpDirection_Candidates) {
                                 if ((interp_pd==1 or  (interp_pd==2 and N<=2)) and interp_direction!=0)
                                     continue;
@@ -1686,7 +1710,25 @@ double Tuning(QoZ::Config &conf, T *data){
                                             continue;
                                         */
                                         cur_meta.adjInterp=adj_interp;
+
+                                        if(conf.adaptiveMultiDimStride>0 and interp_pd>0){
+                                            if(interp_op==0){
+                                                for(size_t i=0;i<N;i++)
+                                                    cur_meta.dimCoeffs[i]=linear_interp_vars[i];
+                                            }
+                                            else if (cubic_spline_type==0){
+                                                for(size_t i=0;i<N;i++)
+                                                    cur_meta.dimCoeffs[i]=cubic_noknot_vars[i];
+                                            }
+                                            else{
+                                                for(size_t i=0;i<N;i++)
+                                                    cur_meta.dimCoeffs[i]=cubic_nat_vars[i];
+                                            }
+
+                                        }
                                         conf.interpMeta=cur_meta;
+
+
                                         double cur_absloss=0;
                                         for (int i=0;i<num_sampled_blocks;i++){
                                             cur_block=sampled_blocks[i];  //not so efficient              
@@ -1700,6 +1742,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                             best_meta=cur_meta;
                                             best_interp_absloss=cur_absloss;
                                         }
+                                            }
                                     }
                                 }
                             }   

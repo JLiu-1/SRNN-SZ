@@ -252,6 +252,7 @@ namespace QoZ {
             fixWave = cfg.GetInteger("AlgoSettings", "fixWave", fixWave);
             regressiveInterp = cfg.GetInteger("AlgoSettings", "regressiveInterp", regressiveInterp);
             naturalSpline = cfg.GetInteger("AlgoSettings", "naturalSpline ", naturalSpline );
+            adaptiveMultiDimStride = cfg.GetInteger("AlgoSettings", "adaptiveMultiDimStride ", adaptiveMultiDimStride);
            // minAnchorLevel = cfg.GetInteger("AlgoSettings", "minAnchorLevel", minAnchorLevel);
 
 
@@ -496,6 +497,7 @@ namespace QoZ {
         int SSIMBlockSize=8;
         int fixBlockSize=0;
         int blockwiseSampleBlockSize=0;
+        int adaptiveMultiDimStride=0;
         //std::vector<double> lorenzo1_coeffs;
         //std::vector<double> lorenzo2_coeffs;
         bool verbose=1;
