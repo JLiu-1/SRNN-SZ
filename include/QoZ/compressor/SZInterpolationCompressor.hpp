@@ -528,12 +528,12 @@ namespace QoZ {
             }
             if(conf.verbose)
                 timer.stop("prediction");
-            
+            /*
             for(size_t i=0;i<num_elements;i++){
                 if(!mark[i])
                     std::cout<<i<<std::endl;
             }
-           
+             */
             
             
             //timer.start();
