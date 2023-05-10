@@ -1629,18 +1629,18 @@ double Tuning(QoZ::Config &conf, T *data){
                     interpParadigm_Candidates.push_back(i);
                 //interpParadigm_Candidates.push_back(conf.multiDimInterp);
                 if(conf.adaptiveMultiDimStride>0 ){
-                    QoZ::calculate_interp_error_vars<T,N>(data, global_dims,linear_interp_vars,0,0,conf.adaptiveMultiDimStride);\
+                    QoZ::calculate_interp_error_vars<T,N>(data, global_dims,linear_interp_vars,0,0,conf.adaptiveMultiDimStride,conf.absErrorBound);\
                     QoZ::preprocess_vars<N>(linear_interp_vars);
                     for(auto x:linear_interp_vars)
                         std::cout<<x<<" ";
                     std::cout<<std::endl;
-                    QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride);
+                    QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
                     QoZ::preprocess_vars<N>(cubic_noknot_vars);
                     for(auto x:cubic_noknot_vars)
                         std::cout<<x<<" ";
                     std::cout<<std::endl;
                     if (conf.naturalSpline){
-                        QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_nat_vars,1,0,conf.adaptiveMultiDimStride);
+                        QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_nat_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
                         QoZ::preprocess_vars<N>(cubic_nat_vars);
                         for(auto x:cubic_nat_vars)
                             std::cout<<x<<" ";
