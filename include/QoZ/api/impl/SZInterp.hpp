@@ -1628,7 +1628,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 for(size_t i=1;i<=conf.multiDimInterp;i++)
                     interpParadigm_Candidates.push_back(i);
                 //interpParadigm_Candidates.push_back(conf.multiDimInterp);
-                if(conf.adaptiveMultiDimStride>0){
+                if(conf.adaptiveMultiDimStride>0 ){
                     QoZ::calculate_interp_error_vars<T,N>(data, global_dims,linear_interp_vars,0,0,conf.adaptiveMultiDimStride);\
                     QoZ::preprocess_vars<N>(linear_interp_vars);
                     for(auto x:linear_interp_vars)
@@ -1711,7 +1711,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                         */
                                         cur_meta.adjInterp=adj_interp;
 
-                                        if(conf.adaptiveMultiDimStride>0 and interp_pd>0){
+                                        if(conf.adaptiveMultiDimStride>0 and interp_pd>0 and level==1){
                                             if(interp_op==0){
                                                 for(size_t i=0;i<N;i++)
                                                     cur_meta.dimCoeffs[i]=linear_interp_vars[i];
