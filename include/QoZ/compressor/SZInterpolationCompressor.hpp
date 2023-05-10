@@ -1718,6 +1718,7 @@ namespace QoZ {
             double predict_error = 0;
             
             double coeff_x=(dim_coeffs[0])/((dim_coeffs[0])+(dim_coeffs[1])),coeff_y=1-coeff_x;
+            std::cout<<coeff_x<<" "<<coeff_y<<std::endl;
             //coeff_x=0.5; coeff_y=0.5;
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
             if (interp_func == "linear"||n<5 ||m<5) {//nm cond temp added
