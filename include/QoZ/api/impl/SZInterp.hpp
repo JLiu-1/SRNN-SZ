@@ -1858,6 +1858,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                                 break;
                                            
                                             cur_meta.adjInterp=adj_interp;
+                                            /*
                                             conf.interpMeta=cur_meta;
 
 
@@ -1875,6 +1876,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                                 best_interp_absloss=cur_absloss;
                                             }
                                             cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
+                                            */
                             
                                         }
                                     }
@@ -1901,7 +1903,7 @@ double Tuning(QoZ::Config &conf, T *data){
                             
                         } 
                     }
-                    /*
+                    
                     if(best_accumulated_interp_loss_2<best_accumulated_interp_loss_1)
                         interpMeta_lists[wave_idx]=interpMeta_list;
 
@@ -1910,7 +1912,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         sampleBlocks<T,N>(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
                     }
 
-                    */
+
 
                 }
                 
