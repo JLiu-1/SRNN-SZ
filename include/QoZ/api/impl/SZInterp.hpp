@@ -1807,7 +1807,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     
 
                 //fusedim
-                /*
+                
                 if(conf.adaptiveMultiDimStride>0 and N==3 ){
 
                     std::vector<double> cubic_noknot_vars;
@@ -1901,20 +1901,24 @@ double Tuning(QoZ::Config &conf, T *data){
                             
                         } 
                     }
+                    /*
                     if(best_accumulated_interp_loss_2<best_accumulated_interp_loss_1)
                         interpMeta_lists[wave_idx]=interpMeta_list;
 
+                    if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
+                            //recover sample if real compression used                  
+                        sampleBlocks<T,N>(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
+                    }
+
+                    */
+
                 }
                 
-                */
+                
 
 
 
-
-                if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
-                        //recover sample if real compression used                  
-                    sampleBlocks<T,N>(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
-                }
+                
 
                 if(conf.autoTuningRate==0){   
                     std::vector<QoZ::Interp_Meta> tempmeta_list=conf.interpMeta_list;
