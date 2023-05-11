@@ -94,7 +94,7 @@ namespace QoZ {
 
         }
         double offset=0.0;
-
+        
         for (size_t i=0;i<N;i++){
             vars[i]/=double(count);
             if(interp_op==1){
@@ -107,6 +107,7 @@ namespace QoZ {
                 vars[i]+=abs_eb*abs_eb*(1.0/12)*0.5;
             }
         }
+
 
 
     }
