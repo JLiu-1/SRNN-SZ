@@ -1922,7 +1922,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     conf.interpMeta_list=tempmeta_list;
 
                     std::cout<<best_interp_cr_1<<" "<<best_interp_cr_2<<std::endl;
-                    if(best_interp_cr_2*1.05<best_interp_cr_1)
+                    if(best_interp_cr_2>best_interp_cr_1*1.05)
                         interpMeta_lists[wave_idx]=interpMeta_list;
 
                     if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
