@@ -1817,7 +1817,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     for(size_t i=1;i<N;i++){
                         if(cubic_noknot_vars[i]>cur_vars){
                             fused_dim=i;
-                            cur_vars=cubic_noknot_vars;
+                            cur_vars=cubic_noknot_vars[i];
                         }
                     }
                     if(fused_dim==0)
