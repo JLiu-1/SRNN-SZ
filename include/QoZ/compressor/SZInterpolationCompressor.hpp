@@ -991,7 +991,7 @@ namespace QoZ {
 
                 std::array<size_t,3>anchor_strides={maxStep,maxStep,maxStep};
 
-                uint8_t direction=conf.interpMeta_list.size()>0?conf.interpMeta_list[0].interpDirection?conf.interpMeta.interpDirection;
+                uint8_t direction=conf.interpMeta_list.size()>0?conf.interpMeta_list[0].interpDirection:conf.interpMeta.interpDirection;
                 if (direction>=6){
                     if(direction<=7)
                         anchor_strides[0]=1;
@@ -999,7 +999,7 @@ namespace QoZ {
                         anchor_strides[1]=1;
                     else
                         anchor_strides[2]=1;
-
+W
                 }
                 for (size_t x=anchor_strides[0]*(tuning==1);x<conf.dims[0];x+=anchor_strides[0]){
                     for (size_t y=anchor_strides[1]*(tuning==1);y<conf.dims[1];y+=anchor_strides[1]){
