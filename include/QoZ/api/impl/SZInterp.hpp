@@ -1714,7 +1714,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                             continue;
                                         */
                                         cur_meta.adjInterp=adj_interp;
-                                        
+                                        /*
                                         if(conf.adaptiveMultiDimStride>0 and interp_pd>0 and level==1){
                                             if(interp_op==0){
                                                 for(size_t i=0;i<N;i++)
@@ -1730,7 +1730,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                             }
 
                                         }
-                                        
+                                        */
                                         conf.interpMeta=cur_meta;
 
 
