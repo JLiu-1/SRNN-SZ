@@ -4393,15 +4393,15 @@ namespace QoZ {
            //bool full_adjacent_interp=false;
             uint8_t paradigm=meta.interpParadigm;
             uint8_t direction=meta.interpDirection;
-            bool 2d_fallback=direction>=6;
-            if (2d_fallback){
+            bool fallback_2d=direction>=6;
+            if (fallback_2d){
                 direction-=6;
             }
             assert(direction<6);
             if(paradigm==0){
                 const std::array<int, N> dims = dimension_sequences[direction];
                 //if (cross_block==0){
-                if(!2d_fallback){
+                if(!fallback_2d){
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                             size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
@@ -4539,7 +4539,7 @@ namespace QoZ {
             }
             
             else if (paradigm==1){
-                if(!2d_fallback){
+                if(!fallback_2d){
                     const std::array<int, N> dims = dimension_sequences[0];
                     std::array<double,3>dim_coeffs=meta.dimCoeffs;
                     //std::cout<<dim_coeffs[0]<<std::endl;
