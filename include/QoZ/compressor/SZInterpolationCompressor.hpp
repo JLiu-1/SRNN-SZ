@@ -999,7 +999,7 @@ namespace QoZ {
                         anchor_strides[1]=1;
                     else
                         anchor_strides[2]=1;
-W
+
                 }
                 for (size_t x=anchor_strides[0]*(tuning==1);x<conf.dims[0];x+=anchor_strides[0]){
                     for (size_t y=anchor_strides[1]*(tuning==1);y<conf.dims[1];y+=anchor_strides[1]){
