@@ -1810,6 +1810,16 @@ double Tuning(QoZ::Config &conf, T *data){
                 
                 if(conf.adaptiveMultiDimStride>0 and N==3 ){
 
+                    std::vector<QoZ::Interp_Meta> tempmeta_list=conf.interpMeta_list;
+                    conf.interpMeta_list=interpMeta_list;      
+                    std::pair<double,double> results=CompressTest<T,N>(conf,sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);
+                    double best_interp_cr_1=sizeof(T)*8.0/results.first;     
+                    conf.interpMeta_list=tempmeta_list;
+                    
+
+
+
+
                     std::vector<double> cubic_noknot_vars;
                     QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
                     size_t fused_dim=0;
@@ -1904,7 +1914,15 @@ double Tuning(QoZ::Config &conf, T *data){
                         } 
                     }
                     
-                    if(best_accumulated_interp_loss_2<best_accumulated_interp_loss_1)
+
+                    tempmeta_list=conf.interpMeta_list;
+                    conf.interpMeta_list=interpMeta_list;      
+                    results=CompressTest<T,N>(conf,sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);
+                    double best_interp_cr_2=sizeof(T)*8.0/results.first;     
+                    conf.interpMeta_list=tempmeta_list;
+
+
+                    if(best_interp_cr_2*1.05<best_interp_cr_1)
                         interpMeta_lists[wave_idx]=interpMeta_list;
 
                     if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
