@@ -1861,7 +1861,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                             
                                             conf.interpMeta=cur_meta;
 
-                                            /*
+                                            
                                             double cur_absloss=0;
                                             for (int i=0;i<num_sampled_blocks;i++){
                                                 cur_block=sampled_blocks[i];  //not so efficient              
@@ -1875,8 +1875,8 @@ double Tuning(QoZ::Config &conf, T *data){
                                                 best_meta=cur_meta;
                                                 best_interp_absloss=cur_absloss;
                                             }
-                                            cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
-                                            */
+                                            //cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
+                                            
                             
                                         }
                                     }
