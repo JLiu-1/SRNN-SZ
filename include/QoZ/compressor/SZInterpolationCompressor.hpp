@@ -447,6 +447,7 @@ namespace QoZ {
             }
             double predict_error=0.0;
             int levelwise_predictor_levels=conf.interpMeta_list.size();
+
             for (uint level = start_level; level > end_level && level <= start_level; level--) {
                 cur_level=level;
                 if (alpha<0) {
@@ -989,10 +990,12 @@ namespace QoZ {
             else if(N==3){
 
                 std::array<size_t,3>anchor_strides={maxStep,maxStep,maxStep};
-                if (conf.interpMeta.interpDirection>=6){
-                    if(conf.interpMeta.interpDirection<=7)
+
+                uint8_t direction=conf.interpMeta_list.size()>0?conf.interpMeta_list[0].interpDirection?conf.interpMeta.interpDirection;
+                if (direction>=6){
+                    if(direction<=7)
                         anchor_strides[0]=1;
-                    else if (conf.interpMeta.interpDirection<=9)
+                    else if (direction<=9)
                         anchor_strides[1]=1;
                     else
                         anchor_strides[2]=1;
