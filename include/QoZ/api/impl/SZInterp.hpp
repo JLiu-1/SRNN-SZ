@@ -1921,7 +1921,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     double best_interp_cr_2=sizeof(T)*8.0/results.first;     
                     conf.interpMeta_list=tempmeta_list;
 
-
+                    std::cout<<best_interp_cr_1<<" "<<best_interp_cr_2<<std::endl;
                     if(best_interp_cr_2*1.05<best_interp_cr_1)
                         interpMeta_lists[wave_idx]=interpMeta_list;
 
