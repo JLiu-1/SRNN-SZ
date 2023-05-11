@@ -989,10 +989,10 @@ namespace QoZ {
             else if(N==3){
 
                 std::array<size_t,3>anchor_strides={maxStep,maxStep,maxStep};
-                if (conf.interpMeta.direction>=6){
-                    if(conf.interpMeta.direction<=7)
+                if (conf.interpMeta.interpDirection>=6){
+                    if(conf.interpMeta.interpDirection<=7)
                         anchor_strides[0]=1;
-                    else if (conf.interpMeta.direction<=9)
+                    else if (conf.interpMeta.interpDirection<=9)
                         anchor_strides[1]=1;
                     else
                         anchor_strides[2]=1;
