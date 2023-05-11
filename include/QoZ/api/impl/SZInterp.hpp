@@ -1807,7 +1807,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     
 
                 //fusedim
-
+                /*
                 if(conf.adaptiveMultiDimStride>0 and N==3 ){
 
                     std::vector<double> cubic_noknot_vars;
@@ -1832,11 +1832,7 @@ double Tuning(QoZ::Config &conf, T *data){
                    // std::cout<<level<<std::endl;
                         int start_level=(level==conf.levelwisePredictionSelection?9999:level);
                         int end_level=level-1;
-                        /*
-                        uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
-                        uint8_t bestDirection = 0;
-                        uint8_t bestSplineType=0;
-                        */
+                      
                         double best_interp_absloss=std::numeric_limits<double>::max();
                         //conf.cmprAlgo = QoZ::ALGO_INTERP;    
                         QoZ::Interp_Meta cur_meta;
@@ -1860,10 +1856,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                         for(auto adj_interp:adjInterp_Candidates){
                                             if (interp_op!=QoZ::INTERP_ALGO_CUBIC and adj_interp!=0)
                                                 break;
-                                            /*
-                                            if (interp_direction==2 and level<=2)//???
-                                                continue;
-                                            */
+                                           
                                             cur_meta.adjInterp=adj_interp;
                                             conf.interpMeta=cur_meta;
 
@@ -1890,21 +1883,13 @@ double Tuning(QoZ::Config &conf, T *data){
                         }
                         best_accumulated_interp_loss_2+=best_interp_absloss;
               
-                        /*
-                        interpAlgo_list[level-1]=bestInterpAlgo;
-                        interpDirection_list[level-1]=bestDirection;
-                        cubicSplineType_list[level-1]=bestSplineType;
-                        */
+                     
 
                         interpMeta_list[level-1]=best_meta;
                             
                         if(conf.pdTuningRealComp){
                             //place to add real compression,need to deal the problem that the sampled_blocks are changed. 
-                            /*                 
-                            conf.interpAlgo=bestInterpAlgo;
-                            conf.interpDirection=bestDirection;
-                            conf.cubicSplineType=bestSplineType;
-                            */
+                      
                             conf.interpMeta=best_meta;
                             for (int i=0;i<num_sampled_blocks;i++){
 
@@ -1921,7 +1906,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
                 }
                 
-
+                */
 
 
 
@@ -1931,7 +1916,9 @@ double Tuning(QoZ::Config &conf, T *data){
                     sampleBlocks<T,N>(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
                 }
 
-                if(conf.autoTuningRate==0){              
+                if(conf.autoTuningRate==0){   
+                    QoZ::Interp_Meta tempmeta_list=conf.interpMeta_list;
+                    conf.interpMeta_list=interpMeta_list;      
                     std::pair<double,double> results=CompressTest<T,N>(conf,sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);
                     double cur_best_interp_cr=sizeof(T)*8.0/results.first;     
                     /*
@@ -1946,9 +1933,12 @@ double Tuning(QoZ::Config &conf, T *data){
                         conf.interpDirection_list=interpDirection_list;
                         conf.cubicSplineType_list=cubicSplineType_list;
                         */
-                        conf.interpMeta_list=interpMeta_list;
+                    
                         bestWave=wave_idx;
 
+                    }
+                    else{
+                        conf.interpMeta_list=tempmeta_list;
                     }
                         //if (anchor_rate>0)
                         //  best_interp_cr=1/((1-anchor_rate)/best_interp_cr+anchor_rate);   
