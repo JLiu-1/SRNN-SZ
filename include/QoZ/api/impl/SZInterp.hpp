@@ -1858,10 +1858,10 @@ double Tuning(QoZ::Config &conf, T *data){
                                                 break;
                                            
                                             cur_meta.adjInterp=adj_interp;
-                                            /*
+                                            
                                             conf.interpMeta=cur_meta;
 
-
+                                            /*
                                             double cur_absloss=0;
                                             for (int i=0;i<num_sampled_blocks;i++){
                                                 cur_block=sampled_blocks[i];  //not so efficient              
