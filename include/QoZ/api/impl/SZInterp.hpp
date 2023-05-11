@@ -1917,7 +1917,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 }
 
                 if(conf.autoTuningRate==0){   
-                    QoZ::Interp_Meta tempmeta_list=conf.interpMeta_list;
+                    std::vector<QoZ::Interp_Meta> tempmeta_list=conf.interpMeta_list;
                     conf.interpMeta_list=interpMeta_list;      
                     std::pair<double,double> results=CompressTest<T,N>(conf,sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);
                     double cur_best_interp_cr=sizeof(T)*8.0/results.first;     
