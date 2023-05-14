@@ -603,8 +603,8 @@ namespace QoZ {
                         }
                         else if(N==3){
                             temp_dim_offsets[2]=1;
-                            temp_dim_offsets[1]=sb_ends[1];
-                            temp_dim_offsets[0]=(sb_ends[1])*(sb_ends[0]);
+                            temp_dim_offsets[1]=sb_ends[2];
+                            temp_dim_offsets[0]=(sb_ends[2])*(sb_ends[1]);
                        
                         }
                         for(size_t i=0;i<N;i++)
