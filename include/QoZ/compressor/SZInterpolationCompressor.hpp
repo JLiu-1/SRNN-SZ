@@ -229,7 +229,7 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                    std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.adjInterp<<std::endl; 
+                    //std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.adjInterp<<std::endl; 
                
                      block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
                                         interpolators[cur_meta.interpAlgo], cur_meta, stride,0,0,0);//,cross_block,regressiveInterp);
@@ -558,10 +558,10 @@ namespace QoZ {
                             double temp1=0.5-0.5/cur_rate,temp2=0.5+0.5/cur_rate;
                             sample_starts[i]=((size_t)((temp1*cur_length)/(2*stride)))*2*stride+start_idx[i];
                             sample_ends[i]=((size_t)((temp2*cur_length)/(2*stride)))*2*stride+start_idx[i];
-                            std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
+                            //std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
 
                         }
-                         std::cout<<"----"<<std::endl;
+                         //std::cout<<"----"<<std::endl;
                         std::vector<T> orig_sampled_block;
     
                         std::array<size_t,N>sb_starts;
@@ -710,7 +710,7 @@ namespace QoZ {
                                 }
                             }
                         }
-                        std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
+                        //std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
                         interp_metas.push_back(best_meta);
                         dimension_offsets=global_dimension_offsets;
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
