@@ -227,6 +227,7 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
+                    std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.adjInterp<<std::endl; 
                
                      block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
                                         interpolators[cur_meta.interpAlgo], cur_meta, stride,0,0,0);//,cross_block,regressiveInterp);
@@ -606,8 +607,8 @@ namespace QoZ {
                         }
                         for(size_t i=0;i<N;i++)
                             sb_ends[i]--;
-                        std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
-                        std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
+                        //std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
+                        //std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
                         std::array<size_t,N> global_dimension_offsets=dimension_offsets;
                         dimension_offsets=temp_dim_offsets;
                         
@@ -665,9 +666,10 @@ namespace QoZ {
                                             cur_meta.adjInterp=adj_interp;
                                             cur_block=orig_sampled_block;
                                             
-                                            //double cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
-                                            //                              interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,0);//,cross_block,regressiveInterp);
-                                            double cur_loss=0.0;
+                                            double cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
+                                                                          interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,0);//,cross_block,regressiveInterp);
+
+                                            //double cur_loss=0.0;
                                             if(cur_loss<best_loss){
                                                 best_loss=cur_loss;
                                                 best_meta=cur_meta;
@@ -706,6 +708,7 @@ namespace QoZ {
                                 }
                             }
                         }
+                        std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
                         interp_metas.push_back(best_meta);
                         dimension_offsets=global_dimension_offsets;
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
@@ -782,7 +785,7 @@ namespace QoZ {
             //write(conf.regressiveInterp,buffer_pos);
             if(conf.blockwiseTuning){
                 size_t meta_num=interp_metas.size();
-                std::cout<<meta_num<<std::endl;
+                //std::cout<<meta_num<<std::endl;
                 write(meta_num,buffer_pos);
                 write(interp_metas.data(),meta_num,buffer_pos);
 
