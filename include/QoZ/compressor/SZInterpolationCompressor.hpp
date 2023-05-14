@@ -650,6 +650,7 @@ namespace QoZ {
                                                 best_meta=cur_meta;
                                             }
                                             size_t local_idx=0;
+                                            /*
                                             if(N==2){
                                                 for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
                                                     //sb_dims[0]++;
@@ -674,6 +675,7 @@ namespace QoZ {
                                                     }
                                                 }
                                             } 
+                                            */
                                         }
                                     }
                                 }
