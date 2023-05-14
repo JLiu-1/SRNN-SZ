@@ -1515,6 +1515,9 @@ double Tuning(QoZ::Config &conf, T *data){
     if(conf.waveletAutoTuning>0 and conf.waveAutoFix)
         setFixRates(conf,rel_bound);
 
+    bool blockwiseTuning=conf.blockwiseTuning;
+    conf.blockwiseTuning=false;
+    /*
     if(conf.blockwiseTuning){
         conf.predictorTuningRate=0.0;
         if(conf.adaptiveMultiDimStride>0 and N==3){//This is a very immature method. another method is to temply set conf.blockwiseTuning=0 then run a predictor tuning for dim fuse. More accurate but slower.
@@ -1542,7 +1545,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
         }
     }
-
+    */
 
     /*
     if(conf.verbose){
@@ -2558,7 +2561,7 @@ double Tuning(QoZ::Config &conf, T *data){
             }
         }
     }
-
+    conf.blockwiseTuning=blockwiseTuning;
     if (useInterp){
         conf.cmprAlgo=QoZ::ALGO_INTERP;
     }
