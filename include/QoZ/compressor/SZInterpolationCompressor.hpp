@@ -528,10 +528,10 @@ namespace QoZ {
                     if(peTracking)
                         
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                    interpolators[cur_meta.interpAlgo],cur_meta, stride,3,cross_block,regressiveInterp);
+                                    interpolators[cur_meta.interpAlgo],cur_meta, stride,3,0,0);//,cross_block,regressiveInterp);
                     else
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                    interpolators[cur_meta.interpAlgo],cur_meta, stride,tuning,cross_block,regressiveInterp);
+                                    interpolators[cur_meta.interpAlgo],cur_meta, stride,tuning,0,0);//,cross_block,regressiveInterp);
 
                     
                         
