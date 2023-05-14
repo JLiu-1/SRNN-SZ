@@ -377,11 +377,11 @@ void SZ_decompress_Interp(QoZ::Config &conf, char *cmpData, size_t cmpSize, T *d
                 QoZ::LinearQuantizer<T>(),
                 QoZ::HuffmanEncoder<int>(),
                 QoZ::Lossless_zstd());
-        if (!conf.blockwiseTuning)
+        //if (!conf.blockwiseTuning)
             sz.decompress(cmpDataPos, cmpSize, decData);
-        else{
-            sz.decompress_block(cmpDataPos, cmpSize, decData);
-        }
+        //else{
+        //    sz.decompress_block(cmpDataPos, cmpSize, decData);
+        //}
     }
     
     else{
