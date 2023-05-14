@@ -494,7 +494,9 @@ namespace QoZ {
                     }
                     */
                 }
-                
+                QoZ::Interp_Meta cur_level_meta;
+                if(conf.blockwiseTuning)
+                    cur_level_meta=cur_meta;
                 size_t stride = 1U << (level - 1);
                 size_t cur_blocksize;
                 if (conf.fixBlockSize>0){
@@ -616,9 +618,11 @@ namespace QoZ {
                         
                         QoZ::Interp_Meta best_meta,cur_meta;
                         double best_loss=std::numeric_limits<double>::max();
-                        std::vector<uint8_t> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
+                        //std::vector<uint8_t> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
+                        std::vector<uint8_t> interpAlgo_Candidates={cur_level_meta.interpAlgo};
                         std::vector<uint8_t> interpParadigm_Candidates={0};
-                        std::vector<uint8_t> cubicSplineType_Candidates={0};
+                        //std::vector<uint8_t> cubicSplineType_Candidates={0};
+                        std::vector<uint8_t> cubicSplineType_Candidates={cur_level_meta.cubicSplineType};
                         std::vector<uint8_t> interpDirection_Candidates={0, QoZ::factorial(N) -1};
                         if(conf.fused_dim>=0){
                             if(conf.fused_dim==0)
@@ -628,22 +632,28 @@ namespace QoZ {
                             else
                                 interpDirection_Candidates={10,11};
                         }
-                        std::vector<uint8_t> adjInterp_Candidates={0};
+                        //std::vector<uint8_t> adjInterp_Candidates={0};
+                        std::vector<uint8_t> adjInterp_Candidates={cur_level_meta.adjInterp};
+
 
                         if(conf.multiDimInterp>0){
                             for(size_t i=1;i<=conf.multiDimInterp;i++)
                                 interpParadigm_Candidates.push_back(i);
                        
-                        }
+                        }   
+                        /*
 
                         if (conf.naturalSpline){
                             cubicSplineType_Candidates.push_back(1);
                         }
+                        */
+                        /*
                         if(conf.fullAdjacentInterp){
                             adjInterp_Candidates.push_back(1);
                             //for(size_t i=1;i<=conf.fullAdjacentInterp;i++)
                             //    adjInterp_Candidates.push_back(i);
                         }
+                        */
 
                         std::vector<T> cur_block;
                         for (auto &interp_op: interpAlgo_Candidates) {
