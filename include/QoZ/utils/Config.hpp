@@ -188,6 +188,8 @@ namespace QoZ {
             FZ=cfg.GetBoolean("AlgoSettings", "FZ", FZ);
             sperrWithoutWave=cfg.GetBoolean("AlgoSettings", "sperrWithoutWave",sperrWithoutWave);
             pyBind=cfg.GetBoolean("AlgoSettings", "pyBind",pyBind);
+            verbose=cfg.GetBoolean("AlgoSettings", "verbose", verbose);
+            var_first = cfg.GetBoolean("AlgoSettings", "var_first", var_first);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -220,32 +222,32 @@ namespace QoZ {
             profiling=cfg.GetInteger("AlgoSettings", "profiling", profiling);
             SSIMBlockSize=cfg.GetInteger("AlgoSettings", "SSIMBlockSize", SSIMBlockSize);
             fixBlockSize=cfg.GetInteger("AlgoSettings", "fixBlockSize", fixBlockSize);
-            verbose=cfg.GetBoolean("AlgoSettings", "verbose", verbose);
+            
             
             //profilingFix=cfg.GetBoolean("AlgoSettings", "profilingFix",profilingFix);
 
 
 
-            blockwiseSampleBlockSize=cfg.GetInteger("AlgoSettings", "blockwiseSampleBlockSize", blockwiseSampleBlockSize);
+            //blockwiseSampleBlockSize=cfg.GetInteger("AlgoSettings", "blockwiseSampleBlockSize", blockwiseSampleBlockSize);
             pdTuningRealComp=cfg.GetBoolean("AlgoSettings", "pdTuningRealComp", pdTuningRealComp);
             pdTuningAbConf=cfg.GetInteger("AlgoSettings", "pdTuningAbConf", pdTuningAbConf);
            // pdAlpha=cfg.GetReal("AlgoSettings", "pdAlpha", pdAlpha);
             //pdBeta=cfg.GetReal("AlgoSettings", "pdBeta", pdBeta);
             //lastPdTuning=cfg.GetBoolean("AlgoSettings", "lastPdTuning", lastPdTuning);
             abList=cfg.GetInteger("AlgoSettings", "abList", abList);
-            crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
-            sampleBlockSampleBlockSize=cfg.GetInteger("AlgoSettings", "sampleBlockSampleBlockSize", sampleBlockSampleBlockSize);
+            //crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
+            //sampleBlockSampleBlockSize=cfg.GetInteger("AlgoSettings", "sampleBlockSampleBlockSize", sampleBlockSampleBlockSize);
             peTracking=cfg.GetBoolean("AlgoSettings", "peTracking", peTracking);
             wavelet=cfg.GetInteger("AlgoSettings", "wavelet", wavelet);
             offsetPredictor=cfg.GetInteger("AlgoSettings", "offsetPredictor", offsetPredictor);
             //transformation=cfg.GetInteger("AlgoSettings", "transformation", transformation);
             trimToZero = cfg.GetInteger("AlgoSettings", "trimToZero", trimToZero);
             pid = cfg.GetInteger("AlgoSettings", "pid", pid);
-            blockOrder = cfg.GetInteger("AlgoSettings", "blockOrder", blockOrder);
-            coeffTracking = cfg.GetInteger("AlgoSettings", "coeffTracking", coeffTracking);
+            //blockOrder = cfg.GetInteger("AlgoSettings", "blockOrder", blockOrder);
+            //coeffTracking = cfg.GetInteger("AlgoSettings", "coeffTracking", coeffTracking);
             waveletTest = cfg.GetInteger("AlgoSettings", "waveletTest", waveletTest);
             waveletAutoTuning = cfg.GetInteger("AlgoSettings", "waveletAutoTuning", waveletAutoTuning);
-            var_first = cfg.GetInteger("AlgoSettings", "var_first", var_first);
+            
             profStride = cfg.GetInteger("AlgoSettings", "profStride", profStride);
             sperr = cfg.GetInteger("AlgoSettings", "sperr", sperr);
             waveAutoFix = cfg.GetInteger("AlgoSettings", "waveAutoFix", waveAutoFix);
@@ -480,7 +482,7 @@ namespace QoZ {
         int quantbinCnt = 65536;
         int blockSize;
         //int exhaustiveTuning=0;
-        uint8_t testLorenzo=0;
+        int testLorenzo=0;
         std::vector<int> quant_bins;
         //double pred_square_error;
         double decomp_square_error;
@@ -493,68 +495,68 @@ namespace QoZ {
         //bool train=0;
         //bool useCoeff=0;
         //int regSampleStep=6;
-        uint8_t multiDimInterp=0;
-        uint8_t mdCrossInterp=0;
-        uint8_t profiling=0;//since there may be multiple ways of profiling set it to int
+        int multiDimInterp=0;
+        int mdCrossInterp=0;
+        int profiling=0;//since there may be multiple ways of profiling set it to int
         int SSIMBlockSize=8;
         int fixBlockSize=0;
-        int blockwiseSampleBlockSize=0;
+        //int blockwiseSampleBlockSize=0;
         int adaptiveMultiDimStride=0;
         //std::vector<double> lorenzo1_coeffs;
         //std::vector<double> lorenzo2_coeffs;
         bool verbose=1;
         bool QoZ=0;
         bool pdTuningRealComp=0;
-        uint8_t pdTuningAbConf=0;
+        int pdTuningAbConf=0;
         //double pdAlpha=-1;
         //double pdBeta=-1;
         //bool lastPdTuning=0;
-        uint8_t abList=0;
-        uint8_t crossBlock=0;
-        int sampleBlockSampleBlockSize=0;
+        int abList=0;
+        //int crossBlock=0;
+        //int sampleBlockSampleBlockSize=0;
         bool peTracking=0;
-        uint8_t wavelet=0; //may have different wavelets
+        int wavelet=0; //may have different wavelets
        //bool external_wave=0;
         std::vector<size_t> coeffs_dims;
         size_t coeffs_num=0;
         double wavelet_rel_coeff = 0.75;
         size_t firstSize;
-        uint8_t coeffTracking=0;//0 no. 1: output coeff. 2: print stats of coeff 3: both
+        //vint coeffTracking=0;//0 no. 1: output coeff. 2: print stats of coeff 3: both
         int pid=0;
 
-        uint8_t offsetPredictor=0;//0:zeropredictor 1: 1D lorenzo 2: MD lorenzo 3:1D interp 4: MD interp
+        int offsetPredictor=0;//0:zeropredictor 1: 1D lorenzo 2: MD lorenzo 3:1D interp 4: MD interp
         //int transformation = 0; //0: no trans; 1: sigmoid 2: tanh
         std::vector<float> predictionErrors;//for debug, to delete in final version.
         std::vector<uint8_t> interp_ops;//for debug, to delete in final version.
         std::vector<uint8_t> interp_dirs;//for debug, to delete in final version.
-        uint8_t trimToZero=0;//1: trim only when quantizing;2: also trim before compression.
+        int trimToZero=0;//1: trim only when quantizing;2: also trim before compression.
         double preTrim=0.0;//trim small numbers to zero before compression.
-        uint8_t blockOrder = 0;//order of blocks.
-        uint8_t waveletTest = 1;
+        //int blockOrder = 0;//order of blocks.
+        int waveletTest = 1;
         double waveletTuningRate = 0.0;
-        uint8_t waveletAutoTuning = 0;
+        int waveletAutoTuning = 0;
         double waveletBrFix = 1.0;
         double waveletMseFix = 1.0;
         double waveletBrFix2 = 1.0;
         double waveletMseFix2 = 1.0;
         double lorenzoBrFix = 1.0;
-        uint8_t var_first=0;
+        bool var_first=false;
         size_t profStride=0;
-        int8_t sperr=-1;
+        int sperr=-1;
         //double sperr_eb_coeff = 1.5;
-        uint8_t waveAutoFix=1;
-        uint8_t conditioning=0;
+        int waveAutoFix=1;
+        int conditioning=0;
         size_t meta_size=0;
         sperr::vec8_type meta;
         std::vector<sperr::vec8_type> block_metas;
-        int8_t fixWave=-1;
+        int fixWave=-1;
         bool sperrWithoutWave=false;
         bool pyBind=true;
         std::string metadata;
         bool pybind_activated=false;
         bool FZ=false;
-        uint8_t regressiveInterp=0;
-        uint8_t fullAdjacentInterp=0;
+        int regressiveInterp=0;
+        int fullAdjacentInterp=0;
         bool naturalSpline=0;
         //bool profilingFix=true;//only for test
 

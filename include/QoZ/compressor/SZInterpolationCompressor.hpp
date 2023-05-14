@@ -81,8 +81,8 @@ namespace QoZ {
             size_t cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
             read(trimToZero,buffer_pos, remaining_length);
-            int blockOrder=0;
-            read(blockOrder,buffer_pos, remaining_length); 
+            //int blockOrder=0;
+            //read(blockOrder,buffer_pos, remaining_length); 
             int regressiveInterp;   
             read(regressiveInterp,buffer_pos, remaining_length);       
             if (trimToZero>0){
@@ -225,7 +225,7 @@ namespace QoZ {
                 }
                 
                 auto inter_block_range = std::make_shared<QoZ::multi_dimensional_range<T, N>>(decData,std::begin(global_dimensions), std::end(global_dimensions),
-                                                           cur_blocksize, 0,blockOrder);
+                                                           cur_blocksize, 0,0);//blockOrder);
                 auto inter_begin = inter_block_range->begin();
                 auto inter_end = inter_block_range->end();
                 
@@ -513,7 +513,7 @@ namespace QoZ {
                 auto inter_block_range = std::make_shared<
                         QoZ::multi_dimensional_range<T, N>>(data, std::begin(global_dimensions),
                                                            std::end(global_dimensions),
-                                                           cur_blocksize, 0,conf.blockOrder);
+                                                           cur_blocksize, 0,0);//conf.blockOrder);
                 auto inter_begin = inter_block_range->begin();
                 auto inter_end = inter_block_range->end();
                 for (auto block = inter_begin; block != inter_end; ++block) {
