@@ -551,9 +551,10 @@ namespace QoZ {
                             //sample_strides[i]=cur_stride;
                             double temp=0.5-0.5/cur_rate;
                             sample_starts[i]=temp*cur_length+start_idx[i];
+                            std::cout<<std_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<stide<<std::endl;
 
                         }
-                        
+                         std::cout<<"----"<<std::endl;
                         std::vector<T> orig_sampled_block;
                         size_t local_idx=0;
                         std::array<size_t,N> sb_starts;
