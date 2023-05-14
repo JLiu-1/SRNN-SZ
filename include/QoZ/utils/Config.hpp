@@ -191,6 +191,7 @@ namespace QoZ {
             pyBind=cfg.GetBoolean("AlgoSettings", "pyBind",pyBind);
             verbose=cfg.GetBoolean("AlgoSettings", "verbose", verbose);
             var_first = cfg.GetBoolean("AlgoSettings", "var_first", var_first);
+            blockwiseTuning = cfg.GetBoolean("AlgoSettings", "blockwiseTuning", blockwiseTuning);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -302,7 +303,7 @@ namespace QoZ {
             write(blockSize, c);
             
             write(levelwisePredictionSelection, c);
-            write(blockwiseTuning, c);
+            //write(blockwiseTuning, c);
             write(stride, c);
             write(maxStep,c);
             write(pred_dim, c);
@@ -379,7 +380,7 @@ namespace QoZ {
             read(quantbinCnt, c);
             read(blockSize, c);
             read(levelwisePredictionSelection, c);
-            read(blockwiseTuning, c);
+            //read(blockwiseTuning, c);
             read(stride, c);
             read(maxStep,c);
             read(pred_dim, c);
