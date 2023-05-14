@@ -42,6 +42,7 @@ namespace QoZ {
         }
 
         T *decompress(uchar const *cmpData, const size_t &cmpSize, T *decData) {
+            std::cout<<"dawd"<<std::endl;
             size_t remaining_length = cmpSize;
             uchar *buffer = lossless.decompress(cmpData, remaining_length);
             int levelwise_predictor_levels;
