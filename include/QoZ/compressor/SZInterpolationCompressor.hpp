@@ -542,7 +542,7 @@ namespace QoZ {
                             if (end_idx[i] > global_dimensions[i] - 1) {
                                 end_idx[i] = global_dimensions[i] - 1;
                             }
-                            double cur_rate=level>=3?1.0:conf.blockwiseSampleRate;
+                            double cur_rate=level>=2?1.0:conf.blockwiseSampleRate;
                             size_t  cur_length=(end_idx[i]-start_idx[i])+1,cur_stride=stride*cur_rate;
                             while(cur_stride>stride){
                                 if(cur_length/cur_stride>=min_len)
