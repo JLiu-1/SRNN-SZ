@@ -563,8 +563,8 @@ namespace QoZ {
     
                         std::array<size_t,N>sb_starts;
                         std::fill(sb_starts.begin(),sb_starts.end(),0);
-                        std::array<size_t,N>sb_ends;
-                        std::fill(sb_ends.begin(),sb_ends.end(),0);
+                        std::array<size_t,N>sb_ends{(sample_ends[0]-sample_starts[0])/stride+1,(sample_ends[1]-sample_starts[1])/stride+1,(sample_ends[2]-sample_starts[2])/stride+1};
+                        //std::fill(sb_ends.begin(),sb_ends.end(),0);
                         
                         if(N==2){
                             for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
@@ -579,11 +579,11 @@ namespace QoZ {
                         }
                         else if(N==3){
                             for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=stride){
-                                sb_ends[0]++;
+                               
                                 for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=stride){
-                                    sb_ends[1]++;
+                                    
                                     for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=stride){
-                                        sb_ends[2]++;
+                                       
                                         size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                         orig_sampled_block.push_back(data[global_idx]);
                                     }
