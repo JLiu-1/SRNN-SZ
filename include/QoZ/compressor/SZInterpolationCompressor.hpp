@@ -173,28 +173,28 @@ namespace QoZ {
                 uint cur_splinetype=cubicSplineType;
                 */
                 QoZ::Interp_Meta cur_meta;
-                if(blockwiseTuning)
-                    cur_meta=interpMeta_list[meta_index++];
-                else if (levelwise_predictor_levels==0){
-                    cur_meta=interp_meta;
-                }
-                else{
-
-                    if (level-1<levelwise_predictor_levels){
-                        /*
-                        cur_interpolator=interpAlgo_list[level-1];
-                        cur_direction=interpDirection_list[level-1];
-                        cur_splinetype=cubicSplineType_list[level-1];
-                        */
-                        cur_meta=interpMeta_list[level-1];
+                if(!blockwiseTuning){
+                    if (levelwise_predictor_levels==0){
+                        cur_meta=interp_meta;
                     }
                     else{
-                        /*
-                        cur_interpolator=interpAlgo_list[levelwise_predictor_levels-1];
-                        cur_direction=interpDirection_list[levelwise_predictor_levels-1];
-                        cur_splinetype=cubicSplineType_list[levelwise_predictor_levels-1];
-                        */
-                        cur_meta=interpMeta_list[levelwise_predictor_levels-1];
+
+                        if (level-1<levelwise_predictor_levels){
+                            /*
+                            cur_interpolator=interpAlgo_list[level-1];
+                            cur_direction=interpDirection_list[level-1];
+                            cur_splinetype=cubicSplineType_list[level-1];
+                            */
+                            cur_meta=interpMeta_list[level-1];
+                        }
+                        else{
+                            /*
+                            cur_interpolator=interpAlgo_list[levelwise_predictor_levels-1];
+                            cur_direction=interpDirection_list[levelwise_predictor_levels-1];
+                            cur_splinetype=cubicSplineType_list[levelwise_predictor_levels-1];
+                            */
+                            cur_meta=interpMeta_list[levelwise_predictor_levels-1];
+                        }
                     }
                 }
                      
@@ -216,6 +216,8 @@ namespace QoZ {
                 //timer.stop("prep");
                 
                 for (auto block = inter_begin; block != inter_end; ++block) {
+                    if(blockwiseTuning)
+                        cur_meta=interpMeta_list[meta_index++];
 
                     auto start_idx=block.get_global_index();
                     auto end_idx = start_idx;
