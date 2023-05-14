@@ -641,7 +641,7 @@ namespace QoZ {
                                             cur_meta.adjInterp=adj_interp;
                                             cur_block=orig_sampled_block;
                                             
-                                            double cur_loss=block_interpolation(data, sb_starts, sb_dims, PB_predict_overwrite,
+                                            double cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_dims, PB_predict_overwrite,
                                                 interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,0);//,cross_block,regressiveInterp);
 
                                             if(cur_loss<best_loss){
