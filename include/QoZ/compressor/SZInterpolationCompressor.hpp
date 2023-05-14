@@ -133,7 +133,7 @@ namespace QoZ {
                 recover_grid(decData,global_dimensions,maxStep,fused_dim);                   
                 interpolation_level--;           
             }
-            size_t op_index=0;
+            size_t meta_index=0;
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
 
                 if (alpha<0) {
@@ -170,11 +170,13 @@ namespace QoZ {
                 uint cur_splinetype=cubicSplineType;
                 */
                 QoZ::Interp_Meta cur_meta;
-                
-                if (levelwise_predictor_levels==0){
+                if(blockwiseTuning)
+                    cur_meta=interpMeta_list[meta_index++];
+                else if (levelwise_predictor_levels==0){
                     cur_meta=interp_meta;
                 }
                 else{
+
                     if (level-1<levelwise_predictor_levels){
                         /*
                         cur_interpolator=interpAlgo_list[level-1];
@@ -222,9 +224,14 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                 
-                    block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
+               
+                     block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
                                         interpolators[cur_meta.interpAlgo], cur_meta, stride,0,0,0);//,cross_block,regressiveInterp);
+                
+                        
+
+
+                
 
                 }
                
@@ -549,9 +556,9 @@ namespace QoZ {
                         
                         std::vector<T> orig_sampled_block;
                         size_t local_idx=0;
-                        std::vector<size_t,N> sb_starts;
+                        std::array<size_t,N> sb_starts;
                         std::fill(sb_starts.begin(),sb_starts.end(),0);
-                        std::vector<size_t,N> sb_dims;
+                        std::array<size_t,N> sb_dims;
                         std::fill(sb_dims.begin(),sb_dims.end(),0);
                         size_t x,y,z;
                         if(N==2){
@@ -647,7 +654,7 @@ namespace QoZ {
                                 }
                             }
                         }
-                        interp_metas.push_back(best_meta)
+                        interp_metas.push_back(best_meta);
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,0,0);//,cross_block,regressiveInterp);
                     }
@@ -662,9 +669,11 @@ namespace QoZ {
             //timer.start();
 
             quantizer.set_eb(eb);
+            /*
             if(peTracking){
                 conf.predictionErrors=prediction_errors;
             }
+            */
             if (tuning){
                 conf.quant_bins=quant_inds;
                 std::vector<int>().swap(quant_inds);
