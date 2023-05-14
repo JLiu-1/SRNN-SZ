@@ -51,7 +51,7 @@ namespace QoZ {
         uint8_t cubicSplineType = 0;//noknot,nat
         uint8_t interpDirection = 0;//0,N!-1
         uint8_t adjInterp=0;//0,1
-        std::array<double,3> dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
+        std::array<double,3> dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};//may change to float type
  
     };
 
@@ -174,6 +174,7 @@ namespace QoZ {
             waveletMseFix = cfg.GetReal("AlgoSettings", "waveletMseFix", waveletMseFix);
             waveletMseFix2 = cfg.GetReal("AlgoSettings", "waveletMseFix2", waveletMseFix2);
             lorenzoBrFix = cfg.GetReal("AlgoSettings", "lorenzoBrFix", lorenzoBrFix);
+            blockwiseSampleRate=cfg.GetReal("AlgoSettings", "blockwiseSampleRate", blockwiseSampleRate);
             //anchorThreshold= cfg.GetReal("AlgoSettings", "anchorThreshold", anchorThreshold);
             //sperr_eb_coeff = cfg.GetReal("AlgoSettings", "sperr_eb_coeff", sperr_eb_coeff);
 
@@ -228,7 +229,7 @@ namespace QoZ {
 
 
 
-            //blockwiseSampleBlockSize=cfg.GetInteger("AlgoSettings", "blockwiseSampleBlockSize", blockwiseSampleBlockSize);
+            
             pdTuningRealComp=cfg.GetBoolean("AlgoSettings", "pdTuningRealComp", pdTuningRealComp);
             pdTuningAbConf=cfg.GetInteger("AlgoSettings", "pdTuningAbConf", pdTuningAbConf);
            // pdAlpha=cfg.GetReal("AlgoSettings", "pdAlpha", pdAlpha);
@@ -500,7 +501,7 @@ namespace QoZ {
         int profiling=0;//since there may be multiple ways of profiling set it to int
         int SSIMBlockSize=8;
         int fixBlockSize=0;
-        //int blockwiseSampleBlockSize=0;
+        double blockwiseSampleRate=2.0;
         int adaptiveMultiDimStride=0;
         //std::vector<double> lorenzo1_coeffs;
         //std::vector<double> lorenzo2_coeffs;
@@ -555,6 +556,7 @@ namespace QoZ {
         std::string metadata;
         bool pybind_activated=false;
         bool FZ=false;
+        int fused_dim=-1;
         //int regressiveInterp=0;
         int fullAdjacentInterp=0;
         bool naturalSpline=0;

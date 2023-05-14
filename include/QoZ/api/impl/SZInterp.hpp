@@ -1515,6 +1515,34 @@ double Tuning(QoZ::Config &conf, T *data){
     if(conf.waveletAutoTuning>0 and conf.waveAutoFix)
         setFixRates(conf,rel_bound);
 
+    if(conf.blockwiseTuning){
+        conf.predictorTuningRate=0.0;
+        if(conf.adaptiveMultiDimStride>0){//another method is to temply set conf.blockwiseTuning=0 then run a predictor tuning for dim fuse. More accurate but slower.
+            std::vector<double> cubic_noknot_vars;
+            QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
+            size_t fused_dim=0;
+            double cur_vars=cubic_noknot_vars[0];
+            for(size_t i=1;i<N;i++){
+                if(cubic_noknot_vars[i]>cur_vars){
+                    fused_dim=i;
+                    cur_vars=cubic_noknot_vars[i];
+                }
+            }
+            double c=45.0;//need to tune
+            for(size_t i=0;i<N;i++){
+                if(i==fused_dim)
+                    continue;
+                if (cubic_noknot_vars[i]*c>=cur_vars or conf.dims[fused_dim]>10*conf.dims[i]){//second for qmcpack
+                    fused_dim=-1;
+                    break;
+                }
+            }
+            if
+            conf.fused_dim=fused_dim;
+
+        }
+    }
+
 
     /*
     if(conf.verbose){
@@ -1926,8 +1954,10 @@ double Tuning(QoZ::Config &conf, T *data){
                     conf.interpMeta_list=tempmeta_list;
 
                     std::cout<<best_interp_cr_1<<" "<<best_interp_cr_2<<std::endl;
-                    if(best_interp_cr_2>best_interp_cr_1*1.05)
+                    if(best_interp_cr_2>best_interp_cr_1*1.05){
+                        conf.fused_dim=fused_dim;
                         interpMeta_lists[wave_idx]=interpMeta_list;
+                    }
                 
 
                     if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
@@ -2089,7 +2119,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
     }
     
-    else{
+    else if (!conf.blockwiseTuning){
         QoZ::Timer timer(true);
         //size_t sampling_num, sampling_block;
         //std::vector<size_t> sample_dims(N);         
@@ -2169,7 +2199,7 @@ double Tuning(QoZ::Config &conf, T *data){
        
         if (conf.autoTuningRate!=conf.predictorTuningRate){//} and (conf.predictorTuningRate!=0 or conf.autoTuningRate!=conf.waveletTuningRate)){
               
-            sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.autoTuningRate,0,starts);
+            sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.autoTuningRate,conf.profiling,starts,conf.var_first);
         }
 
         
@@ -2249,23 +2279,24 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.wavelet=wave_idx;
             conf.dims=std::vector<size_t>(N,sampleBlockSize+1);
             conf.num=per_block_ele_num;
+            if(!conf.blockwiseTuning){
+                if(conf.levelwisePredictionSelection>0){
+                    /*
+                    conf.interpAlgo_list=interpAlgo_lists[wave_idx];
+                    conf.interpDirection_list=interpDirection_lists[wave_idx];
+                    conf.cubicSplineType_list=cubicSplineType_lists[wave_idx];
+                    */
+                    conf.interpMeta_list=interpMeta_lists[wave_idx];
+                }
+                else{
+                    /*
+                    conf.interpAlgo=bestInterpAlgos[wave_idx];
+                    conf.interpDirection=bestInterpDirections[wave_idx];
+                    conf.cubicSplineType=bestCubicSplineTypes[wave_idx];
+                    */
 
-            if(conf.levelwisePredictionSelection>0){
-                /*
-                conf.interpAlgo_list=interpAlgo_lists[wave_idx];
-                conf.interpDirection_list=interpDirection_lists[wave_idx];
-                conf.cubicSplineType_list=cubicSplineType_lists[wave_idx];
-                */
-                conf.interpMeta_list=interpMeta_lists[wave_idx];
-            }
-            else{
-                /*
-                conf.interpAlgo=bestInterpAlgos[wave_idx];
-                conf.interpDirection=bestInterpDirections[wave_idx];
-                conf.cubicSplineType=bestCubicSplineTypes[wave_idx];
-                */
-
-                conf.interpMeta=bestInterpMetas[wave_idx];
+                    conf.interpMeta=bestInterpMetas[wave_idx];
+                }
             }
             std::vector <std::vector<T> > waveleted_input;
             if (wave_idx>0 and (wave_idx>1 or !use_sperr<T,N>(conf)) ){

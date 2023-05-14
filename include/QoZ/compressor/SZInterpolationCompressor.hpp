@@ -77,6 +77,8 @@ namespace QoZ {
             read(levelwise_predictor_levels,buffer_pos, remaining_length);
             read(blockwiseTuning,buffer_pos, remaining_length);
             read(fixBlockSize,buffer_pos, remaining_length);
+            int fused_dim=-1;
+            read(fused_dim,buffer_pos, remaining_length);
             
            // size_t cross_block=0;
             //read(cross_block,buffer_pos, remaining_length);
@@ -90,12 +92,10 @@ namespace QoZ {
             }
            
             if(blockwiseTuning){
-                size_t ops_num;
-                read(ops_num,buffer_pos, remaining_length);
-                interpAlgo_list=std::vector <uint8_t>(ops_num,0);
-                interpDirection_list=std::vector <uint8_t>(ops_num,0);
-                read(interpAlgo_list.data(),ops_num,buffer_pos, remaining_length);
-                read(interpDirection_list.data(),ops_num,buffer_pos, remaining_length);
+                size_t meta_num;
+                read(meta_num,buffer_pos, remaining_length);
+                interpMeta_list.resize(meta_num);
+                read(interpMeta_list.data(),meta_num,buffer_pos, remaining_length);
             }
 
             else if(levelwise_predictor_levels>0){
@@ -130,27 +130,6 @@ namespace QoZ {
             }
             
             else{
-                size_t fused_dim=-1;
-                if(N==3){
-                    if(levelwise_predictor_levels>0 and interpMeta_list[0].interpDirection>=6){
-                        if(interpMeta_list[0].interpDirection<=7)
-                            fused_dim=0;
-                        else if (interpMeta_list[0].interpDirection<=9)
-                            fused_dim=1;
-                        else
-                            fused_dim=2;
-                    }
-                    else if (levelwise_predictor_levels==0 and interp_meta.interpDirection>=6){
-                        if(interp_meta.interpDirection<=7)
-                            fused_dim=0;
-                        else if (interp_meta.interpDirection<=9)
-                            fused_dim=1;
-                        else
-                            fused_dim=2;
-
-                    }
-                }
-
                 recover_grid(decData,global_dimensions,maxStep,fused_dim);                   
                 interpolation_level--;           
             }
@@ -404,8 +383,7 @@ namespace QoZ {
 
             alpha=conf.alpha;
             beta=conf.beta;
-            std::vector<uint8_t>interp_ops;
-            std::vector<uint8_t>interp_dirs;
+            std::vector<Interp_Meta>interp_metas;
             //size_t cross_block=conf.crossBlock;
             //int regressiveInterp=conf.regressiveInterp;
             init();
@@ -416,10 +394,12 @@ namespace QoZ {
                 conf.decomp_square_error=0.0;
 
             }
+            /*
             if(tuning==0 and conf.peTracking){
                 prediction_errors.resize(num_elements,0);
                 peTracking=1;
             }
+            */
             quant_inds.reserve(num_elements);
             size_t interp_compressed_size = 0;
             double eb = quantizer.get_eb();
@@ -525,19 +505,158 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                    if(peTracking)
+                    if(!conf.blockwiseTuning){
+                        /*
+                        if(peTracking)
+                            
+                            predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,3,0,0);//,cross_block,regressiveInterp);
+
+                        else */
+                            predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,tuning,0,0);//,cross_block,regressiveInterp);
+
+                    }
+                    else{
+                        size_t min_len=16;
+                        auto start_idx=block.get_global_index();
+                        auto end_idx = start_idx;
+                        //std::array<size_t,N> block_lengths;
+                        std::array<size_t,N> sample_starts;
+                        //std::array<size_t,N> sample_strides;
+                        for (int i = 0; i < N; i++) {
+                            end_idx[i] += cur_blocksize ;
+                            if (end_idx[i] > global_dimensions[i] - 1) {
+                                end_idx[i] = global_dimensions[i] - 1;
+                            }
+                            double cur_rate=conf.blockwiseSampleRate;
+                            size_t  cur_length=(end_idx[i]-start_idx[i])+1,cur_stride=stride*cur_rate;
+                            while(cur_stride>stride){
+                                if(cur_length/cur_stride>=min_len)
+                                    break;
+                                cur_stride/=2;
+                                cur_rate/=2;
+                                if(cur_stride<stride){
+                                    cur_stride=stride;
+                                    cur_rate=1;
+                                }
+                            }
+                            //sample_strides[i]=cur_stride;
+                            double temp=0.5-0.5/cur_rate;
+                            sample_starts[i]=temp*cur_length+start_idx[i];
+
+                        }
                         
+                        std::vector<T> orig_sampled_block;
+                        size_t local_idx=0;
+                        std::vector<size_t,N> sb_starts;
+                        std::fill(sb_starts.begin(),sb_starts.end(),0);
+                        std::vector<size_t,N> sb_dims;
+                        std::fill(sb_dims.begin(),sb_dims.end(),0);
+                        size_t x,y,z;
+                        if(N==2){
+                            for(size_t x=sample_starts[0];x<=end_idx[0] ;x+=stride){
+                                sb_dims[0]++;
+                                for(size_t y=sample_starts[1];y<=end_idx[1];y+=stride){
+                                    sb_dims[1]++;
+                                    size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
+                                    orig_sampled_block.push_back(data[global_idx]);
+                                    
+                                }
+                            }
+                        }
+                        else if(N==3){
+                            for(size_t x=sample_starts[0];x<=end_idx[0] ;x+=stride){
+                                sb_dims[0]++;
+                                for(size_t y=sample_starts[1];y<=end_idx[1];y+=stride){
+                                    sb_dims[1]++;
+                                    for(size_t z=sample_starts[2];z<=end_idx[2];z+=stride){
+                                        sb_dims[2]++;
+                                        size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
+                                        orig_sampled_block.push_back(data[global_idx]);
+                                    }
+                                }
+                            }
+                        } 
+
+                        QoZ::Interp_Meta best_meta,cur_meta;
+                        double best_loss=std::numeric_limits<double>::max();
+                        std::vector<uint8_t> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
+                        std::vector<uint8_t> interpParadigm_Candidates={0};
+                        std::vector<uint8_t> cubicSplineType_Candidates={0};
+                        std::vector<uint8_t> interpDirection_Candidates={0, QoZ::factorial(N) -1};
+                        if(conf.fused_dim>=0){
+                            if(conf.fused_dim==0)
+                                interpDirection_Candidates={6,7};
+                            else if (conf.fused_dim==1)
+                                interpDirection_Candidates={8,9};
+                            else
+                                interpDirection_Candidates={10,11};
+                        }
+                        std::vector<uint8_t> adjInterp_Candidates={0};
+
+                        if(conf.multiDimInterp>0){
+                            for(size_t i=1;i<=conf.multiDimInterp;i++)
+                                interpParadigm_Candidates.push_back(i);
+                       
+                        }
+
+                        if (conf.naturalSpline){
+                            cubicSplineType_Candidates.push_back(1);
+                        }
+                        if(conf.fullAdjacentInterp){
+                            adjInterp_Candidates.push_back(1);
+                            //for(size_t i=1;i<=conf.fullAdjacentInterp;i++)
+                            //    adjInterp_Candidates.push_back(i);
+                        }
+
+                        std::vector<T> cur_block;
+                        for (auto &interp_op: interpAlgo_Candidates) {
+                            cur_meta.interpAlgo=interp_op;
+                            for (auto &interp_pd: interpParadigm_Candidates) {
+                                if(conf.fused_dim>=0 and interp_pd>1)
+                                    continue;
+                                cur_meta.interpParadigm=interp_pd;
+
+                                for (auto &interp_direction: interpDirection_Candidates) {
+                                    if (conf.fused_dim<0 and (interp_pd==1 or  (interp_pd==2 and N<=2)) and interp_direction!=0)
+                                        continue;
+                                    cur_meta.interpDirection=interp_direction;
+                                    for(auto &cubic_spline_type:cubicSplineType_Candidates){
+                                        if (interp_op!=QoZ::INTERP_ALGO_CUBIC and cubic_spline_type!=0)
+                                            break;
+                                        cur_meta.cubicSplineType=cubic_spline_type;
+                                        for(auto adj_interp:adjInterp_Candidates){
+                                            if (interp_op!=QoZ::INTERP_ALGO_CUBIC and adj_interp!=0)
+                                                break;
+                                        
+                                            cur_meta.adjInterp=adj_interp;
+                                            cur_block=orig_sampled_block;
+                                            
+                                            double cur_loss=block_interpolation(data, sb_starts, sb_dims, PB_predict_overwrite,
+                                                interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,0);//,cross_block,regressiveInterp);
+
+                                            if(cur_loss<best_loss){
+                                                best_loss=cur_loss;
+                                                best_meta=cur_meta;
+                                            }
+
+                                            size_t local_idx=0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        interp_metas.push_back(best_meta)
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                    interpolators[cur_meta.interpAlgo],cur_meta, stride,3,0,0);//,cross_block,regressiveInterp);
-                    else
-                        predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                    interpolators[cur_meta.interpAlgo],cur_meta, stride,tuning,0,0);//,cross_block,regressiveInterp);
+                                        interpolators[best_meta.interpAlgo],best_meta, stride,tuning,0,0);//,cross_block,regressiveInterp);
+                    }
 
                     
                         
                 }
                 if(tuning){
-                        conf.quant_bin_counts[level-1]=quant_inds.size();
+                    conf.quant_bin_counts[level-1]=quant_inds.size();
                 }
             }                    
             //timer.start();
@@ -592,15 +711,15 @@ namespace QoZ {
             write(levelwise_predictor_levels,buffer_pos);
             write(conf.blockwiseTuning,buffer_pos);
             write(conf.fixBlockSize,buffer_pos);
+            write(conf.fused_dim,buffer_pos);
             //write(cross_block,buffer_pos);
             write(conf.trimToZero,buffer_pos);
             //write(conf.blockOrder,buffer_pos);
             //write(conf.regressiveInterp,buffer_pos);
             if(conf.blockwiseTuning){
-                size_t ops_num=interp_ops.size();
-                write(ops_num,buffer_pos);
-                write(interp_ops.data(),ops_num,buffer_pos);
-                write(interp_dirs.data(),ops_num,buffer_pos);
+                size_t meta_num=interp_metas.size();
+                write(meta_num,buffer_pos);
+                write(interp_metas.data(),meta_num,buffer_pos);
 
             }
             else if(levelwise_predictor_levels>0){
@@ -991,16 +1110,12 @@ namespace QoZ {
 
                 std::array<size_t,3>anchor_strides={maxStep,maxStep,maxStep};
 
-                uint8_t direction=conf.interpMeta_list.size()>0?conf.interpMeta_list[0].interpDirection:conf.interpMeta.interpDirection;
-                if (direction>=6){
-                    if(direction<=7)
-                        anchor_strides[0]=1;
-                    else if (direction<=9)
-                        anchor_strides[1]=1;
-                    else
-                        anchor_strides[2]=1;
+                int fd=conf.fused_dim;
+                if(fd>=0)
+                    anchor_strides[fd]=1;
+                
 
-                }
+                
                 for (size_t x=anchor_strides[0]*(tuning==1);x<conf.dims[0];x+=anchor_strides[0]){
                     for (size_t y=anchor_strides[1]*(tuning==1);y<conf.dims[1];y+=anchor_strides[1]){
                         for(size_t z=anchor_strides[2]*(tuning==1);z<conf.dims[2];z+=anchor_strides[2]){
@@ -5085,7 +5200,7 @@ namespace QoZ {
         
 
         std::vector<float> prediction_errors;//for test, to delete in final version. The float time is to match the vector in config.
-        int peTracking=0;//for test, to delete in final version
+        //int peTracking=0;//for test, to delete in final version
 
         size_t cur_level; //temp for "adaptive anchor stride";
         //size_t min_anchor_level;//temp for "adaptive anchor stride";
