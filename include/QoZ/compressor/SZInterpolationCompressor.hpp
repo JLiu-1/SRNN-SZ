@@ -563,8 +563,8 @@ namespace QoZ {
     
                         std::array<size_t,N>sb_starts;
                         std::fill(sb_starts.begin(),sb_starts.end(),0);
-                        std::array<int,N>sb_ends;
-                        std::fill(sb_starts.begin(),sb_starts.end(),-1);
+                        std::array<size_t,N>sb_ends;
+                        std::fill(sb_starts.begin(),sb_starts.end(),0);
                         
                         if(N==2){
                             for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
@@ -590,17 +590,20 @@ namespace QoZ {
                                 }
                             }
                         } 
+                        
                         std::array<size_t,N> temp_dim_offsets;
                         if(N==2){
                             temp_dim_offsets[1]=1;
-                            temp_dim_offsets[0]=sb_ends[1]+1;
+                            temp_dim_offsets[0]=sb_ends[1];
                         }
                         else if(N==3){
                             temp_dim_offsets[2]=1;
-                            temp_dim_offsets[1]=sb_ends[1]+1;
-                            temp_dim_offsets[0]=(sb_ends[1]+1)*(sb_ends[0]+1);
+                            temp_dim_offsets[1]=sb_ends[1];
+                            temp_dim_offsets[0]=(sb_ends[1])*(sb_ends[0]);
                        
                         }
+                        for(size_t i=0;i<N;i++)
+                            sb_ends[i]--;
                         std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
                         std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
                         std::array<size_t,N> global_dimension_offsets=dimension_offsets;
