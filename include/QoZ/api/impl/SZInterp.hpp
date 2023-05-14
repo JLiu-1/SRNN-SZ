@@ -1517,7 +1517,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
     if(conf.blockwiseTuning){
         conf.predictorTuningRate=0.0;
-        if(conf.adaptiveMultiDimStride>0){//another method is to temply set conf.blockwiseTuning=0 then run a predictor tuning for dim fuse. More accurate but slower.
+        if(conf.adaptiveMultiDimStride>0 and N==3){//This is a very immature method. another method is to temply set conf.blockwiseTuning=0 then run a predictor tuning for dim fuse. More accurate but slower.
             std::vector<double> cubic_noknot_vars;
             QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
             size_t fused_dim=0;
@@ -1537,7 +1537,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     break;
                 }
             }
-            if
+
             conf.fused_dim=fused_dim;
 
         }
