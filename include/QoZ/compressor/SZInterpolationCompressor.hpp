@@ -561,13 +561,16 @@ namespace QoZ {
                          std::cout<<"----"<<std::endl;
                         std::vector<T> orig_sampled_block;
     
-                       
+                        std::array<size_t,N>sb_starts;
+                        std::fill(sb_starts.begin(),sb_starts.end(),0);
+                        std::array<size_t,N>sb_ends;
+                        std::fill(sb_starts.begin(),sb_starts.end(),-1);
                         
                         if(N==2){
                             for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
-                                //sb_dims[0]++;
+                                sb_ends[0]++;
                                 for(size_t y=sample_starts[1];y<=sample_ends[0];y+=stride){
-                                    //sb_dims[1]++;
+                                    sb_ends[1]++;
                                     size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
                                     orig_sampled_block.push_back(data[global_idx]);
                                     
@@ -576,18 +579,28 @@ namespace QoZ {
                         }
                         else if(N==3){
                             for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=stride){
-                               
+                                sb_ends[0]++;
                                 for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=stride){
-                                   
+                                    sb_ends[1]++;
                                     for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=stride){
-                                       
+                                        sb_ends[2]++;
                                         size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                         orig_sampled_block.push_back(data[global_idx]);
                                     }
                                 }
                             }
                         } 
-                        std::cout<<orig_sampled_block.size()<<std::endl;
+                        std::<size_t,N> temp_dim_offsets;
+                        if(N==2){
+                            temp_dim_offsets={sb_ends[1]+1,1};
+                        }
+                        else if(N==3){
+                            temp_dim_offsets={(sb_ends[1]+1)*(sb_ends[0]+1),sb_ends[1]+1,1};
+                        }
+                        std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
+                        std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
+                        std::array<size_t,N> global_dimension_offsets=dimension_offsets;
+                        dimension_offsets=temp_dim_offsets;
                         
                         QoZ::Interp_Meta best_meta,cur_meta;
                         double best_loss=std::numeric_limits<double>::max();
@@ -643,15 +656,15 @@ namespace QoZ {
                                             cur_meta.adjInterp=adj_interp;
                                             cur_block=orig_sampled_block;
                                             
-                                            double cur_loss=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
-                                                                               interpolators[cur_meta.interpAlgo],cur_meta, stride,2,0,0);//,cross_block,regressiveInterp);
+                                            double cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
+                                                                               interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,0);//,cross_block,regressiveInterp);
                                             //double cur_loss=0.0;
                                             if(cur_loss<best_loss){
                                                 best_loss=cur_loss;
                                                 best_meta=cur_meta;
                                             }
                                             size_t local_idx=0;
-                                            
+                                            /*
                                             if(N==2){
                                                 for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
                                                     //sb_dims[0]++;
@@ -676,7 +689,8 @@ namespace QoZ {
                                                     }
                                                 }
                                             } 
-                                            std::cout<<local_idx<<std::endl;
+                                            */
+
                                             
                                         }
                                     }
@@ -684,6 +698,7 @@ namespace QoZ {
                             }
                         }
                         interp_metas.push_back(best_meta);
+                        dimension_offsets=global_dimension_offsets;
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,0,0);//,cross_block,regressiveInterp);
                     }
