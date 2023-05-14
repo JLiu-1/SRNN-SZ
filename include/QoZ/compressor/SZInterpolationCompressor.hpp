@@ -1495,7 +1495,7 @@ namespace QoZ {
                         quantize_integrated(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)),mode);
                     }
                 }
-                else if(meta.adjInterp==1){
+                else{// if(meta.adjInterp==1){
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                     //i=1
                     d = data + begin + stride;
@@ -1555,6 +1555,7 @@ namespace QoZ {
                         //quantize_integrated(d - data, *d, *(d - stride),mode);
                     }
                 }
+                /*
                 else if(meta.adjInterp==2){
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_4<T>:interp_cubic_adj_3<T>;
                     d = data + begin + stride;
@@ -1576,6 +1577,7 @@ namespace QoZ {
                     }
 
                 }
+                */
 
                 
                 

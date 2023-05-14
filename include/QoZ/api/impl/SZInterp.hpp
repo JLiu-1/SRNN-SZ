@@ -1662,8 +1662,9 @@ double Tuning(QoZ::Config &conf, T *data){
            // std::vector<int> interpDirection_Candidates={};//temp. 
             
             if(conf.fullAdjacentInterp){
-                for(size_t i=1;i<=conf.fullAdjacentInterp;i++)
-                    adjInterp_Candidates.push_back(i);
+                adjInterp_Candidates.push_back(1);
+                //for(size_t i=1;i<=conf.fullAdjacentInterp;i++)
+                //    adjInterp_Candidates.push_back(i);
             }
             
             //if(conf.mdCrossInterp)
