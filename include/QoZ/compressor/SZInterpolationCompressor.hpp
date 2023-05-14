@@ -1495,7 +1495,7 @@ namespace QoZ {
                         quantize_integrated(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)),mode);
                     }
                 }
-                else{
+                else if(meta.adjInterp==1){
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                     //i=1
                     d = data + begin + stride;
@@ -1554,6 +1554,27 @@ namespace QoZ {
                         quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x),*(d - stride)) ,mode);//to determine
                         //quantize_integrated(d - data, *d, *(d - stride),mode);
                     }
+                }
+                else if(meta.adjInterp==2){
+                    auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_4<T>:interp_cubic_adj_3<T>;
+                    d = data + begin + stride;
+
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    for (i = 3; i + 3 < n; i += 2) {
+                        d = data + begin + i * stride;
+                        predict_error+=quantize_integrated(d - data, *d,
+                                    interp_cubic_adj(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    }
+
+                    
+                    d = data + begin + i * stride;
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_2_adj(*(d - stride2x), *(d - stride), *(d + stride)),mode);
+                    if (n % 2 == 0) {
+                        d = data + begin + (n - 1) * stride;
+                        predict_error+=
+                        quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
+                    }
+
                 }
 
                 

@@ -1502,6 +1502,8 @@ double Tuning(QoZ::Config &conf, T *data){
 
 
     size_t num_filtered_blocks=starts.size();
+    if(num_filtered_blocks<=(int)(0.3*conf.predictorTuningRate))//temp. to refine
+        conf.profiling=0;
     double profiling_coeff=1;//It seems that this coefficent is useless. Need further test
   
     if(conf.profiling){// and conf.profilingFix){
@@ -1660,7 +1662,8 @@ double Tuning(QoZ::Config &conf, T *data){
            // std::vector<int> interpDirection_Candidates={};//temp. 
             
             if(conf.fullAdjacentInterp){
-                adjInterp_Candidates.push_back(1);
+                for(size_t i=1;i<=conf.fullAdjacentInterp;i++)
+                    adjInterp_Candidates.push_back(i);
             }
             
             //if(conf.mdCrossInterp)
@@ -1924,6 +1927,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     std::cout<<best_interp_cr_1<<" "<<best_interp_cr_2<<std::endl;
                     if(best_interp_cr_2>best_interp_cr_1*1.05)
                         interpMeta_lists[wave_idx]=interpMeta_list;
+                
 
                     if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
                             //recover sample if real compression used                  
@@ -1940,7 +1944,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
                 
 
-                if(conf.autoTuningRate==0){   
+                if(conf.autoTuningRate==0){   //when adaptivemdtride>0 there's a duplication of work. To fix.
                     std::vector<QoZ::Interp_Meta> tempmeta_list=conf.interpMeta_list;
                     conf.interpMeta_list=interpMeta_list;      
                     std::pair<double,double> results=CompressTest<T,N>(conf,sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);

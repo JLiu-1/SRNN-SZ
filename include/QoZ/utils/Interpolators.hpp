@@ -63,8 +63,18 @@ namespace QoZ {
         //return (-3*b+11*c+11*d-3*e)/16;
     }
     template<class T>
-    inline T interp_cubic_adj_2(T a, T b, T c, T d,T e,T f) {//adj6/4 noknot
+    inline T interp_cubic_adj_2(T a, T b, T c, T d,T e,T f) {//adj6 noknot
         return (-b+4*c+4*d-e)/6;
+    }
+
+    inline T interp_cubic_adj_3(T a, T b, T c, T d,T f) {//adj5 nat
+        return (12*a-72*b+181*c+118*d-15*f)/224;
+        //return (-3*b+11*c+11*d-3*e)/16;
+    }
+
+    inline T interp_cubic_adj_4(T a, T b, T c, T d,T f) {//adj5 noknot
+        return (-4*b+15*c+10*d-f)/20;
+        //return (-3*b+11*c+11*d-3*e)/16;
     }
 
 
