@@ -562,7 +562,8 @@ namespace QoZ {
                         //std::fill(sb_starts.begin(),sb_starts.end(),0);
                         //std::array<size_t,N> sb_dims;
                         //std::fill(sb_dims.begin(),sb_dims.end(),-1);
-                        size_t x,y,z;
+                       // size_t x,y,z;
+                        /*
                         if(N==2){
                             for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
                                 //sb_dims[0]++;
@@ -587,7 +588,7 @@ namespace QoZ {
                                 }
                             }
                         } 
-
+                        */
                         QoZ::Interp_Meta best_meta,cur_meta;
                         double best_loss=std::numeric_limits<double>::max();
                         std::vector<uint8_t> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
