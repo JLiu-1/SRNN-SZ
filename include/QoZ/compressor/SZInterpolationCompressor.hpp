@@ -42,7 +42,7 @@ namespace QoZ {
         }
 
         T *decompress(uchar const *cmpData, const size_t &cmpSize, T *decData) {
-            std::cout<<"dawd"<<std::endl;
+            //std::cout<<"dawd"<<std::endl;
             size_t remaining_length = cmpSize;
             uchar *buffer = lossless.decompress(cmpData, remaining_length);
             int levelwise_predictor_levels;
@@ -77,7 +77,7 @@ namespace QoZ {
            
             read(levelwise_predictor_levels,buffer_pos, remaining_length);
             read(blockwiseTuning,buffer_pos, remaining_length);
-            std::cout<<blockwiseTuning<<std::endl;
+            //std::cout<<blockwiseTuning<<std::endl;
             read(fixBlockSize,buffer_pos, remaining_length);
             int fused_dim=-1;
             read(fused_dim,buffer_pos, remaining_length);
@@ -96,7 +96,7 @@ namespace QoZ {
             if(blockwiseTuning){
                 size_t meta_num;
                 read(meta_num,buffer_pos, remaining_length);
-                std::cout<<meta_num<<std::endl;
+                //std::cout<<meta_num<<std::endl;
                 interpMeta_list.resize(meta_num);
                 read(interpMeta_list.data(),meta_num,buffer_pos, remaining_length);
             }
