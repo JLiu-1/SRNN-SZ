@@ -590,7 +590,7 @@ namespace QoZ {
                                 }
                             }
                         } 
-                        std::<size_t,N> temp_dim_offsets;
+                        std::array<size_t,N> temp_dim_offsets;
                         if(N==2){
                             temp_dim_offsets={sb_ends[1]+1,1};
                         }
