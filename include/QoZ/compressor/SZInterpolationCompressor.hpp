@@ -563,7 +563,9 @@ namespace QoZ {
     
                         std::array<size_t,N>sb_starts;
                         std::fill(sb_starts.begin(),sb_starts.end(),0);
-                        std::array<size_t,N>sb_ends{(sample_ends[0]-sample_starts[0])/stride+1,(sample_ends[1]-sample_starts[1])/stride+1,(sample_ends[2]-sample_starts[2])/stride+1};
+                        std::array<size_t,N>sb_ends;
+                        for(size_t i=0;i<N;i++)
+                            sb_ends[i]=(sample_ends[i]-sample_starts[i])/stride+1;
                         //std::fill(sb_ends.begin(),sb_ends.end(),0);
                         
                         if(N==2){
