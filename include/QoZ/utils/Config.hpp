@@ -184,6 +184,10 @@ namespace QoZ {
             regression2 = cfg.GetBoolean("AlgoSettings", "Regression2ndOrder", regression2);
             
             naturalSpline = cfg.GetBoolean("AlgoSettings", "naturalSpline", naturalSpline);
+            QoZ=cfg.GetBoolean("AlgoSettings", "QoZ", QoZ);
+            FZ=cfg.GetBoolean("AlgoSettings", "FZ", FZ);
+            sperrWithoutWave=cfg.GetBoolean("AlgoSettings", "sperrWithoutWave",sperrWithoutWave);
+            pyBind=cfg.GetBoolean("AlgoSettings", "pyBind",pyBind);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -217,10 +221,7 @@ namespace QoZ {
             SSIMBlockSize=cfg.GetInteger("AlgoSettings", "SSIMBlockSize", SSIMBlockSize);
             fixBlockSize=cfg.GetInteger("AlgoSettings", "fixBlockSize", fixBlockSize);
             verbose=cfg.GetBoolean("AlgoSettings", "verbose", verbose);
-            QoZ=cfg.GetBoolean("AlgoSettings", "QoZ", QoZ);
-            QoZ=cfg.GetBoolean("AlgoSettings", "FZ", FZ);
-            sperrWithoutWave=cfg.GetBoolean("AlgoSettings", "sperrWithoutWave",sperrWithoutWave);
-            pyBind=cfg.GetBoolean("AlgoSettings", "pyBind",pyBind);
+            
             //profilingFix=cfg.GetBoolean("AlgoSettings", "profilingFix",profilingFix);
 
 
@@ -485,7 +486,7 @@ namespace QoZ {
         double decomp_square_error;
         std::vector<size_t> quant_bin_counts;
         int sampleBlockSize=0;
-        bool blockwiseTuning=0;
+        bool blockwiseTuning=false;
         int stride; //not used now
         int pred_dim; // not used now
         //bool linearReduce=0;
