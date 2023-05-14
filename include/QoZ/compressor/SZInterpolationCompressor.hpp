@@ -624,6 +624,8 @@ namespace QoZ {
                         //std::vector<uint8_t> cubicSplineType_Candidates={0};
                         std::vector<uint8_t> cubicSplineType_Candidates={cur_level_meta.cubicSplineType};
                         std::vector<uint8_t> interpDirection_Candidates={0, QoZ::factorial(N) -1};
+                        if(N==3)
+                            interpDirection_Candidates={0,1,2,3,4,5};
                         if(conf.fused_dim>=0){
                             if(conf.fused_dim==0)
                                 interpDirection_Candidates={6,7};
