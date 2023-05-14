@@ -2626,6 +2626,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
         if(!useSperr)
             conf.absErrorBound*=conf.wavelet_rel_coeff;
+        /*
         if(conf.coeffTracking%2==1)
             QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
         if(conf.coeffTracking>1){
@@ -2646,6 +2647,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             }
             std::cout<<"Significant coeff rate: "<<(float)count/conf.num<<std::endl;
         }
+        */
         ori_wave=conf.wavelet;
         
         
@@ -2721,8 +2723,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             memcpy(origdata,data,conf.num*sizeof(T));
             QoZ::Wavelet<T,N> wlt;
             wlt.preProcess_cdf97(data,conf.dims);//temp
-            if(conf.coeffTracking%2==1)
-                QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
+            //if(conf.coeffTracking%2==1)
+            //    QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
         }
         else{
             if(conf.pyBind){
@@ -2947,13 +2949,13 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             conf.num=orig_num;
             conf.dims=orig_dims;
         
-            if(conf.coeffTracking%2==1)
-                QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
+            //if(conf.coeffTracking%2==1)
+            //    QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             if(conf.conditioning){
                 auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
                 rtn=post_Condition<T,N>(data,conf.num,conf.meta);
-                if(conf.coeffTracking%2==1)
-                    QoZ::writefile<T>("waved.qoz.cmp.afterpost", decData, conf.num);
+                //if(conf.coeffTracking%2==1)
+                //    QoZ::writefile<T>("waved.qoz.cmp.afterpost", decData, conf.num);
                 
             }
             for(size_t i=0;i<conf.num;i++){
@@ -2970,14 +2972,14 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 wlt.postProcess_cdf97(data,conf.dims);               
             }
             decData=data;//maybe need to fix
-            if(conf.coeffTracking%2==1)
-                QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
+           // if(conf.coeffTracking%2==1)
+            //    QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
                 
             if(conf.conditioning and !use_sperr<T,N>(conf)){
                 auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
                 rtn=post_Condition<T,N>(origdata,conf.num,conf.meta);
-                if(conf.coeffTracking%2==1)
-                    QoZ::writefile<T>("waved.qoz.cmp.afterpost", decData, conf.num);
+                //if(conf.coeffTracking%2==1)
+                //    QoZ::writefile<T>("waved.qoz.cmp.afterpost", decData, conf.num);
                 
             }
             for(size_t i=0;i<conf.num;i++){

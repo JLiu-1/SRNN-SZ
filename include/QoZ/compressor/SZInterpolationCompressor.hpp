@@ -78,13 +78,13 @@ namespace QoZ {
             read(blockwiseTuning,buffer_pos, remaining_length);
             read(fixBlockSize,buffer_pos, remaining_length);
             
-            size_t cross_block=0;
-            read(cross_block,buffer_pos, remaining_length);
+           // size_t cross_block=0;
+            //read(cross_block,buffer_pos, remaining_length);
             read(trimToZero,buffer_pos, remaining_length);
             //int blockOrder=0;
             //read(blockOrder,buffer_pos, remaining_length); 
-            int regressiveInterp;   
-            read(regressiveInterp,buffer_pos, remaining_length);       
+            //int regressiveInterp;   
+            //read(regressiveInterp,buffer_pos, remaining_length);       
             if (trimToZero>0){
                 quantizer.setTrimToZero(trimToZero);
             }
@@ -245,7 +245,7 @@ namespace QoZ {
                     }
                  
                     block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
-                                        interpolators[cur_meta.interpAlgo], cur_meta, stride,0,cross_block,regressiveInterp);
+                                        interpolators[cur_meta.interpAlgo], cur_meta, stride,0,0,0)//,cross_block,regressiveInterp);
 
                 }
                
@@ -407,7 +407,7 @@ namespace QoZ {
             std::vector<uint8_t>interp_ops;
             std::vector<uint8_t>interp_dirs;
             //size_t cross_block=conf.crossBlock;
-            int regressiveInterp=conf.regressiveInterp;
+            //int regressiveInterp=conf.regressiveInterp;
             init();
             if (tuning){
                 std::vector<int>().swap(quant_inds);
@@ -592,10 +592,10 @@ namespace QoZ {
             write(levelwise_predictor_levels,buffer_pos);
             write(conf.blockwiseTuning,buffer_pos);
             write(conf.fixBlockSize,buffer_pos);
-            write(cross_block,buffer_pos);
+            //write(cross_block,buffer_pos);
             write(conf.trimToZero,buffer_pos);
             //write(conf.blockOrder,buffer_pos);
-            write(conf.regressiveInterp,buffer_pos);
+            //write(conf.regressiveInterp,buffer_pos);
             if(conf.blockwiseTuning){
                 size_t ops_num=interp_ops.size();
                 write(ops_num,buffer_pos);
