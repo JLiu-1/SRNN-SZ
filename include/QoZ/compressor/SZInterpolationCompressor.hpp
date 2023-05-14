@@ -245,7 +245,7 @@ namespace QoZ {
                     }
                  
                     block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
-                                        interpolators[cur_meta.interpAlgo], cur_meta, stride,0,0,0)//,cross_block,regressiveInterp);
+                                        interpolators[cur_meta.interpAlgo], cur_meta, stride,0,0,0);//,cross_block,regressiveInterp);
 
                 }
                
