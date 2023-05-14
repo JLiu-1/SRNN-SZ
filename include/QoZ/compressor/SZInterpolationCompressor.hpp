@@ -592,10 +592,10 @@ namespace QoZ {
                         } 
                         std::array<size_t,N> temp_dim_offsets;
                         if(N==2){
-                            temp_dim_offsets={sb_ends[1]+1,1};
+                            temp_dim_offsets=std::array<size_t,2>{sb_ends[1]+1,1};
                         }
                         else if(N==3){
-                            temp_dim_offsets={(sb_ends[1]+1)*(sb_ends[0]+1),sb_ends[1]+1,1};
+                            temp_dim_offsets=std::array<size_t,3>{(sb_ends[1]+1)*(sb_ends[0]+1),sb_ends[1]+1,1};
                         }
                         std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
                         std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
