@@ -406,7 +406,7 @@ namespace QoZ {
             beta=conf.beta;
             std::vector<uint8_t>interp_ops;
             std::vector<uint8_t>interp_dirs;
-            size_t cross_block=conf.crossBlock;
+            //size_t cross_block=conf.crossBlock;
             int regressiveInterp=conf.regressiveInterp;
             init();
             if (tuning){
@@ -594,7 +594,7 @@ namespace QoZ {
             write(conf.fixBlockSize,buffer_pos);
             write(cross_block,buffer_pos);
             write(conf.trimToZero,buffer_pos);
-            write(conf.blockOrder,buffer_pos);
+            //write(conf.blockOrder,buffer_pos);
             write(conf.regressiveInterp,buffer_pos);
             if(conf.blockwiseTuning){
                 size_t ops_num=interp_ops.size();
