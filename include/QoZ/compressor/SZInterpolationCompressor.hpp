@@ -575,11 +575,11 @@ namespace QoZ {
                             }
                         }
                         else if(N==3){
-                            for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=stride){
+                            for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=1){
                                
-                                for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=stride){
+                                for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=1){
                                    
-                                    for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=stride){
+                                    for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=1){
                                        
                                         size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                         orig_sampled_block.push_back(data[global_idx]);
@@ -642,9 +642,9 @@ namespace QoZ {
                                             cur_meta.adjInterp=adj_interp;
                                             cur_block=orig_sampled_block;
                                             
-                                            //double cur_loss=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
-                                            //                                   interpolators[cur_meta.interpAlgo],cur_meta, stride,2,0,0);//,cross_block,regressiveInterp);
-                                            double cur_loss=0.0;
+                                            double cur_loss=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
+                                                                               interpolators[cur_meta.interpAlgo],cur_meta, stride,2,0,0);//,cross_block,regressiveInterp);
+                                            //double cur_loss=0.0;
                                             if(cur_loss<best_loss){
                                                 best_loss=cur_loss;
                                                 best_meta=cur_meta;
@@ -663,11 +663,11 @@ namespace QoZ {
                                                 }
                                             }
                                             else if(N==3){
-                                                for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=stride){
+                                                for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=1){
                                                    // sb_dims[0]++;
-                                                    for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=stride){
+                                                    for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=1){
                                                        // sb_dims[1]++;
-                                                        for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=stride){
+                                                        for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=1){
                                                            // sb_dims[2]++;
                                                             size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                                             data[global_idx]=orig_sampled_block[local_idx++];
