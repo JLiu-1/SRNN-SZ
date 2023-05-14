@@ -94,6 +94,7 @@ namespace QoZ {
             if(blockwiseTuning){
                 size_t meta_num;
                 read(meta_num,buffer_pos, remaining_length);
+                std::cout<<meta_num<<std::endl;
                 interpMeta_list.resize(meta_num);
                 read(interpMeta_list.data(),meta_num,buffer_pos, remaining_length);
             }
@@ -757,6 +758,7 @@ namespace QoZ {
             //write(conf.regressiveInterp,buffer_pos);
             if(conf.blockwiseTuning){
                 size_t meta_num=interp_metas.size();
+                std::cout<<meta_num<<std::endl;
                 write(meta_num,buffer_pos);
                 write(interp_metas.data(),meta_num,buffer_pos);
 
