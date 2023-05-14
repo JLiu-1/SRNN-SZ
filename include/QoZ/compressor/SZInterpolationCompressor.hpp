@@ -558,10 +558,10 @@ namespace QoZ {
                             double temp1=0.5-0.5/cur_rate,temp2=0.5+0.5/cur_rate;
                             sample_starts[i]=((size_t)((temp1*cur_length)/(2*stride)))*2*stride+start_idx[i];
                             sample_ends[i]=((size_t)((temp2*cur_length)/(2*stride)))*2*stride+start_idx[i];
-                            //std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
+                            std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
 
                         }
-                         //std::cout<<"----"<<std::endl;
+                         std::cout<<"----"<<std::endl;
                         std::vector<T> orig_sampled_block;
     
                         std::array<size_t,N>sb_starts;
@@ -609,8 +609,8 @@ namespace QoZ {
                         }
                         for(size_t i=0;i<N;i++)
                             sb_ends[i]--;
-                        //std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
-                        //std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
+                        std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
+                        std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
                         std::array<size_t,N> global_dimension_offsets=dimension_offsets;
                         dimension_offsets=temp_dim_offsets;
                         
