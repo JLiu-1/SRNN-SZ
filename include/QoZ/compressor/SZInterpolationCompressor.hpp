@@ -76,6 +76,7 @@ namespace QoZ {
            
             read(levelwise_predictor_levels,buffer_pos, remaining_length);
             read(blockwiseTuning,buffer_pos, remaining_length);
+            std::cout<<blockwiseTuning<<std::endl;
             read(fixBlockSize,buffer_pos, remaining_length);
             int fused_dim=-1;
             read(fused_dim,buffer_pos, remaining_length);
