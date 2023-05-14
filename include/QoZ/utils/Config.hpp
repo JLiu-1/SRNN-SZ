@@ -307,9 +307,9 @@ namespace QoZ {
             write(pred_dim, c);
             write(openmp, c);
             write(fixBlockSize, c);
-            write(blockwiseSampleBlockSize, c);
+            //write(blockwiseSampleBlockSize, c);
             //write(QoZ, c);//recently changed.
-            write(crossBlock, c);
+            //write(crossBlock, c);
             write(wavelet, c);
             write(firstSize, c);
             write(offsetPredictor, c);
@@ -323,7 +323,7 @@ namespace QoZ {
                 write(coeffs_dims.data(), tempsize, c);
             }
             write(pid, c);
-            write(blockOrder, c);
+            //write(blockOrder, c);
             write(sperr, c);
             write(sperrWithoutWave, c);
             //write(trimToZero, c);
@@ -384,9 +384,9 @@ namespace QoZ {
             read(pred_dim, c);
             read(openmp, c);
             read(fixBlockSize, c);
-            read(blockwiseSampleBlockSize, c);
+            //read(blockwiseSampleBlockSize, c);
             //read(QoZ, c);//recently changed.
-            read(crossBlock, c);
+            //read(crossBlock, c);
             read(wavelet, c);
             read(firstSize, c);
             read(offsetPredictor, c);
@@ -401,7 +401,7 @@ namespace QoZ {
                 read(coeffs_dims.data(), tempsize, c);
             }
             read(pid, c);
-            read(blockOrder, c);
+            //read(blockOrder, c);
             read(sperr, c);
             read(sperrWithoutWave, c);
             //read(trimToZero, c);
