@@ -539,14 +539,14 @@ namespace QoZ {
         double lorenzoBrFix = 1.0;
         uint8_t var_first=0;
         size_t profStride=0;
-        int sperr=-1;
+        int8_t sperr=-1;
         //double sperr_eb_coeff = 1.5;
         uint8_t waveAutoFix=1;
         uint8_t conditioning=0;
         size_t meta_size=0;
         sperr::vec8_type meta;
         std::vector<sperr::vec8_type> block_metas;
-        uint8_t fixWave=-1;
+        int8_t fixWave=-1;
         bool sperrWithoutWave=false;
         bool pyBind=true;
         std::string metadata;
