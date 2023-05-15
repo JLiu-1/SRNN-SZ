@@ -582,10 +582,10 @@ namespace QoZ {
                             double temp1=0.5-0.5/cur_rate,temp2=0.5+0.5/cur_rate;
                             sample_starts[i]=((size_t)((temp1*cur_length)/(2*stride)))*2*stride+start_idx[i];
                             sample_ends[i]=((size_t)((temp2*cur_length)/(2*stride)))*2*stride+start_idx[i];
-                            std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
+                            //std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
 
                         }
-                         std::cout<<"----"<<std::endl;
+                         //std::cout<<"----"<<std::endl;
                         std::vector<T> orig_sampled_block;
     
                         std::array<size_t,N>sb_starts;
@@ -633,8 +633,8 @@ namespace QoZ {
                         }
                         for(size_t i=0;i<N;i++)
                             sb_ends[i]--;
-                        std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
-                        std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
+                       // std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
+                        //std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
                         std::array<size_t,N> global_dimension_offsets=dimension_offsets;
                         dimension_offsets=temp_dim_offsets;
                         
@@ -665,7 +665,7 @@ namespace QoZ {
                                 interpParadigm_Candidates.push_back(i);
                        
                         }   
-                        std::cout<<"a1"<<std::endl;
+                        //std::cout<<"a1"<<std::endl;
                         /*
 
                         if (conf.naturalSpline){
@@ -685,7 +685,7 @@ namespace QoZ {
                         for (size_t i=0;i<N;i++)
                             block_dims[i]=sb_ends[i]+1;
                         std::vector<double> coeffs;
-                        std::cout<<"a2"<<std::endl;
+                        //std::cout<<"a2"<<std::endl;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
                             int status;
                             
@@ -701,7 +701,7 @@ namespace QoZ {
                             interp_coeffs.insert(interp_coeffs.end(),coeffs.begin(),coeffs.end());
 
                         }
-                        std::cout<<"a3"<<std::endl;
+                        //std::cout<<"a3"<<std::endl;
                         for (auto &interp_op: interpAlgo_Candidates) {
                             cur_meta.interpAlgo=interp_op;
                             for (auto &interp_pd: interpParadigm_Candidates) {
@@ -720,7 +720,7 @@ namespace QoZ {
                                         for(auto adj_interp:adjInterp_Candidates){
                                             if (interp_op!=QoZ::INTERP_ALGO_CUBIC and adj_interp!=0)
                                                 break;
-                                            std::cout<<"a4"<<std::endl;
+                                           // std::cout<<"a4"<<std::endl;
                                             cur_meta.adjInterp=adj_interp;
                                             cur_block=orig_sampled_block;
                                             double cur_loss=std::numeric_limits<double>::max();
@@ -731,7 +731,7 @@ namespace QoZ {
                                             else
                                                 cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
                                                                           interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,0);//,cross_block,regressiveInterp);
-                                            std::cout<<"a5"<<std::endl;
+                                           // std::cout<<"a5"<<std::endl;
 
                                             //double cur_loss=0.0;
                                             if(cur_loss<best_loss){
