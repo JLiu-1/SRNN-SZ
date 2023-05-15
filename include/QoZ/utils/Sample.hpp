@@ -144,7 +144,7 @@ template<class T, uint N>
         size_t stride2x=2*stride;
         if(N==3){
             size_t dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
-           // std::cout<<dimx<<" "<<dimy<<" "<<dimz<<std::endl;
+            std::cout<<dimx<<" "<<dimy<<" "<<dimz<<std::endl;
             for (size_t i = 3; i < dimx-3; i+=stride) {
                 for (size_t j = 3; j < dimy-3; j+=stride) {
                     for (size_t k = 3; k < dimz-3; k+=stride) {
