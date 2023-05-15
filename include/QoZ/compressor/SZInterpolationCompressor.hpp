@@ -1477,6 +1477,7 @@ namespace QoZ {
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
                             else {
+                                if(mode==0)
                                 std::cout<<"n-1 "<<i<<std::endl;
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_linear1(*(d - stride3x), *(d - stride)),mode);
