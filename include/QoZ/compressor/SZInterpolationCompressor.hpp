@@ -1456,7 +1456,7 @@ namespace QoZ {
                         d = data + begin + i * stride;
                         predict_error+=quantize_integrated(d - data, *d,
                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
-                        if(and mode>0 and predict_error>1){
+                        if(mode>0 and predict_error>1){
                             std::cout<<"type_1 "<<i<<" "<<predict_error<<std::endl;
                         }
                     }
@@ -1484,14 +1484,14 @@ namespace QoZ {
                             if(math_cur_idx+math_stride3x<global_end_idx and (cross_front or i+3<n) ){
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
-                                if(and mode>0 and predict_error>1){
+                                if( mode>0 and predict_error>1){
                                     std::cout<<"type_2 "<<i<<" "<<predict_error<<std::endl;
                                 }
                             }
                             else if(math_cur_idx+math_stride<global_end_idx and (cross_front or i+1<n)){
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
-                                if(and mode>0 and predict_error>1){
+                                if(mode>0 and predict_error>1){
                                     std::cout<<"type_3 "<<i<<" "<<predict_error<<std::endl;
                                 }
                             }
@@ -1500,7 +1500,7 @@ namespace QoZ {
                                 //std::cout<<"n-1 "<<i<<std::endl;
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_linear1(*(d - stride3x), *(d - stride)),mode);
-                                if(and mode>0 and predict_error>1){
+                                if(mode>0 and predict_error>1){
                                     std::cout<<"type_4 "<<i<<" "<<predict_error<<std::endl;
                                 }
                             }
@@ -1509,21 +1509,21 @@ namespace QoZ {
                             if(math_cur_idx+math_stride3x<global_end_idx and (cross_front or i+3<n) ){
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_1( *(d - stride), *(d + stride), *(d + stride3x)),mode);
-                                if(and mode>0 and predict_error>1){
+                                if(mode>0 and predict_error>1){
                                     std::cout<<"type_5 "<<i<<" "<<predict_error<<std::endl;
                                 }
                             }
                             else if(math_cur_idx+math_stride<global_end_idx and (cross_front or i+1<n) ){
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_linear( *(d - stride), *(d + stride)),mode);
-                                if(and mode>0 and predict_error>1){
+                                if(mode>0 and predict_error>1){
                                     std::cout<<"type_6 "<<i<<" "<<predict_error<<std::endl;
                                 }
                             }
                             else {
                                 predict_error+=quantize_integrated(d - data, *d,
                                         *(d - stride),mode);
-                                if(and mode>0 and predict_error>1){
+                                if( mode>0 and predict_error>1){
                                     std::cout<<"type_7 "<<i<<" "<<predict_error<<std::endl;
                                 }
                             }
