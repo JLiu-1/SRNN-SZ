@@ -772,7 +772,7 @@ namespace QoZ {
                                 }
                             }
                         }
-                        std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
+                        //std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
                         interp_metas.push_back(best_meta);
                         dimension_offsets=global_dimension_offsets;
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
