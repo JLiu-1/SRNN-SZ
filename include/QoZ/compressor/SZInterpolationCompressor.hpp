@@ -688,7 +688,7 @@ namespace QoZ {
                         //std::cout<<"a2"<<std::endl;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
                             int status;
-                            
+                            std::cout<<orig_sampled_block.size()<<std::endl;
                             
                             status=calculate_interp_coeffs<T,N>(orig_sampled_block.data(), block_dims,coeffs, 2);
                             std::cout<<"a2"<<std::endl;
