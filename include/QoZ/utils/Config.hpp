@@ -241,7 +241,7 @@ namespace QoZ {
             //pdBeta=cfg.GetReal("AlgoSettings", "pdBeta", pdBeta);
             //lastPdTuning=cfg.GetBoolean("AlgoSettings", "lastPdTuning", lastPdTuning);
             abList=cfg.GetInteger("AlgoSettings", "abList", abList);
-            //crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
+            crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
             //sampleBlockSampleBlockSize=cfg.GetInteger("AlgoSettings", "sampleBlockSampleBlockSize", sampleBlockSampleBlockSize);
             peTracking=cfg.GetBoolean("AlgoSettings", "peTracking", peTracking);
             wavelet=cfg.GetInteger("AlgoSettings", "wavelet", wavelet);
@@ -518,7 +518,7 @@ namespace QoZ {
         //double pdBeta=-1;
         //bool lastPdTuning=0;
         int abList=0;
-        //int crossBlock=0;
+        int crossBlock=0;
         //int sampleBlockSampleBlockSize=0;
         bool peTracking=0;
         int wavelet=0; //may have different wavelets
