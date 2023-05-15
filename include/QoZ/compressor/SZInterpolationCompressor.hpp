@@ -1386,7 +1386,7 @@ namespace QoZ {
         double block_interpolation_1d_crossblock(T *data, std::array<size_t,N> begin_idx, std::array<size_t,N> end_idx,size_t direction, size_t math_stride, const std::string &interp_func, const PredictorBehavior pb,const QoZ::Interp_Meta &meta,int cross_block=1,int tuning=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
             size_t math_begin_idx=begin_idx[direction],math_end_idx=end_idx[direction];
             size_t n = (math_end_idx - math_begin_idx) / math_stride + 1;
-            std::cout<<n<<std::endl;
+           // std::cout<<n<<std::endl;
             if (n <= 1) {
                 return 0;
             }
@@ -1464,7 +1464,7 @@ namespace QoZ {
                     }
 
                     for(auto i:boundary){
-                        std::cout<<i<<std::endl;
+                        //std::cout<<i<<std::endl;
 
 
                         d = data + begin + i*stride;
