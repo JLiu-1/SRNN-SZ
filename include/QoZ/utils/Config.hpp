@@ -51,7 +51,7 @@ namespace QoZ {
         uint8_t cubicSplineType = 0;//noknot,nat
         uint8_t interpDirection = 0;//0,N!-1
         uint8_t adjInterp=0;//0,1
-        std::array<double,3> dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};//may change to float type
+        //std::array<double,3> dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};//may change to float type
  
     };
 

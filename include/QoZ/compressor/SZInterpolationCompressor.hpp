@@ -4575,7 +4575,7 @@ namespace QoZ {
                                                             begin_offset2 +
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
                                                             stride * dimension_offsets[dims[0]],
-                                                            stride * dimension_offsets[dims[1]], interp_func, pb,std::array<double,2>{dim_coeffs[0],dim_coeffs[1]},meta,tuning);
+                                                            stride * dimension_offsets[dims[1]], interp_func, pb,std::array<double,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[0],dim_coeffs[1]}
             }
            
             else if(paradigm==3){//cross
@@ -4811,8 +4811,8 @@ namespace QoZ {
                                                                     begin_offset2 +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[1]],interp_func, pb,std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]},meta,tuning);
-                        }
+                                                                    stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[1]],interp_func, pb,std::array<double,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]}
+                        }std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]}
 
 
                         for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
@@ -4827,7 +4827,7 @@ namespace QoZ {
                                                                     begin_offset2 +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[2]]},meta,tuning);
+                                                                    stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[2]]}
                         }
                         for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
                             size_t begin_offset1 = begin[dims[1]] * dimension_offsets[dims[1]] + i * dimension_offsets[dims[0]];
@@ -4841,7 +4841,7 @@ namespace QoZ {
                                                                     begin_offset2 +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,tuning);
+                                                                    stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
                         }
                         size_t begin_offset1 = begin[dims[0]] * dimension_offsets[dims[0]] ;
                         size_t begin_offset2 = begin[dims[1]] * dimension_offsets[dims[1]] ;
@@ -4858,7 +4858,7 @@ namespace QoZ {
                                                                     begin_offset3 +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[0]],stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func,pb,dim_coeffs,meta,tuning);
+                                                                    stride * dimension_offsets[dims[0]],stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func,pb,std::array<double,3>{1.0,1.0,1.0},meta,tuning);dim_coeffs
                 }
                 else{
                     const std::array<int, N> dims = dimension_sequences[direction];
@@ -4897,7 +4897,7 @@ namespace QoZ {
                                                                     begin_offset2 +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,tuning);
+                                                                    stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
                         }
 
                 }
@@ -4953,7 +4953,7 @@ namespace QoZ {
                                                             begin_offset2 +
                                                             (end[dims[2]] - begin[dims[2]]) *
                                                             dimension_offsets[dims[2]],
-                                                            stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,tuning);
+                                                            stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
                 }
                     
             }
