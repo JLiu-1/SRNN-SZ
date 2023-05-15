@@ -4,6 +4,7 @@
 #define SZ_SAMPLE_HPP
 
 #include "QoZ/utils/Interpolators.hpp"
+#include "QoZ/utils/CoeffRegression.hpp"
 namespace QoZ {
 
     
@@ -75,18 +76,19 @@ namespace QoZ {
                  
                     count+=1;
                     size_t idx=i*dimy+j;
-                    T cur_value=data[idx];
+                    T *d= data+idx;
+                    T cur_value=*d;
                     if(interp_op==1){
                         auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
-                        T interp_value=interp_cubic(*(data - 3*dimy), *(data - dimy), *(data + dimy), *(data + 3*dimy));
+                        T interp_value=interp_cubic(*(d - 3*dimy), *(d - dimy), *(d + dimy), *(d + 3*dimy));
                         vars[0]+=interp_value*interp_value;
-                        interp_value=interp_cubic(*(data - 3), *(data - 1), *(data + 1), *(data + 3));
+                        interp_value=interp_cubic(*(d- 3), *(d - 1), *(d + 1), *(d + 3));
                         vars[1]+=interp_value*interp_value;
                     }
                     else{
-                        T interp_value=interp_linear( *(data - dimy), *(data + dimy));
+                        T interp_value=interp_linear( *(d - dimy), *(d + dimy));
                         vars[0]+=interp_value*interp_value;
-                        interp_value=interp_linear( *(data -1), *(data + 1));
+                        interp_value=interp_linear( *(d -1), *(d + 1));
                         vars[1]+=interp_value*interp_value;
                     }
                 }
@@ -129,6 +131,78 @@ namespace QoZ {
 
 
     }
+
+
+
+
+template<class T, uint N>
+    inline int
+    calculate_interp_coeffs(T *data, std::vector<size_t> &dims,std::<double> &coeffs, size_t stride=2){
+
+        vars.resize(N,0.0);
+        //size_t count=0;
+        std::vector<T>xs,ys; 
+        size_t stride2x=2*stride;
+        if(N==3){
+            size_t dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
+           // std::cout<<dimx<<" "<<dimy<<" "<<dimz<<std::endl;
+            for (size_t i = 3; i < dimx-3; i+=stride) {
+                for (size_t j = 3; j < dimy-3; j+=stride) {
+                    for (size_t k = 3; k < dimz-3; k+=stride) {
+                        if(i%stride2x==0 and j%stride2x==0 and k%stride2x==0)
+                            continue;
+                        //std::cout<<i<<" "<<j<<" "<<k<<std::endl;
+                        //count+=1;
+                        size_t idx=i*dimyz+j*dimz+k;
+                        T *d= data+idx;
+                        T cur_value=*d;
+                        //std::cout<<cur_value<<std::endl;
+                        std::vector<T>temp_xs={*(d - 3*dimyz),*(d - dimyz),*(d + dimyz), *(d + 3*dimyz),*(d - 3*dimz),*(d - dimz),*(d + dimz),*(d + 3*dimz),*(d - 3), *(d - 1), *(d + 1), *(d + 3)};
+                        std::vector<T>temp_ys={cur_value,cur_value,cur_value};
+                        xs.insert(xs.end(),temp_xs.begin(),temp_xs.end());
+                        ys.insert(xs.end(),temp_ys.begin(),temp_ys.end());
+                       
+
+                    }
+                }
+            }
+        }
+
+        else if(N==2){
+            size_t  dimx=dims[0],dimy=dims[1];
+            for (size_t i = 3; i < dimx-3; i+=stride) {
+                for (size_t j = 3; j < dimy-3; j+=stride) {
+                    if(i%stride2x==0 and j%stride2x==0)
+                        continue;
+                 
+                    //count+=1;
+                    size_t idx=i*dimy+j;
+                    T *d= data+idx;
+                    T cur_value=*d;
+
+                    std::vector<T>temp_xs={*(d - 3*dimy),*(d - dimy),*(d + dimy),*(d + 3*dimy),*(d - 3), *(d - 1), *(d + 1), *(d + 3)};
+                    std::vector<T>temp_ys={cur_value,cur_value,cur_value};
+                    xs.insert(xs.end(),temp_xs.begin(),temp_xs.end());
+                    ys.insert(xs.end(),temp_ys.begin(),temp_ys.end());
+            }
+
+        }
+        int status;
+        auto reg_res=QoZ::Regression(xs.data(),ys.size(),4,ys.data(),status);
+        if(status==0){
+            coeffs.resize(4);
+            for(size_t i=0;i<4;i++)
+                coeffs[i]=reg_res[i];
+        }
+        return status;
+    
+
+
+
+    }
+
+
+
 
     template<class T, uint N>
     inline void

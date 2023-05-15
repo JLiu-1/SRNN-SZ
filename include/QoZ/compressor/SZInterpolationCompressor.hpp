@@ -87,8 +87,9 @@ namespace QoZ {
             read(trimToZero,buffer_pos, remaining_length);
             //int blockOrder=0;
             //read(blockOrder,buffer_pos, remaining_length); 
-            //int regressiveInterp;   
-            //read(regressiveInterp,buffer_pos, remaining_length);       
+            int regressiveInterp;   
+            read(regressiveInterp,buffer_pos, remaining_length);     
+            std::vector<double>interp_coeffs;
             if (trimToZero>0){
                 quantizer.setTrimToZero(trimToZero);
             }
@@ -99,6 +100,13 @@ namespace QoZ {
                 //std::cout<<meta_num<<std::endl;
                 interpMeta_list.resize(meta_num);
                 read(interpMeta_list.data(),meta_num,buffer_pos, remaining_length);
+                if(regressiveInterp){
+                    size_t coeff_num;
+                    read(coeff_num,buffer_pos, remaining_length);
+                    //std::cout<<meta_num<<std::endl;
+                    interp_coeffs.resize(coef_num);
+                    read(interp_coeffs.data(),coeff_num,buffer_pos, remaining_length);
+                }
             }
 
             else if(levelwise_predictor_levels>0){
@@ -136,7 +144,7 @@ namespace QoZ {
                 recover_grid(decData,global_dimensions,maxStep,fused_dim);                   
                 interpolation_level--;           
             }
-            size_t meta_index=0;
+            size_t meta_index=0,coeff_idx=0;
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
 
                 if (alpha<0) {
@@ -216,8 +224,10 @@ namespace QoZ {
                 //timer.stop("prep");
                 
                 for (auto block = inter_begin; block != inter_end; ++block) {
-                    if(blockwiseTuning)
+                    if(blockwiseTuning){
                         cur_meta=interpMeta_list[meta_index++];
+
+                    }
 
                     auto start_idx=block.get_global_index();
                     auto end_idx = start_idx;
@@ -230,7 +240,17 @@ namespace QoZ {
                         }
                     }
                     //std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.adjInterp<<std::endl; 
-               
+                    if(blockwiseTuning and regressiveInterp){
+                        std::vector<double> coeffs;
+                        for(size_t i=0;i<4;i++)
+                            coeffs.push_back(interp_coeffs[coeff_idx++]);
+                        block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
+                                        interpolators[cur_meta.interpAlgo], cur_meta, stride,0,0,1,coeffs);
+
+                    }
+
+                    else
+
                      block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
                                         interpolators[cur_meta.interpAlgo], cur_meta, stride,0,0,0);//,cross_block,regressiveInterp);
                 
@@ -397,6 +417,7 @@ namespace QoZ {
             alpha=conf.alpha;
             beta=conf.beta;
             std::vector<Interp_Meta>interp_metas;
+            std::vector<double> interp_coeffs;
             //size_t cross_block=conf.crossBlock;
             //int regressiveInterp=conf.regressiveInterp;
             init();
@@ -658,6 +679,25 @@ namespace QoZ {
                         */
 
                         std::vector<T> cur_block;
+                        std::vector<size_t>block_dims;
+                        for (size_t i=0;i<N;i++)
+                            block_dims[i]=sb_ends[i]+1;
+
+                        if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
+                            int status;
+                            std::vector<double> coeffs;
+
+                            status=calculate_interp_coeffs(cur_block.data(), block_dims,coeffs, 2);
+                            if (status!=0){
+                                if(cur_level_meta.cubicSplineType==0)
+                                    coeffs=std::vector<double>{-1.0/16.0,9.0/16.0,9.0/16.0,1.0/16.0};
+                                if(cur_level_meta.cubicSplineType==1)
+                                    coeffs=std::vector<double>{-3.0/40.0,23.0/40.0,23.0/40.0,-3.0/40.0};
+                            }
+                            interp_coeffs.insert(interp_coeffs.end(),coeffs.begin(),coeffs.end());
+
+                        }
+
                         for (auto &interp_op: interpAlgo_Candidates) {
                             cur_meta.interpAlgo=interp_op;
                             for (auto &interp_pd: interpParadigm_Candidates) {
@@ -679,8 +719,13 @@ namespace QoZ {
                                         
                                             cur_meta.adjInterp=adj_interp;
                                             cur_block=orig_sampled_block;
-                                            
-                                            double cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
+                                            double cur_loss=std::numeric_limits<double>::max();
+
+                                            if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp)
+                                                cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
+                                                                          interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,1,coeffs);//,cross_block,regressiveInterp);
+                                            else
+                                                cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
                                                                           interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,0);//,cross_block,regressiveInterp);
 
                                             //double cur_loss=0.0;
@@ -796,12 +841,18 @@ namespace QoZ {
             //write(cross_block,buffer_pos);
             write(conf.trimToZero,buffer_pos);
             //write(conf.blockOrder,buffer_pos);
-            //write(conf.regressiveInterp,buffer_pos);
+            write(conf.regressiveInterp,buffer_pos);
             if(conf.blockwiseTuning){
                 size_t meta_num=interp_metas.size();
                 //std::cout<<meta_num<<std::endl;
                 write(meta_num,buffer_pos);
                 write(interp_metas.data(),meta_num,buffer_pos);
+                if(conf.regressiveInterp){
+                    size_t coeff_num=interp_coeffs.size();
+                    write(coeff_num,buffer_pos);
+                    write(interp_coeffs.data(),coeff_num,buffer_pos);
+
+                }
 
             }
             else if(levelwise_predictor_levels>0){
@@ -1800,13 +1851,169 @@ namespace QoZ {
             }
             return predict_error;
         } 
+        double block_interpolation_1d_regressive(T *data, size_t begin, size_t end, size_t stride,const std::string &interp_func,const PredictorBehavior pb,const QoZ::Interp_Meta &meta,const std::vector<double>& coeff,int tuning=0) {
+            size_t n = (end - begin) / stride + 1;
+            if (n <= 1) {
+                return 0;
+            }
+            double predict_error = 0;
+            size_t stride2x=2*stride;
+            size_t stride3x = 3 * stride;
+            size_t stride5x = 5 * stride;
+            int mode=(pb == PB_predict_overwrite)?tuning:-1;
+            if (interp_func == "linear" || n < 5) {
+                for (size_t i = 1; i + 1 < n; i += 2) {
+                    T *d = data + begin + i * stride;
+                    predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride), *(d + stride)),mode);
+                }
+                if (n % 2 == 0) {
+                    T *d = data + begin + (n - 1) * stride;
+                    if (n < 4) {                              
+                        predict_error+=quantize_integrated(d - data, *d, *(d - stride),mode);
+                        } else {
+                        predict_error+=quantize_integrated(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)),mode);
+                    }
+                }
+
+            } 
+            /*
+            else if (interp_func == "quad"){
+                T *d= data + begin +  stride;
+                predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride), *(d + stride)),mode);
+                for (size_t i = 3; i + 1 < n; i += 2) {
+                    T *d = data + begin + i * stride;
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_2_adj(*(d - stride2x),*(d - stride), *(d + stride)),mode);
+                }
+                if (n % 2 == 0) {
+                    T *d = data + begin + (n - 1) * stride;
+                    predict_error+=quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
+                }
 
 
+            }*/
+            else {
+                auto interp_cubic=meta.cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
+                T *d;
+                size_t i;
+                if(!meta.adjInterp){
+
+                    for (i = 3; i + 3 < n; i += 2) {
+                        d = data + begin + i * stride;
+                        //predict_error+=quantize_integrated(d - data, *d,
+                        //            interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                        predict_error+=quantize_integrated(d - data, *d,
+                                    coeff[0]*(*(d - stride3x))+coeff[1]*(*(d - stride))+coeff[2]*( *(d + stride))+coeff[3]*( *(d + stride3x)),mode);
+                    }
+
+                    d = data + begin + stride;
+
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    d = data + begin + i * stride;
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
+                    if (n % 2 == 0) {
+                        d = data + begin + (n - 1) * stride;
+                        predict_error+=
+                        quantize_integrated(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)),mode);
+                    }
+                }
+                else{// if(meta.adjInterp==1){
+                    auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
+                    //i=1
+                    d = data + begin + stride;
+                    
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    //predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride),*(d + stride), *(d+stride2x), *(d + stride3x)),mode);
+                    for (i = 5; i + 3 < n; i += 4) {
+                        
+                        d = data + begin + i * stride;
+                     
+                        predict_error+=quantize_integrated(d - data, *d,
+                                    interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    }
+
+                    //i=n-3 or n-2
+
+                    if(i<n-1){
+                        d = data + begin + i * stride;
+                       
+                        predict_error+=quantize_integrated(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
+                        //predict_error+=quantize_integrated(d - data, *d, interp_cubic_back_adj(*(d -stride3x),*(d - stride2x), *(d-stride), *(d + stride)),mode);
+                    }
+                    //i=n-1
+                    else if(i<n){
+                         d = data + begin + (n - 1) * stride;
+             
+                        predict_error+=
+                        //quantize_integrated(d - data, *d, interp_quad_3_adj(*(d - stride3x), *(d - stride2x), *(d - stride)),mode);
+                        quantize_integrated(d - data, *d, *(d - stride),mode);//to determine
+                        //quantize_integrated(d - data, *d, *(d - stride),mode);
+
+                    }
+
+
+                    for (i = 3; i + 3 < n; i += 4) {
+                        d = data + begin + i * stride;
+
+                        predict_error+=quantize_integrated(d - data, *d,
+                                   interp_cubic_adj(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x),*(d + stride3x)),mode);
+                        //predict_error+=quantize_integrated(d - data, *d,
+                         //           interp_cubic_3(*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x)),mode);
+                    }
+                    //i=n-3 or n-2
+                    if(i<n-1){
+                        d = data + begin + i * stride;
+
+                        predict_error+=quantize_integrated(d - data, *d, interp_quad_2_adj(*(d - stride2x), *(d - stride), *(d + stride)),mode);
+                        //predict_error+=quantize_integrated(d - data, *d, interp_cubic_back_adj(*(d -stride3x),*(d - stride2x), *(d-stride), *(d + stride)),mode);
+                    }
+                    //i=n-1
+                    else if(i<n){
+                         d = data + begin + (n - 1) * stride;
+
+                        predict_error+=
+                        //quantize_integrated(d - data, *d, interp_quad_3_adj(*(d - stride3x), *(d - stride2x), *(d - stride)),mode);
+                        quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x),*(d - stride)) ,mode);//to determine
+                        //quantize_integrated(d - data, *d, *(d - stride),mode);
+                    }
+                }
+                /*
+                else if(meta.adjInterp==2){
+                    auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_4<T>:interp_cubic_adj_3<T>;
+                    d = data + begin + stride;
+
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    for (i = 3; i + 3 < n; i += 2) {
+                        d = data + begin + i * stride;
+                        predict_error+=quantize_integrated(d - data, *d,
+                                    interp_cubic_adj(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    }
+
+                    
+                    d = data + begin + i * stride;
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_2_adj(*(d - stride2x), *(d - stride), *(d + stride)),mode);
+                    if (n % 2 == 0) {
+                        d = data + begin + (n - 1) * stride;
+                        predict_error+=
+                        quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
+                    }
+
+                }
+                */
+
+                
+                
+                
+                
+            }
+            return predict_error;
+        } 
+        /*
         double regressive_interpolation_1d_linear(T *data, int &status, const size_t & cur_idx,const size_t &main_direction,const std::vector<size_t> & sub_directions, const std::vector<size_t> & strides, const std::vector<size_t> & strides3x,const std::vector<size_t> &dimensional_sparsity){
             T *d=data+cur_idx;
             std::vector<double> A={*(d-strides3x[main_direction]),*(d+strides[main_direction]),*(d-strides[main_direction]),*(d+strides3x[main_direction])};
             std::vector<double> b={*(d-strides[main_direction]),*(d+strides[main_direction])};
-            /*
+            
+            *//*
             for(auto sub_direction:sub_directions){
                 size_t sub_stride=dimensional_sparsity[sub_direction]*strides[sub_direction];
                 std::vector<double>tempA={*(d-sub_stride-strides3x[main_direction]),*(d-sub_stride+strides[main_direction]),*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides3x[main_direction])
@@ -1819,6 +2026,7 @@ namespace QoZ {
 
             }
         */
+        /*
             auto reg_res=QoZ::Regression(A.data(),b.size(),2,b.data(),status);
             if(status==0){
                 if(isnan(reg_res[0]) or isnan(reg_res[1]) or fabs(reg_res[0])>0.75 or fabs(reg_res[1])>0.75 or fabs(reg_res[0])<0 or fabs(reg_res[1])<0){
@@ -1832,7 +2040,8 @@ namespace QoZ {
                 return 0;
             }
         }
-
+        */
+        /*
         double regressive_interpolation_1d_cubic(T *data, int &status, const size_t & cur_idx,const size_t &main_direction,const std::vector<size_t> & sub_directions, const std::vector<size_t> & strides, const std::vector<size_t> & strides3x,const std::vector<size_t> &dimensional_sparsity){
             T *d=data+cur_idx;
             size_t main_stride=strides[main_direction],main_stride3x=main_stride*3,main_stride5x=main_stride*5,main_stride7x=main_stride*7,main_stride9x=main_stride*9;
@@ -1841,7 +2050,7 @@ namespace QoZ {
                 *(d-main_stride5x),*(d-main_stride),*(d+main_stride3x),*(d+main_stride7x),
                 *(d-main_stride3x),*(d+main_stride),*(d+main_stride3x),*(d+main_stride7x)};
             std::vector<double> b={*(d-main_stride3x),*(d-main_stride),*(d+main_stride),*(d+main_stride3x)};
-            /*
+            
             for(auto sub_direction:sub_directions){
                 size_t sub_stride=dimensional_sparsity[sub_direction]*strides[sub_direction];
                 std::vector<double>tempA={*(d-sub_stride-strides3x[main_direction]),*(d-sub_stride+strides[main_direction]),*(d-sub_stride-strides[main_direction]),*(d-sub_stride+strides3x[main_direction])
@@ -1853,7 +2062,7 @@ namespace QoZ {
                 b.insert(b.end(),tempb.begin(),tempb.end());
 
             }
-            */
+            
             auto reg_res=QoZ::Regression(A.data(),b.size(),4,b.data(),status);
             if(status==0){
                 
@@ -1924,11 +2133,7 @@ namespace QoZ {
                         //cur_coord[main_direction]+=i;
                         int status=0;
                         T prediction=regressive_interpolation_1d_linear(data,status,cur_idx,main_direction,sub_directions,strides,strides3x,dimensional_sparsity);
-                        /*
-                        if(status!=0){
-                            std::cout<<begins[0]<<" "<<begins[1]<<" "<<i<<std::endl; 
-                        }
-                        */
+                        =
                         //if (prediction<0 or prediction>1)
                             //std::cout<<cur_idx<<" "<<prediction<<" "<<status<<std::endl;
                             
@@ -1993,6 +2198,7 @@ namespace QoZ {
             }
             return predict_error;
         } 
+        */
         double block_interpolation_2d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2,const std::string &interp_func,const PredictorBehavior pb,const std::array<double,2> &dim_coeffs,const QoZ::Interp_Meta &meta,int tuning=0) {
             size_t n = (end1 - begin1) / stride1 + 1;
             if (n <= 1) {
@@ -4503,7 +4709,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 1, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {//regressive to reduce into meta.
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=const std::vector<double>{}) {//regressive to reduce into meta.
             return block_interpolation_1d(data, begin[0], end[0], stride, interp_func, pb,meta,tuning);
         }
 
@@ -4511,7 +4717,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 2, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=const std::vector<double>{}) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             //bool full_adjacent_interp=false;
@@ -4522,7 +4728,7 @@ namespace QoZ {
                 const std::array<int, N> dims = dimension_sequences[direction];
                 
                 
-                if(!regressive or stride!=1){
+                if(!regressive){
                     
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
@@ -4540,25 +4746,19 @@ namespace QoZ {
                     }
                 }
                 else{
-                    std::vector<size_t> block_begin(begin.begin(),begin.end());
-                    std::vector<size_t> block_end(end.begin(),end.end());
-                    std::vector<size_t> sparsity={2,2};
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
-                        std::vector<size_t> cur_begin=block_begin;
-                        cur_begin[dims[1]]=j;
-                        std::vector<size_t> cur_end=block_end;
-                        cur_end[dims[1]]=j;
-                        predict_error += block_interpolation_1d_regressive(data,block_begin,block_end,dims[0],cur_begin,cur_end,sparsity,
-                                                        stride,interp_func,pb,meta,tuning);
+                        size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
+                        predict_error += block_interpolation_1d_regressive(data, begin_offset,
+                                                                begin_offset +
+                                                                (end[dims[0]] - begin[dims[0]]) * dimension_offsets[dims[0]],
+                                                                stride * dimension_offsets[dims[0]], interp_func, pb,meta,coeffs,tuning);
                     }
-                    sparsity[dims[0]]=1;
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
-                        std::vector<size_t> cur_begin=block_begin;
-                        cur_begin[dims[0]]=i;
-                        std::vector<size_t> cur_end=block_end;
-                        cur_end[dims[0]]=i;
-                        predict_error += block_interpolation_1d_regressive(data,block_begin,block_end,dims[1],cur_begin,cur_end,sparsity,
-                                                        stride,interp_func,pb,meta,tuning);
+                        size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]];
+                        predict_error += block_interpolation_1d_regressive(data, begin_offset,
+                                                                begin_offset +
+                                                                (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb,meta,coeffs,tuning);
                     }
 
                 }
@@ -4626,7 +4826,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 3, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {//cross block: 0 or conf.num
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=const std::vector<double>{}) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
@@ -4642,38 +4842,76 @@ namespace QoZ {
                 const std::array<int, N> dims = dimension_sequences[direction];
                 //if (cross_block==0){
                 if(!fallback_2d){
-                    for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
-                        for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
-                            size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
-                                                  k * dimension_offsets[dims[2]];
-                            predict_error += block_interpolation_1d(data, begin_offset,
-                                                                    begin_offset +
-                                                                    (end[dims[0]] - begin[dims[0]]) *
-                                                                    dimension_offsets[dims[0]],
-                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,meta,tuning);
+                    if(!regressive){
+                        for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
+                            for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
+                                size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
+                                                      k * dimension_offsets[dims[2]];
+                                predict_error += block_interpolation_1d(data, begin_offset,
+                                                                        begin_offset +
+                                                                        (end[dims[0]] - begin[dims[0]]) *
+                                                                        dimension_offsets[dims[0]],
+                                                                        stride * dimension_offsets[dims[0]], interp_func, pb,meta,tuning);
+                            }
+                        }
+                        for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
+                            for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
+                                size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
+                                                      k * dimension_offsets[dims[2]];
+                                predict_error += block_interpolation_1d(data, begin_offset,
+                                                                        begin_offset +
+                                                                        (end[dims[1]] - begin[dims[1]]) *
+                                                                        dimension_offsets[dims[1]],
+                                                                        stride * dimension_offsets[dims[1]], interp_func, pb,meta,tuning);
+                            }
+                        }
+                        for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
+                            for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
+                                size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
+                                                      begin[dims[2]] * dimension_offsets[dims[2]];
+                                predict_error += block_interpolation_1d(data, begin_offset,
+                                                                        begin_offset +
+                                                                        (end[dims[2]] - begin[dims[2]]) *
+                                                                        dimension_offsets[dims[2]],
+                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,meta,tuning);
+                            }
                         }
                     }
-                    for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
-                        for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
-                            size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
-                                                  k * dimension_offsets[dims[2]];
-                            predict_error += block_interpolation_1d(data, begin_offset,
-                                                                    begin_offset +
-                                                                    (end[dims[1]] - begin[dims[1]]) *
-                                                                    dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,meta,tuning);
+                    else{
+                        for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
+                            for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
+                                size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
+                                                      k * dimension_offsets[dims[2]];
+                                predict_error += block_interpolation_1d_regressive(data, begin_offset,
+                                                                        begin_offset +
+                                                                        (end[dims[0]] - begin[dims[0]]) *
+                                                                        dimension_offsets[dims[0]],
+                                                                        stride * dimension_offsets[dims[0]], interp_func, pb,meta,coeffs,tuning);
+                            }
                         }
-                    }
-                    for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
-                        for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
-                            size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
-                                                  begin[dims[2]] * dimension_offsets[dims[2]];
-                            predict_error += block_interpolation_1d(data, begin_offset,
-                                                                    begin_offset +
-                                                                    (end[dims[2]] - begin[dims[2]]) *
-                                                                    dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[2]], interp_func, pb,meta,tuning);
+                        for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
+                            for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
+                                size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
+                                                      k * dimension_offsets[dims[2]];
+                                predict_error += block_interpolation_1d_regressive(data, begin_offset,
+                                                                        begin_offset +
+                                                                        (end[dims[1]] - begin[dims[1]]) *
+                                                                        dimension_offsets[dims[1]],
+                                                                        stride * dimension_offsets[dims[1]], interp_func, pb,meta,coeffs,tuning);
+                            }
                         }
+                        for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
+                            for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
+                                size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
+                                                      begin[dims[2]] * dimension_offsets[dims[2]];
+                                predict_error += block_interpolation_1d_regressive(data, begin_offset,
+                                                                        begin_offset +
+                                                                        (end[dims[2]] - begin[dims[2]]) *
+                                                                        dimension_offsets[dims[2]],
+                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,meta,coeffs,tuning);
+                            }
+                        }
+
                     }
                 }
                 else{
@@ -4983,7 +5221,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 4, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0) {
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=const std::vector<double>{}) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             uint8_t paradigm=meta.interpParadigm;
