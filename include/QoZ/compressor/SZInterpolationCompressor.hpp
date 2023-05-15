@@ -690,7 +690,7 @@ namespace QoZ {
                             int status;
                             
                             
-                            status=calculate_interp_coeffs<T,N>(cur_block.data(), block_dims,coeffs, 2);
+                            status=calculate_interp_coeffs<T,N>(orig_sampled_block.data(), block_dims,coeffs, 2);
                             std::cout<<"a2"<<std::endl;
                             if (status!=0){
                                 if(cur_level_meta.cubicSplineType==0)

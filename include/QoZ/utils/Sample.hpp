@@ -150,12 +150,12 @@ template<class T, uint N>
                     for (size_t k = 3; k < dimz-3; k+=stride) {
                         if(i%stride2x==0 and j%stride2x==0 and k%stride2x==0)
                             continue;
-                        std::cout<<i<<" "<<j<<" "<<k<<std::endl;
+                        //std::cout<<i<<" "<<j<<" "<<k<<std::endl;
                         //count+=1;
                         size_t idx=i*dimyz+j*dimz+k;
                         T *d= data+idx;
                         T cur_value=*d;
-                        std::cout<<cur_value<<std::endl;
+                        //std::cout<<cur_value<<std::endl;
                         std::vector<double>temp_xs={*(d - 3*dimyz),*(d - dimyz),*(d + dimyz), *(d + 3*dimyz),*(d - 3*dimz),*(d - dimz),*(d + dimz),*(d + 3*dimz),*(d - 3), *(d - 1), *(d + 1), *(d + 3)};
                         std::vector<double>temp_ys={cur_value,cur_value,cur_value};
                         xs.insert(xs.end(),temp_xs.begin(),temp_xs.end());
