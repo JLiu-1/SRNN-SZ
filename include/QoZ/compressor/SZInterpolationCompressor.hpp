@@ -618,8 +618,8 @@ namespace QoZ {
                         
                         QoZ::Interp_Meta best_meta,cur_meta;
                         double best_loss=std::numeric_limits<double>::max();
-                        //std::vector<uint8_t> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
-                        std::vector<uint8_t> interpAlgo_Candidates={cur_level_meta.interpAlgo};
+                        std::vector<uint8_t> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
+                        //std::vector<uint8_t> interpAlgo_Candidates={cur_level_meta.interpAlgo};
                         std::vector<uint8_t> interpParadigm_Candidates={0};
                         //std::vector<uint8_t> cubicSplineType_Candidates={0};
                         std::vector<uint8_t> cubicSplineType_Candidates={cur_level_meta.cubicSplineType};
