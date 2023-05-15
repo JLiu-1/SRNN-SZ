@@ -720,7 +720,7 @@ namespace QoZ {
                                         for(auto adj_interp:adjInterp_Candidates){
                                             if (interp_op!=QoZ::INTERP_ALGO_CUBIC and adj_interp!=0)
                                                 break;
-                                            std::cout<<"a4"<<std::endl;
+                                            //std::cout<<"a4"<<std::endl;
                                             cur_meta.adjInterp=adj_interp;
                                             cur_block=orig_sampled_block;
                                             double cur_loss=std::numeric_limits<double>::max();
@@ -731,7 +731,7 @@ namespace QoZ {
                                             else
                                                 cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
                                                                           interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,0);//,cross_block,regressiveInterp);
-                                            std::cout<<"a5"<<std::endl;
+                                            //std::cout<<"a5"<<std::endl;
 
                                             //double cur_loss=0.0;
                                             if(cur_loss<best_loss){
@@ -772,10 +772,14 @@ namespace QoZ {
                                 }
                             }
                         }
-                        //std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
+                        std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
                         interp_metas.push_back(best_meta);
                         dimension_offsets=global_dimension_offsets;
-                        predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                        if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp)
+                            predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                        interpolators[best_meta.interpAlgo],best_meta, stride,tuning,0,1,coeffs);//,cross_block,regressiveInterp);
+                        else
+                            predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,0,0);//,cross_block,regressiveInterp);
                     }
 
