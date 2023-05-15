@@ -259,7 +259,7 @@ namespace QoZ {
             waveAutoFix = cfg.GetInteger("AlgoSettings", "waveAutoFix", waveAutoFix);
             conditioning = cfg.GetInteger("AlgoSettings", "conditioning", conditioning);
             fixWave = cfg.GetInteger("AlgoSettings", "fixWave", fixWave);
-            //regressiveInterp = cfg.GetInteger("AlgoSettings", "regressiveInterp", regressiveInterp);
+            regressiveInterp = cfg.GetInteger("AlgoSettings", "regressiveInterp", regressiveInterp);
             naturalSpline = cfg.GetInteger("AlgoSettings", "naturalSpline", naturalSpline );
             adaptiveMultiDimStride = cfg.GetInteger("AlgoSettings", "adaptiveMultiDimStride", adaptiveMultiDimStride);
             fullAdjacentInterp = cfg.GetInteger("AlgoSettings", "fullAdjacentInterp", fullAdjacentInterp);
@@ -562,7 +562,7 @@ namespace QoZ {
         bool pybind_activated=false;
         bool FZ=false;
         int fused_dim=-1;
-        //int regressiveInterp=0;
+        int regressiveInterp=0;
         int fullAdjacentInterp=0;
         bool naturalSpline=0;
         bool quadInterp=false;
