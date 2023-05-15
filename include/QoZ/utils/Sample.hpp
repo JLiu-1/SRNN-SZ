@@ -140,7 +140,7 @@ template<class T, uint N>
     calculate_interp_coeffs(T *data, std::vector<size_t> &dims,std::vector<double> &coeffs, size_t stride=2){
 
         //size_t count=0;
-        std::vector<T>xs,ys; 
+        std::vector<double>xs,ys; 
         size_t stride2x=2*stride;
         if(N==3){
             size_t dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
@@ -179,8 +179,8 @@ template<class T, uint N>
                     T *d= data+idx;
                     T cur_value=*d;
 
-                    std::vector<T>temp_xs={*(d - 3*dimy),*(d - dimy),*(d + dimy),*(d + 3*dimy),*(d - 3), *(d - 1), *(d + 1), *(d + 3)};
-                    std::vector<T>temp_ys={cur_value,cur_value,cur_value};
+                    std::vector<double>temp_xs={*(d - 3*dimy),*(d - dimy),*(d + dimy),*(d + 3*dimy),*(d - 3), *(d - 1), *(d + 1), *(d + 3)};
+                    std::vector<double>temp_ys={cur_value,cur_value,cur_value};
                     xs.insert(xs.end(),temp_xs.begin(),temp_xs.end());
                     ys.insert(xs.end(),temp_ys.begin(),temp_ys.end());
                 }
