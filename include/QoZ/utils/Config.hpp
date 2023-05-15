@@ -192,6 +192,7 @@ namespace QoZ {
             verbose=cfg.GetBoolean("AlgoSettings", "verbose", verbose);
             var_first = cfg.GetBoolean("AlgoSettings", "var_first", var_first);
             blockwiseTuning = cfg.GetBoolean("AlgoSettings", "blockwiseTuning", blockwiseTuning);
+            quadInterp = cfg.GetBoolean("AlgoSettings", "quadInterp", quadInterp);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -564,6 +565,7 @@ namespace QoZ {
         //int regressiveInterp=0;
         int fullAdjacentInterp=0;
         bool naturalSpline=0;
+        bool quadInterp=false;
         //bool profilingFix=true;//only for test
 
        // double anchorThreshold=0.0;
