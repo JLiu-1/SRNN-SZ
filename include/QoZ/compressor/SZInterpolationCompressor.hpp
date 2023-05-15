@@ -4898,9 +4898,9 @@ namespace QoZ {
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
                                                                     stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
-                        }
+                    }
 
-                }
+                
             }
             else if (paradigm==2){
                 const std::array<int, N> dims = dimension_sequences[direction];
