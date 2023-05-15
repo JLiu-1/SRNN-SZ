@@ -4675,7 +4675,7 @@ namespace QoZ {
                         end_idx[dims[0]]=end[dims[0]];
                         for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                             //size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
-                            end_idx[dims[1]]=begin_idx[dims[1]]=begin[dim[1]]+j;
+                            end_idx[dims[1]]=begin_idx[dims[1]]=begin[dims[1]]+j;
                             predict_error += block_interpolation_1d_crossblock(data, begin_idx,
                                                                     end_idx,dims[0],
                                                                     stride , interp_func, pb,meta,1,tuning);
@@ -4684,7 +4684,7 @@ namespace QoZ {
                         end_idx[dims[1]]=end[dims[1]];
                         for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                             //size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]];
-                            end_idx[dims[0]]=begin_idx[dims[0]]=begin[dim[0]]+i;
+                            end_idx[dims[0]]=begin_idx[dims[0]]=begin[dims[0]]+i;
                             predict_error += block_interpolation_1d_crossblock(data, begin_idx,
                                                                     end_idx,dims[1],
                                                                     stride , interp_func, pb,meta,1,tuning);
@@ -4695,22 +4695,22 @@ namespace QoZ {
 
                 else{
 
-                    else{
-                        for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
-                            size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
-                            predict_error += block_interpolation_1d_regressive(data, begin_offset,
-                                                                    begin_offset +
-                                                                    (end[dims[0]] - begin[dims[0]]) * dimension_offsets[dims[0]],
-                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,meta,coeffs,tuning);
-                        }
-                        for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
-                            size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]];
-                            predict_error += block_interpolation_1d_regressive(data, begin_offset,
-                                                                    begin_offset +
-                                                                    (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,meta,coeffs,tuning);
-                        }
+                   
+                    for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
+                        size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
+                        predict_error += block_interpolation_1d_regressive(data, begin_offset,
+                                                                begin_offset +
+                                                                (end[dims[0]] - begin[dims[0]]) * dimension_offsets[dims[0]],
+                                                                stride * dimension_offsets[dims[0]], interp_func, pb,meta,coeffs,tuning);
                     }
+                    for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
+                        size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]];
+                        predict_error += block_interpolation_1d_regressive(data, begin_offset,
+                                                                begin_offset +
+                                                                (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb,meta,coeffs,tuning);
+                    }
+                    
 
                 }
             }
