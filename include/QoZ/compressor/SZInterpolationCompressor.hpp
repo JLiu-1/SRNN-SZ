@@ -84,6 +84,7 @@ namespace QoZ {
             
             int cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
+            std::cout<<cross_block<<std::endl;
             read(trimToZero,buffer_pos, remaining_length);
             //int blockOrder=0;
             //read(blockOrder,buffer_pos, remaining_length); 
@@ -4830,6 +4831,7 @@ namespace QoZ {
                             }
                         }
                         else{
+                            std::cout<<"cross_block"<<std::endl;
                             std::array<size_t, N> begin_idx=begin,end_idx=begin;
                             end_idx[dims[0]]=end[dims[0]];
                             for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
