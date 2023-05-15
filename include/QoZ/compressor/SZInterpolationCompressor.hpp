@@ -240,7 +240,7 @@ namespace QoZ {
                         }
                     }
                     //std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.adjInterp<<std::endl; 
-                    if(blockwiseTuning and regressiveInterp){
+                    if(blockwiseTuning and regressiveInterp and cur_meta.interpAlgo==1){
                         std::vector<double> coeffs;
                         for(size_t i=0;i<4;i++)
                             coeffs.push_back(interp_coeffs[coeff_idx++]);
@@ -686,8 +686,9 @@ namespace QoZ {
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
                             int status;
                             
-
+                            std::cout<<"a1"<<std::endl;
                             status=calculate_interp_coeffs<T,N>(cur_block.data(), block_dims,coeffs, 2);
+                            std::cout<<"a2"<<std::endl;
                             if (status!=0){
                                 if(cur_level_meta.cubicSplineType==0)
                                     coeffs=std::vector<double>{-1.0/16.0,9.0/16.0,9.0/16.0,1.0/16.0};
