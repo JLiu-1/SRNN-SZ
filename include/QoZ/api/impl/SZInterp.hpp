@@ -2093,7 +2093,7 @@ double Tuning(QoZ::Config &conf, T *data){
         useInterp= (best_interp_cr>=best_lorenzo_ratio) or best_lorenzo_ratio>=80 or best_interp_cr>=80;//orig 0.95*lorenzo_ratio
         if(conf.verbose and conf.waveletAutoTuning==0){
             if (conf.levelwisePredictionSelection<=0){
-                std::cout << "interp best interpAlgo = " << (bestInterpMetas[0].interpAlgo == 0 ? "LINEAR" : "CUBIC") << std::endl;
+                std::cout << "interp best interpAlgo = " << (bestInterpMetas[0].interpAlgo == 0 ? "LINEAR" : (bestInterpMetas[0].interpAlgo == 1?"CUBIC":"QUAD")) << std::endl;
                 std::cout << "interp best interpParadigm = " << (bestInterpMetas[0].interpParadigm == 0 ? "1D" : (bestInterpMetas[0].interpParadigm == 1 ? "MD" : "HD") ) << std::endl;
                 if(bestInterpMetas[0].interpParadigm!=1)
                     std::cout << "interp best direction = " << (unsigned) bestInterpMetas[0].interpDirection << std::endl;
@@ -2106,7 +2106,7 @@ double Tuning(QoZ::Config &conf, T *data){
             else{
                 for(int level=conf.levelwisePredictionSelection;level>0;level--){
                     std::cout << "Level: " << (unsigned) level<<std::endl;
-                    std::cout << "\tinterp best interpAlgo = " << (interpMeta_lists[0][level-1].interpAlgo == 0 ? "LINEAR" : "CUBIC") << std::endl;
+                    std::cout << "\tinterp best interpAlgo = " << (interpMeta_lists[0][level-1].interpAlgo == 0 ? "LINEAR" : (interpMeta_lists[0][level-1].interpAlgo == 1 ? "CUBIC" : "QUAD")) << std::endl;
                     std::cout << "\tinterp best interpParadigm = " << (interpMeta_lists[0][level-1].interpParadigm == 0 ? "1D" : (interpMeta_lists[0][level-1].interpParadigm == 1 ? "MD" : "HD") ) << std::endl;
                     if(interpMeta_lists[0][level-1].interpParadigm!=1)
                         std::cout << "\tinterp best direction = " << (unsigned) interpMeta_lists[0][level-1].interpDirection << std::endl;
