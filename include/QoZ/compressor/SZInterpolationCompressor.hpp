@@ -681,7 +681,7 @@ namespace QoZ {
                         */
 
                         std::vector<T> cur_block;
-                        std::vector<size_t>block_dims;
+                        std::vector<size_t>block_dims(N,0);
                         for (size_t i=0;i<N;i++)
                             block_dims[i]=sb_ends[i]+1;
                         std::vector<double> coeffs;
