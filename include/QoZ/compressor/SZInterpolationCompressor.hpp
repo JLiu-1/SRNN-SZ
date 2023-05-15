@@ -1670,7 +1670,23 @@ namespace QoZ {
                         predict_error+=quantize_integrated(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)),mode);
                     }
                 }
-            } else {
+
+            } 
+            else if (interp_func == "quad"){
+                T *d= data + begin +  stride;
+                predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride), *(d + stride)),mode);
+                for (size_t i = 3; i + 1 < n; i += 2) {
+                    T *d = data + begin + i * stride;
+                    predict_error+=quantize_integrated(d - data, *d, interp_quad_2_adj(*(d - stride2x),*(d - stride), *(d + stride)),mode);
+                }
+                if (n % 2 == 0) {
+                    T *d = data + begin + (n - 1) * stride;
+                    predict_error+=quantize_integrated(d - data, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
+                }
+
+
+            }
+            else {
                 auto interp_cubic=meta.cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 T *d;
                 size_t i;
@@ -5267,7 +5283,7 @@ namespace QoZ {
         double eb_ratio = 0.5;
         double alpha;
         double beta;
-        std::vector<std::string> interpolators = {"linear", "cubic"};
+        std::vector<std::string> interpolators = {"linear", "cubic","quad"};
         std::vector<int> quant_inds;
         std::vector<bool> mark;
         size_t quant_index = 0; // for decompress

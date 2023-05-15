@@ -1645,6 +1645,9 @@ double Tuning(QoZ::Config &conf, T *data){
                // }
             }
             std::vector<uint8_t> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
+            if(conf.quadInterp){
+                interpAlgo_Candidates.push_back(QoZ::INTERP_ALGO_QUAD);
+            }
 
             //std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_CUBIC};//temp. 
             std::vector<uint8_t> interpParadigm_Candidates={0};

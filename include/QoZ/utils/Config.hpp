@@ -33,8 +33,8 @@ namespace QoZ {
     enum INTERP_ALGO {
         INTERP_ALGO_LINEAR, INTERP_ALGO_CUBIC
     };
-    constexpr const char *INTERP_ALGO_STR[] = {"INTERP_ALGO_LINEAR", "INTERP_ALGO_CUBIC"};
-    constexpr const INTERP_ALGO INTERP_ALGO_OPTIONS[] = { INTERP_ALGO_LINEAR, INTERP_ALGO_CUBIC };
+    constexpr const char *INTERP_ALGO_STR[] = {"INTERP_ALGO_LINEAR", "INTERP_ALGO_CUBIC","INTERP_ALGO_QUAD"};
+    constexpr const INTERP_ALGO INTERP_ALGO_OPTIONS[] = { INTERP_ALGO_LINEAR, INTERP_ALGO_CUBIC, INTERP_ALGO_QUAD };
 
     enum TUNING_TARGET {
         TUNING_TARGET_RD, TUNING_TARGET_CR, TUNING_TARGET_SSIM, TUNING_TARGET_AC
@@ -202,6 +202,9 @@ namespace QoZ {
                 interpMeta.interpAlgo = INTERP_ALGO_LINEAR;
             } else if (interpAlgoStr == INTERP_ALGO_STR[INTERP_ALGO_CUBIC]) {
                 interpMeta.interpAlgo = INTERP_ALGO_CUBIC;
+            }
+            else if (interpAlgoStr == INTERP_ALGO_STR[INTERP_ALGO_QUAD]) {
+                interpMeta.interpAlgo = INTERP_ALGO_QUAD;
             }
             interpMeta.interpParadigm = cfg.GetInteger("AlgoSettings", "interpParadigm", interpMeta.interpParadigm);
             interpMeta.cubicSplineType = cfg.GetInteger("AlgoSettings", "cubicSplineType", interpMeta.cubicSplineType);
