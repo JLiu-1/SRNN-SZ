@@ -691,7 +691,7 @@ namespace QoZ {
                             
                             
                             status=calculate_interp_coeffs<T,N>(cur_block.data(), block_dims,coeffs, 2);
-                            //std::cout<<"a2"<<std::endl;
+                            std::cout<<"a2"<<std::endl;
                             if (status!=0){
                                 if(cur_level_meta.cubicSplineType==0)
                                     coeffs=std::vector<double>{-1.0/16.0,9.0/16.0,9.0/16.0,1.0/16.0};
@@ -701,7 +701,7 @@ namespace QoZ {
                             interp_coeffs.insert(interp_coeffs.end(),coeffs.begin(),coeffs.end());
 
                         }
-                        //std::cout<<"a3"<<std::endl;
+                        std::cout<<"a3"<<std::endl;
                         for (auto &interp_op: interpAlgo_Candidates) {
                             cur_meta.interpAlgo=interp_op;
                             for (auto &interp_pd: interpParadigm_Candidates) {
@@ -720,7 +720,7 @@ namespace QoZ {
                                         for(auto adj_interp:adjInterp_Candidates){
                                             if (interp_op!=QoZ::INTERP_ALGO_CUBIC and adj_interp!=0)
                                                 break;
-                                           // std::cout<<"a4"<<std::endl;
+                                            std::cout<<"a4"<<std::endl;
                                             cur_meta.adjInterp=adj_interp;
                                             cur_block=orig_sampled_block;
                                             double cur_loss=std::numeric_limits<double>::max();
@@ -731,7 +731,7 @@ namespace QoZ {
                                             else
                                                 cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
                                                                           interpolators[cur_meta.interpAlgo],cur_meta, 1,2,0,0);//,cross_block,regressiveInterp);
-                                           // std::cout<<"a5"<<std::endl;
+                                            std::cout<<"a5"<<std::endl;
 
                                             //double cur_loss=0.0;
                                             if(cur_loss<best_loss){
