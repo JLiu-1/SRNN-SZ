@@ -139,7 +139,6 @@ template<class T, uint N>
     inline int
     calculate_interp_coeffs(T *data, std::vector<size_t> &dims,std::vector<double> &coeffs, size_t stride=2){
 
-        vars.resize(N,0.0);
         //size_t count=0;
         std::vector<T>xs,ys; 
         size_t stride2x=2*stride;
@@ -184,6 +183,7 @@ template<class T, uint N>
                     std::vector<T>temp_ys={cur_value,cur_value,cur_value};
                     xs.insert(xs.end(),temp_xs.begin(),temp_xs.end());
                     ys.insert(xs.end(),temp_ys.begin(),temp_ys.end());
+                }
             }
 
         }
@@ -195,11 +195,12 @@ template<class T, uint N>
                 coeffs[i]=reg_res[i];
         }
         return status;
+    }
     
 
 
 
-    }
+
 
 
 
