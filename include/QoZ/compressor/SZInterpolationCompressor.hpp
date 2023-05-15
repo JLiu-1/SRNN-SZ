@@ -582,10 +582,10 @@ namespace QoZ {
                             double temp1=0.5-0.5/cur_rate,temp2=0.5+0.5/cur_rate;
                             sample_starts[i]=((size_t)((temp1*cur_length)/(2*stride)))*2*stride+start_idx[i];
                             sample_ends[i]=((size_t)((temp2*cur_length)/(2*stride)))*2*stride+start_idx[i];
-                            std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
+                           // std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
 
                         }
-                         std::cout<<"----"<<std::endl;
+                         //std::cout<<"----"<<std::endl;
                         std::vector<T> orig_sampled_block;
     
                         std::array<size_t,N>sb_starts;
@@ -633,7 +633,7 @@ namespace QoZ {
                         }
                         for(size_t i=0;i<N;i++)
                             sb_ends[i]--;
-                        std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
+                        //std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
                         //std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
                         std::array<size_t,N> global_dimension_offsets=dimension_offsets;
                         dimension_offsets=temp_dim_offsets;
@@ -688,10 +688,10 @@ namespace QoZ {
                         //std::cout<<"a2"<<std::endl;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
                             int status;
-                            std::cout<<orig_sampled_block.size()<<std::endl;
+                            //std::cout<<orig_sampled_block.size()<<std::endl;
                             
                             status=calculate_interp_coeffs<T,N>(orig_sampled_block.data(), block_dims,coeffs, 2);
-                            std::cout<<"a2"<<std::endl;
+                            //std::cout<<"a2"<<std::endl;
                             if (status!=0){
                                 if(cur_level_meta.cubicSplineType==0)
                                     coeffs=std::vector<double>{-1.0/16.0,9.0/16.0,9.0/16.0,1.0/16.0};
@@ -772,7 +772,7 @@ namespace QoZ {
                                 }
                             }
                         }
-                        std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
+                        //std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
                         interp_metas.push_back(best_meta);
                         dimension_offsets=global_dimension_offsets;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp)
