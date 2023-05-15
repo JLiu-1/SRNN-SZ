@@ -4709,7 +4709,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 1, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=const std::vector<double>{}) {//regressive to reduce into meta.
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=std::vector<double>{}) {//regressive to reduce into meta.
             return block_interpolation_1d(data, begin[0], end[0], stride, interp_func, pb,meta,tuning);
         }
 
@@ -4717,7 +4717,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 2, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=const std::vector<double>{}) {
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=std::vector<double>{}) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             //bool full_adjacent_interp=false;
@@ -4826,7 +4826,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 3, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=const std::vector<double>{}) {//cross block: 0 or conf.num
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=std::vector<double>{}) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
@@ -5221,7 +5221,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 4, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=const std::vector<double>{}) {
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,size_t cross_block=0,int regressive=0,const std::vector<double> &coeffs=std::vector<double>{}) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             uint8_t paradigm=meta.interpParadigm;
