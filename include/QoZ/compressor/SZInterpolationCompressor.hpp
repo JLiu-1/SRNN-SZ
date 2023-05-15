@@ -84,7 +84,7 @@ namespace QoZ {
             
             int cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
-            std::cout<<cross_block<<std::endl;
+            //std::cout<<cross_block<<std::endl;
             read(trimToZero,buffer_pos, remaining_length);
             //int blockOrder=0;
             //read(blockOrder,buffer_pos, remaining_length); 
@@ -1386,6 +1386,7 @@ namespace QoZ {
         double block_interpolation_1d_crossblock(T *data, std::array<size_t,N> begin_idx, std::array<size_t,N> end_idx,size_t direction, size_t math_stride, const std::string &interp_func, const PredictorBehavior pb,const QoZ::Interp_Meta &meta,int cross_block=1,int tuning=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
             size_t math_begin_idx=begin_idx[direction],math_end_idx=end_idx[direction];
             size_t n = (math_end_idx - math_begin_idx) / math_stride + 1;
+            std::cout<<n<<std::endl;
             if (n <= 1) {
                 return 0;
             }
@@ -1463,6 +1464,7 @@ namespace QoZ {
                     }
 
                     for(auto i:boundary){
+                        std::cout<<i<<std::endl;
 
 
                         d = data + begin + i*stride;
@@ -1474,9 +1476,11 @@ namespace QoZ {
                             else if(math_cur_idx+math_stride<global_end_idx)
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
-                            else 
+                            else {
+                                std::cout<<"n-1 "<<i<<std::endl;
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_linear1(*(d - stride3x), *(d - stride)),mode);
+                            }
                         }
                         else{
                             if(math_cur_idx+math_stride3x<global_end_idx)
@@ -4831,7 +4835,7 @@ namespace QoZ {
                             }
                         }
                         else{
-                            std::cout<<"cross_block"<<std::endl;
+                            //std::cout<<"cross_block"<<std::endl;
                             std::array<size_t, N> begin_idx=begin,end_idx=begin;
                             end_idx[dims[0]]=end[dims[0]];
                             for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
