@@ -1672,6 +1672,7 @@ namespace QoZ {
                 }
 
             } 
+            /*
             else if (interp_func == "quad"){
                 T *d= data + begin +  stride;
                 predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride), *(d + stride)),mode);
@@ -1685,7 +1686,7 @@ namespace QoZ {
                 }
 
 
-            }
+            }*/
             else {
                 auto interp_cubic=meta.cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 T *d;
