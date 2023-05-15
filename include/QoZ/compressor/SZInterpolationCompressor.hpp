@@ -4812,6 +4812,7 @@ namespace QoZ {
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
                                                                     stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[1]],interp_func, pb,std::array<double,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]}
+                        }
                         
 
 
@@ -4899,6 +4900,7 @@ namespace QoZ {
                                                                     dimension_offsets[dims[2]],
                                                                     stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<double,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
                     }
+                }
 
                 
             }
