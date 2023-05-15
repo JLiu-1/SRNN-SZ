@@ -156,8 +156,8 @@ template<class T, uint N>
                         T *d= data+idx;
                         T cur_value=*d;
                         //std::cout<<cur_value<<std::endl;
-                        std::vector<T>temp_xs={*(d - 3*dimyz),*(d - dimyz),*(d + dimyz), *(d + 3*dimyz),*(d - 3*dimz),*(d - dimz),*(d + dimz),*(d + 3*dimz),*(d - 3), *(d - 1), *(d + 1), *(d + 3)};
-                        std::vector<T>temp_ys={cur_value,cur_value,cur_value};
+                        std::vector<double>temp_xs={*(d - 3*dimyz),*(d - dimyz),*(d + dimyz), *(d + 3*dimyz),*(d - 3*dimz),*(d - dimz),*(d + dimz),*(d + 3*dimz),*(d - 3), *(d - 1), *(d + 1), *(d + 3)};
+                        std::vector<double>temp_ys={cur_value,cur_value,cur_value};
                         xs.insert(xs.end(),temp_xs.begin(),temp_xs.end());
                         ys.insert(xs.end(),temp_ys.begin(),temp_ys.end());
                        
