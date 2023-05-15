@@ -137,7 +137,7 @@ namespace QoZ {
 
 template<class T, uint N>
     inline int
-    calculate_interp_coeffs(T *data, std::vector<size_t> &dims,std::<double> &coeffs, size_t stride=2){
+    calculate_interp_coeffs(T *data, std::vector<size_t> &dims,std::vector<double> &coeffs, size_t stride=2){
 
         vars.resize(N,0.0);
         //size_t count=0;
