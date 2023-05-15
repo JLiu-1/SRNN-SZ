@@ -104,7 +104,7 @@ namespace QoZ {
                     size_t coeff_num;
                     read(coeff_num,buffer_pos, remaining_length);
                     //std::cout<<meta_num<<std::endl;
-                    interp_coeffs.resize(coef_num);
+                    interp_coeffs.resize(coeff_num);
                     read(interp_coeffs.data(),coeff_num,buffer_pos, remaining_length);
                 }
             }
