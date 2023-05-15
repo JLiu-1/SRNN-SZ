@@ -1561,7 +1561,7 @@ namespace QoZ {
 
                     for(auto i:boundary){
                         d = data + begin + i*stride;
-                        size_t math_cur_idx=math_begin_idx+i;
+                        size_t math_cur_idx=math_begin_idx+i*math_stride;
                         if(math_cur_idx>=math_stride3x){
                             if(math_cur_idx+math_stride3x<global_end_idx and (cross_front or i+3<n))
                                 predict_error+=quantize_integrated(d - data, *d,
