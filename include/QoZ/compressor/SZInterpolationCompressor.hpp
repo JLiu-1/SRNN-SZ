@@ -4906,7 +4906,7 @@ namespace QoZ {
             }
             else if (paradigm==2){
                 const std::array<int, N> dims = dimension_sequences[direction];
-                std::array<double,3>dim_coeffs=meta.dimCoeffs;
+                //std::array<double,3>dim_coeffs=meta.dimCoeffs;
                 //don't do md interp on dims[0]
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
