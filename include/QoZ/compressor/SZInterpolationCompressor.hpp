@@ -682,10 +682,10 @@ namespace QoZ {
                         std::vector<size_t>block_dims;
                         for (size_t i=0;i<N;i++)
                             block_dims[i]=sb_ends[i]+1;
-
+                        std::vector<double> coeffs;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
                             int status;
-                            std::vector<double> coeffs;
+                            
 
                             status=calculate_interp_coeffs(cur_block.data(), block_dims,coeffs, 2);
                             if (status!=0){
