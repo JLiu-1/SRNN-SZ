@@ -2786,6 +2786,7 @@ namespace QoZ {
                                 predict_error+=quantize_integrated(d - data, *d, interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
                             
                         }
+                    }
 
 
                     for(auto i:boundary){
