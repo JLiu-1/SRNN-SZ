@@ -3422,7 +3422,7 @@ namespace QoZ {
             double coeff_y_yz=(coeff_y)/(coeff_y+coeff_z),coeff_z_yz=1-coeff_y_yz;
 
 
-            if (interp_func == "linear" || n<5 || m<5 || p<5 ){//nmpcond temp added
+            if (interp_func == "linear" || (n<5 & m<5 & p<5) ){//nmpcond temp added
                 
                 for (size_t i = 1; i + 1 < n; i += 2) {
                     for(size_t j=1;j+1<m;j+=2){
@@ -3476,6 +3476,90 @@ namespace QoZ {
                 }
             }
             else{//cubic
+
+                if(n<5){
+                    if(m<5){//p>=5
+                        size_t begin=begin1+begin2+begin3+stride1+stride2,end=begin+(p-1)*stride3;
+                        for(size_t i=1;i<n;i+=2){
+                            for(size_t j=1;j<m;j+=2){
+                            
+                                predict_error+=block_interpolation_1d(data,  begin, end,  stride3,interp_func,pb,meta,tuning);
+                                begin+=2*stride2;
+                                end+=2*stride2;
+                            }
+                        begin+=2*stride1;
+                        end+=2*stride1;
+                        }
+                        return predict_error;
+                    }
+                    else if(p<5){//m>=5
+                        size_t begin=begin1+begin2+begin3+stride1+stride3,end=begin+(m-1)*stride2;
+                        for(size_t i=1;i<n;i+=2){
+                            for(size_t k=1;j<p;j+=2){
+                            
+                                predict_error+=block_interpolation_1d(data,  begin, end,  stride2,interp_func,pb,meta,tuning);
+                                begin+=2*stride3;
+                                end+=2*stride3;
+                            }
+                        begin+=2*stride1;
+                        end+=2*stride1;
+                        }
+                        return predict_error;
+
+                    }
+                    else{//mp>=5
+                        begin2+=begin1+stride1,end2+=begin1+stride1;
+                        for(size_t i=1;i<n;i+=2){
+                            predict_error+=block_interpolation_2d(data,  begin2, end2,begin3,end3,  stride2,stride3,interp_func,pb,std::array<double,2>{coeff_y_yz,coeff_z_yz},meta,tuning);
+                            begin2+=2*stride1;
+                            end2+=2*stride1;
+                        }
+                        return predict_error;
+                    }
+                    
+                }
+                else if(m<5){//n>=5
+
+                    if(p<5){
+                        size_t begin=begin1+begin2+begin3+stride2+stride3,end=begin+(n-1)*stride1;
+                        for(size_t j=1;j<m;j+=2){
+                            for(size_t k=1;k<p;k+=2){
+                            
+                                predict_error+=block_interpolation_1d(data,  begin, end,  stride1,interp_func,pb,meta,tuning);
+                                begin+=2*stride3;
+                                end+=2*stride3;
+                            }
+                        begin+=2*stride2;
+                        end+=2*stride2;
+                        }
+                        return predict_error;
+
+                    }
+                    else{//np>=5
+                        begin1+=begin2+stride2,end1+=begin2+stride2;
+                        for(size_t j=1;j<m;j+=2){
+                            predict_error+=block_interpolation_2d(data,  begin1, end1,begin3,end3,  stride1,stride3,interp_func,pb,std::array<double,2>{coeff_x_xz,coeff_z_xz},meta,tuning);
+                            begin1+=2*stride2;
+                            end1+=2*stride2;
+                        }
+                        return predict_error;
+
+                    }
+                    
+
+                }
+                else if(p<5){//mn>=5
+                    begin2+=begin3+stride3,end2+=begin3+stride3;
+                    for(size_t k=1;k<p;k+=2){
+                        predict_error+=block_interpolation_2d(data,  begin1, end1,begin2,end2,  stride1,stride2,interp_func,pb,std::array<double,2>{coeff_x_xy,coeff_x_xy},meta,tuning);
+                        begin2+=2*stride3;
+                        end2+=2*stride3;
+                    }
+                    return predict_error;
+
+                }
+
+
                 auto interp_cubic=meta.cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t stride3x1=3*stride1,stride3x2=3*stride2,stride5x1=5*stride1,stride5x2=5*stride2,stride3x3=3*stride3,stride5x3=5*stride3,stride2x1=2*stride1,stride2x2=2*stride2,stride2x3=2*stride3;
                 //adaptive todo
