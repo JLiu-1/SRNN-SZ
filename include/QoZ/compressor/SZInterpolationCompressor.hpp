@@ -1547,9 +1547,6 @@ namespace QoZ {
                     std::vector<size_t> boundary;
                     if(n<=4){
                         boundary.push_back(1);
-                        if(n==4)
-                            boundary.push_back(3);
-
                     }
                     else{
                         if(i_start==5)
