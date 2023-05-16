@@ -1461,7 +1461,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
     
     
-    size_t minimum_sbs=conf.waveletAutoTuning>1?64:2;
+    size_t minimum_sbs=conf.waveletAutoTuning>1?64:16;
     if (conf.sampleBlockSize<minimum_sbs)
         conf.sampleBlockSize=minimum_sbs;
 
