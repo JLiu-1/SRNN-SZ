@@ -3479,30 +3479,25 @@ namespace QoZ {
 
                 if(n<5){
                     if(m<5){//p>=5
-                        size_t begin=begin1+begin2+begin3+stride1+stride2,end=begin+(p-1)*stride3;
+                        size_t begin=begin1+begin2+begin3,end=begin+(p-1)*stride3;
                         for(size_t i=1;i<n;i+=2){
                             for(size_t j=1;j<m;j+=2){
-                            
-                                predict_error+=block_interpolation_1d(data,  begin, end,  stride3,interp_func,pb,meta,tuning);
-                                begin+=2*stride2;
-                                end+=2*stride2;
+                                predict_error+=block_interpolation_1d(data,  begin+i*stride1+j*stride2, end+i*stride1+j*stride2,  stride3,interp_func,pb,meta,tuning);
+                                
                             }
-                        begin+=2*stride1;
-                        end+=2*stride1;
+                        
                         }
                         return predict_error;
                     }
                     else if(p<5){//m>=5
-                        size_t begin=begin1+begin2+begin3+stride1+stride3,end=begin+(m-1)*stride2;
+                        size_t begin=begin1+begin2+begin3,end=begin+(m-1)*stride2;
                         for(size_t i=1;i<n;i+=2){
                             for(size_t k=1;k<p;k+=2){
                             
-                                predict_error+=block_interpolation_1d(data,  begin, end,  stride2,interp_func,pb,meta,tuning);
-                                begin+=2*stride3;
-                                end+=2*stride3;
+                                predict_error+=block_interpolation_1d(data,  begin+i*stride1+k*stride3, end+i*stride1+k*stride3,  stride2,interp_func,pb,meta,tuning);
+                                
                             }
-                        begin+=2*stride1;
-                        end+=2*stride1;
+                       
                         }
                         return predict_error;
 
@@ -3521,16 +3516,14 @@ namespace QoZ {
                 else if(m<5){//n>=5
 
                     if(p<5){
-                        size_t begin=begin1+begin2+begin3+stride2+stride3,end=begin+(n-1)*stride1;
+                        size_t begin=begin1+begin2+begin3,end=begin+(n-1)*stride1;
                         for(size_t j=1;j<m;j+=2){
                             for(size_t k=1;k<p;k+=2){
                             
-                                predict_error+=block_interpolation_1d(data,  begin, end,  stride1,interp_func,pb,meta,tuning);
-                                begin+=2*stride3;
-                                end+=2*stride3;
+                                predict_error+=block_interpolation_1d(data,  begin+j*stride2+k*stride3, end+j*stride2+k*stride3,  stride1,interp_func,pb,meta,tuning);
+                                
                             }
-                        begin+=2*stride2;
-                        end+=2*stride2;
+                        
                         }
                         return predict_error;
 
