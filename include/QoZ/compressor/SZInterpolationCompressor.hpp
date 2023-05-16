@@ -2010,18 +2010,18 @@ namespace QoZ {
                     for(size_t i=1;i<n;i+=2){
                         begin+=2*stride1;
                         end+=2*stride1;
-                        predictor_error+=block_interpolation_1d(data,  begin, end,  stride2,interp_func,pb,meta,tuning);
+                        predict_error+=block_interpolation_1d(data,  begin, end,  stride2,interp_func,pb,meta,tuning);
                     }
-                    return predictor_error;
+                    return predict_error;
                 }
                 else if(m<5){//n>=5
                     size_t begin=begin1+begin2,end=begin+(n-1)*stride1;
                     for(size_t j=1;i<m;j+=2){
                         begin+=2*stride2;
                         end+=2*stride2;
-                        predictor_error+=block_interpolation_1d(data,  begin, end,  stride1,interp_func,pb,meta,tuning);
+                        predict_error+=block_interpolation_1d(data,  begin, end,  stride1,interp_func,pb,meta,tuning);
                     }
-                    return predictor_error;
+                    return predict_error;
 
                 }
 
