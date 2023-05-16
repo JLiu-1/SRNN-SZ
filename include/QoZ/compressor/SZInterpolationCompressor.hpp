@@ -1406,6 +1406,7 @@ namespace QoZ {
 
             //uint8_t cubicSplineType=meta.cubicSplineType;
             size_t stride=math_stride*dimension_offsets[direction];
+            size_t stride2x = 2 * stride;
             
 
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
@@ -1444,7 +1445,7 @@ namespace QoZ {
             }*/
             else {
                 auto interp_cubic=meta.cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
-                size_t stride2x = 2 * stride;
+                
                 size_t stride3x = 3 * stride;
                 //size_t stride5x = 5 * stride;
                 size_t math_stride2x=2*math_stride;
@@ -2562,7 +2563,7 @@ namespace QoZ {
                     }
 
                     
-                    for(auto i:boundary){
+                    for(auto i:boundaryi){
 
                         size_t math_cur_idx1=math_begin_idx1+i*math_stride;
                         if(math_cur_idx1>=math_stride3x ){
@@ -2789,7 +2790,7 @@ namespace QoZ {
                     }
 
 
-                    for(auto i:boundary){
+                    for(auto i:boundaryi){
                         j_start= (i%4==1)?5:3;
                         size_t math_cur_idx1=math_begin_idx1+i*math_stride;
                         if(math_cur_idx1>=math_stride3x ){
@@ -3119,7 +3120,7 @@ namespace QoZ {
                     }
 
 
-                    for(auto i:boundary){
+                    for(auto i:boundaryi){
                         j_start= (i%4==1)?3:5;
                         size_t math_cur_idx1=math_begin_idx1+i*math_stride;
                         if(math_cur_idx1>=math_stride3x ){
