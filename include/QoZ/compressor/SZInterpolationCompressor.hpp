@@ -1598,7 +1598,7 @@ namespace QoZ {
                          //           interp_cubic_3(*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x)),mode);
                     }
 
-                    temp=n%4;
+                    size_t temp=n%4;
                     if(temp!=3 and n-1-temp>0){
                         i=n-1-temp;
                         d = data + begin + i*stride;
