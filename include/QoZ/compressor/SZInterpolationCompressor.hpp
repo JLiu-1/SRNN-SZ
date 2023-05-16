@@ -464,7 +464,7 @@ namespace QoZ {
             int levelwise_predictor_levels=conf.interpMeta_list.size();
 
             for (uint level = start_level; level > end_level && level <= start_level; level--) {
-                std::cout<<"Level: "<<level<<std::endl;
+                //std::cout<<"Level: "<<level<<std::endl;
                 cur_level=level;
                 if (alpha<0) {
                     if (level >= 3) {
@@ -543,7 +543,7 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                    std::cout<<"a block"<<std::endl;
+                    //std::cout<<"a block"<<std::endl;
                     if(!conf.blockwiseTuning){
                         /*
                         if(peTracking)
@@ -786,7 +786,7 @@ namespace QoZ {
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,0,0);//,cross_block,regressiveInterp);
                     }
-                    std::cout<<"a block fin"<<std::endl;
+                    //std::cout<<"a block fin"<<std::endl;
 
                     
                         
