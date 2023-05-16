@@ -2006,20 +2006,22 @@ namespace QoZ {
             else{//cubic
 
                 if(n<5){//m>=5
-                    size_t begin=begin1+begin2,end=begin+(m-1)*stride2;
+                    size_t begin=begin1+begin2+stride1,end=begin+(m-1)*stride2+stride1;
                     for(size_t i=1;i<n;i+=2){
+                        
+                        predict_error+=block_interpolation_1d(data,  begin, end,  stride2,interp_func,pb,meta,tuning);
                         begin+=2*stride1;
                         end+=2*stride1;
-                        predict_error+=block_interpolation_1d(data,  begin, end,  stride2,interp_func,pb,meta,tuning);
                     }
                     return predict_error;
                 }
                 else if(m<5){//n>=5
-                    size_t begin=begin1+begin2,end=begin+(n-1)*stride1;
+                    size_t begin=begin1+begin2+stride2,end=begin+(n-1)*stride1+stride2;
                     for(size_t j=1;j<m;j+=2){
+                        
+                        predict_error+=block_interpolation_1d(data,  begin, end,  stride1,interp_func,pb,meta,tuning);
                         begin+=2*stride2;
                         end+=2*stride2;
-                        predict_error+=block_interpolation_1d(data,  begin, end,  stride1,interp_func,pb,meta,tuning);
                     }
                     return predict_error;
 
