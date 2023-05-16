@@ -3495,7 +3495,7 @@ namespace QoZ {
                     else if(p<5){//m>=5
                         size_t begin=begin1+begin2+begin3+stride1+stride3,end=begin+(m-1)*stride2;
                         for(size_t i=1;i<n;i+=2){
-                            for(size_t k=1;j<p;j+=2){
+                            for(size_t k=1;k<p;k+=2){
                             
                                 predict_error+=block_interpolation_1d(data,  begin, end,  stride2,interp_func,pb,meta,tuning);
                                 begin+=2*stride3;
