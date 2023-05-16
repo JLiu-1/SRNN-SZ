@@ -3272,10 +3272,9 @@ namespace QoZ {
                                         size_t math_cur_idx2=math_begin_idx2+j*math_stride;
                                         if(math_cur_idx2>=math_stride3x ){
                                             if( j+3<m)
-                                                if(j+3<m)
-                                                    predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
-                                                else
-                                                    predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj2(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride3x2)),mode);
+                                                
+                                                predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)),mode);
+                                                
                                             else if( j+1<m)
                                                 predict_error+=quantize_integrated(d - data, *d,interp_quad_2_adj(*(d - stride2x2), *(d - stride2), *(d + stride2)),mode);
                                             else 
