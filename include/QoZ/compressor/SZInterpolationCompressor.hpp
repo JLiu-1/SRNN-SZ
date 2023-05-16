@@ -2735,7 +2735,7 @@ namespace QoZ {
 
 
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
-                    auto interp_cubic_adj2=meta.cubicSplineType==0?interp_cubic_adj_4<T>:interp_cubic_adj_3<T>;
+                    //auto interp_cubic_adj2=meta.cubicSplineType==0?interp_cubic_adj_4<T>:interp_cubic_adj_3<T>;
                     size_t j_start;
                     //first half (non-adj)
                     //std::cout<<"f1"<<std::endl;
@@ -2751,7 +2751,7 @@ namespace QoZ {
                             for(auto j :boundaryj){
                                 d = data + begin + i*stride1+j*stride2;
                                 size_t math_cur_idx2=math_begin_idx2+j*math_stride;
-                                if( j+3<m )                    
+                                if( math_cur_idx2>=math_stride3x and j+3<m )                    
                                     predict_error+=quantize_integrated(d - data, *d, coeff_x*interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
                                                                                     +coeff_y*interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)),mode);     
                                 else
@@ -2783,7 +2783,7 @@ namespace QoZ {
                                     for(auto j :boundaryj){
                                         d = data + begin+i*stride1+j*stride2;
                                         size_t math_cur_idx2=math_begin_idx2+j*math_stride;
-                                        if( j+3<m )                    
+                                        if( math_cur_idx2>=math_stride3x and j+3<m )                    
                                             predict_error+=quantize_integrated(d - data, *d, coeff_x*interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
                                                                                             +coeff_y*interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)),mode);     
                                         else
@@ -3099,12 +3099,8 @@ namespace QoZ {
                                 else if(bj2>0){
                                     j=bj2;
                                     d = data + begin + i*stride1+j*stride2;
-                                    size_t math_cur_idx2=math_begin_idx2+j*math_stride;
-                                    if(math_cur_idx2>=math_stride3x and j+3<m)                    
-                                        predict_error+=quantize_integrated(d - data, *d , coeff_x*interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1))
-                                                                                         +coeff_y*interp_cubic_adj(*(d - stride3x2),*(d - stride2x2), *(d - stride2), *(d + stride2), *(d + stride2x2), *(d + stride3x2)) ,mode); 
-                                    else
-                                        predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
+                    
+                                    predict_error+=quantize_integrated(d - data, *d, interp_cubic_adj(*(d - stride3x1),*(d - stride2x1), *(d - stride1), *(d + stride1), *(d + stride2x1), *(d + stride3x1)),mode);
                                 }
                                 
                                 
