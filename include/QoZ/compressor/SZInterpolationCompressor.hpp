@@ -1554,11 +1554,11 @@ namespace QoZ {
                         if(temp==0)
                             temp=4;
                         if(temp!=1){
-                            size_t bi=n+1-temp;
-                            if(bi>1)
-                                boundary.push_back(bi);
+                            boundary.push_back(n+1-temp);
                         }
                     }
+                    for(auto b:boundary)
+                        std::cout<<b<<std::endl;
 
                     for(auto i:boundary){
                         d = data + begin + i*stride;
