@@ -1971,7 +1971,7 @@ namespace QoZ {
             //std::cout<<coeff_x<<" "<<coeff_y<<std::endl;
             //coeff_x=0.5; coeff_y=0.5;
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
-            if (interp_func == "linear"||n<5 ||m<5) {//nm cond temp added
+            if (interp_func == "linear"||(n<5 &m<5)) {
                
         
                 for (size_t i = 1; i + 1 < n; i += 2) {
@@ -2004,6 +2004,28 @@ namespace QoZ {
             }
                     
             else{//cubic
+
+                if(n<5){//m>=5
+                    size_t begin=begin1+begin2,end=begin+(m-1)*stride2;
+                    for(size_t i=1;i<n;i+=2){
+                        begin+=2*stride1;
+                        end+=2*stride1;
+                        predictor_error+=block_interpolation_1d(data,  begin, end,  stride2,interp_func,pb,meta,tuning);
+                    }
+                    return predictor_error;
+                }
+                else if(m<5){//n>=5
+                    size_t begin=begin1+begin2,end=begin+(n-1)*stride1;
+                    for(size_t j=1;i<m;j+=2){
+                        begin+=2*stride2;
+                        end+=2*stride2;
+                        predictor_error+=block_interpolation_1d(data,  begin, end,  stride1,interp_func,pb,meta,tuning);
+                    }
+                    return predictor_error;
+
+                }
+
+
                 auto interp_cubic=meta.cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t stride3x1=3*stride1,stride3x2=3*stride2,stride5x1=5*stride1,stride5x2=5*stride2,stride2x1=2*stride1,stride2x2=2*stride2;
                 //adaptive todo
