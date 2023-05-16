@@ -1564,6 +1564,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     
         //if(!conf.waveletTest or conf.predictorTuningRate!=conf.waveletTuningRate or conf.profiling>0){
             sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
+            std::cout<<sampleBlockSize<<std::endl;
+            std::cout<<sampled_blocks.size()<<std::endl;
         //}        
         num_sampled_blocks=sampled_blocks.size();
         per_block_ele_num=pow(sampleBlockSize+1,N);
