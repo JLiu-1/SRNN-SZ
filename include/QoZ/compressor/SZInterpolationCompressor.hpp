@@ -1558,6 +1558,7 @@ namespace QoZ {
                             boundary.push_back(n+1-temp);
                         }
                     }
+
                     
                    
 
@@ -1571,9 +1572,11 @@ namespace QoZ {
                             else if(i+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx ) )
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
-                            else 
+                            else{
+                                std::cout<<"dwa"<<i<<std::endl;
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_linear1(*(d - stride3x), *(d - stride)),mode);
+                            }
                         }
                         else{
                             if(i+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) )
@@ -1601,7 +1604,9 @@ namespace QoZ {
 
                     size_t temp=n%4;
                     if(temp!=3 and n-1-temp>0){
+
                         i=n-1-temp;
+                        std::cout<<"dwdwa"<<i<<std::endl;
                         d = data + begin + i*stride;
                         size_t math_cur_idx=math_begin_idx+i*math_stride;
                         if(i>3 or (cross_back and math_cur_idx>=math_stride3x)){
