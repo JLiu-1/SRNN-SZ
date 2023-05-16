@@ -2016,7 +2016,7 @@ namespace QoZ {
                 }
                 else if(m<5){//n>=5
                     size_t begin=begin1+begin2,end=begin+(n-1)*stride1;
-                    for(size_t j=1;i<m;j+=2){
+                    for(size_t j=1;j<m;j+=2){
                         begin+=2*stride2;
                         end+=2*stride2;
                         predict_error+=block_interpolation_1d(data,  begin, end,  stride1,interp_func,pb,meta,tuning);
