@@ -2421,7 +2421,7 @@ namespace QoZ {
             if (n <= 1||m<=1) {
                 return 0;
             }
-            /*
+            
             bool cross_front=true;
             for(size_t i=0;i<N;i++){
                 if(i!=direction1 and i!=direction2 and begin_idx[i]%(2*math_stride)!=0){
@@ -2429,7 +2429,7 @@ namespace QoZ {
                     break;
                 }
             }
-            */
+            
             double predict_error = 0;
             
             double coeff_x=(dim_coeffs[0])/((dim_coeffs[0])+(dim_coeffs[1])),coeff_y=1-coeff_x;
