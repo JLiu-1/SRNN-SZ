@@ -2928,13 +2928,11 @@ namespace QoZ {
                         }
                         //j=m-1
                         else if(j<m){
-                            
                             d = data + begin + stride1+j*stride2;
 
                             predict_error+=quantize_integrated(d - data, *d, interp_quad_1_adj(*(d - stride1), *(d + stride1), *(d + stride2x1)),mode);//to determine
                         }
                     }
-
                     //i= n-3 or n-2
                     // std::cout<<"f7"<<std::endl;
                     if(i<n-1){
