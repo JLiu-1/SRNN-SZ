@@ -1391,12 +1391,14 @@ namespace QoZ {
                 return 0;
             }
             double predict_error = 0;
-
-            bool cross_front=true;
-            for(size_t i=0;i<N;i++){
-                if(i!=direction and begin_idx[i]%(2*math_stride)!=0){
-                    cross_front=false;
-                    break;
+            bool cross_back=cross_block>0;
+            bool cross_front=cross_block>0;
+            if(cross_front){
+                for(size_t i=0;i<N;i++){
+                    if(i!=direction and begin_idx[i]%(2*math_stride)!=0){
+                        cross_front=false;
+                        break;
+                    }
                 }
             }
 
@@ -1454,7 +1456,9 @@ namespace QoZ {
                 T *d;
                 size_t i;
                 if(!meta.adjInterp){
-                    for (i = 3; i + 3 < n; i += 2) {
+                    size_t i_start= (cross_back and math_begin_idx>=math_stride2x)?1:3;
+
+                    for (i = i_start; i + 3 < n; i += 2) {
                         d = data + begin + i * stride;
                         predict_error+=quantize_integrated(d - data, *d,
                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
@@ -1462,7 +1466,10 @@ namespace QoZ {
                     }
 
 
-                    std::vector<size_t> boundary={1};
+                    std::vector<size_t> boundary;
+                    if(i_start==3 or n<=4)
+                        boundary.push_back(1);
+
                     if(n%2==1){
                         if(n>3)
                             boundary.push_back(n-2);
@@ -1480,13 +1487,13 @@ namespace QoZ {
 
                         d = data + begin + i*stride;
                         size_t math_cur_idx=math_begin_idx+i*math_stride;
-                        if(math_cur_idx>=math_stride3x ){
-                            if(math_cur_idx+math_stride3x<global_end_idx and (cross_front or i+3<n) ){
+                        if( i>=3 or (cross_back and math_cur_idx>=math_stride3x) ){
+                            if(i+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) ){
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
                                 
                             }
-                            else if(math_cur_idx+math_stride<global_end_idx and (cross_front or i+1<n)){
+                            else if(i+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx )){
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
                                 
@@ -1500,12 +1507,12 @@ namespace QoZ {
                             }
                         }
                         else{
-                            if(math_cur_idx+math_stride3x<global_end_idx and (cross_front or i+3<n) ){
+                            if(i+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) ){
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_1( *(d - stride), *(d + stride), *(d + stride3x)),mode);
                                 
                             }
-                            else if(math_cur_idx+math_stride<global_end_idx and (cross_front or i+1<n) ){
+                            else if(i+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx ) ){
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_linear( *(d - stride), *(d + stride)),mode);
                                 
@@ -1527,7 +1534,8 @@ namespace QoZ {
 
                    
                     //predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride),*(d + stride), *(d+stride2x), *(d + stride3x)),mode);
-                    for (i = 5; i + 3 < n; i += 4) {
+                    size_t i_start= (cross_back and math_begin_idx>=math_stride2x)?1:5;
+                    for (i = i_start; i + 3 < n; i += 4) {
                         
                         d = data + begin + i * stride;
                      
@@ -1535,26 +1543,31 @@ namespace QoZ {
                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
                     }
 
-                    //i=n-3 or n-2
 
-                    std::vector<size_t> boundary={1};
-                    int temp=n%4;
-                    if(temp==0)
-                        temp=4;
-                    if(temp!=1){
-                        size_t bi=n+1-temp;
-                        if(bi>1)
-                            boundary.push_back(bi);
+                    std::vector<size_t> boundary;
+                    if(n<=4)
+                        boundary.push_back(1);
+                    else{
+                        if(i_start==5)
+                            boundary.push_back(1);
+                        int temp=n%4;
+                        if(temp==0)
+                            temp=4;
+                        if(temp!=1){
+                            size_t bi=n+1-temp;
+                            if(bi>1)
+                                boundary.push_back(bi);
+                        }
                     }
 
                     for(auto i:boundary){
                         d = data + begin + i*stride;
                         size_t math_cur_idx=math_begin_idx+i*math_stride;
-                        if(math_cur_idx>=math_stride3x){
-                            if(math_cur_idx+math_stride3x<global_end_idx and (cross_front or i+3<n))
+                        if(i>3 or (cross_back and math_cur_idx>=math_stride3x)){
+                            if(i+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) )
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
-                            else if(math_cur_idx+math_stride<global_end_idx and (cross_front or i+1<n) )
+                            else if(i+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx ) )
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
                             else 
@@ -1562,10 +1575,10 @@ namespace QoZ {
                                         interp_linear1(*(d - stride3x), *(d - stride)),mode);
                         }
                         else{
-                            if(math_cur_idx+math_stride3x<global_end_idx and (cross_front or i+3<n) )
+                            if(i+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) )
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_1( *(d - stride), *(d + stride), *(d + stride3x)),mode);
-                            else if(math_cur_idx+math_stride<global_end_idx and (cross_front or i+1<n) )
+                            else if(i+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx ) )
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_linear( *(d - stride), *(d + stride)),mode);
                             else 
@@ -1590,11 +1603,11 @@ namespace QoZ {
                         i=n-1-temp;
                         d = data + begin + i*stride;
                         size_t math_cur_idx=math_begin_idx+i*math_stride;
-                        if(math_cur_idx>=math_stride3x){
-                            if(math_cur_idx+math_stride3x<global_end_idx and cross_front  )
+                        if(i>3 or (cross_back and math_cur_idx>=math_stride3x)){
+                            if(i+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx)   )
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_cubic_adj2(*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d + stride3x)),mode);//to determine,another choice is noadj cubic.
-                            else if(math_cur_idx+math_stride<global_end_idx and (cross_front or i+1<n) )
+                            else if(i+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx )  )
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_2_adj(*(d - stride2x), *(d - stride), *(d + stride)),mode);
                             else 
@@ -1602,10 +1615,10 @@ namespace QoZ {
                                         lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
                         }
                         else{
-                            if(math_cur_idx+math_stride3x<global_end_idx  and cross_front  )
+                            if(i+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx)  )
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_1( *(d - stride), *(d + stride), *(d + stride3x)),mode);
-                            else if(math_cur_idx+math_stride<global_end_idx and (cross_front or i+1<n) )
+                            else if(i+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx ) )
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_linear( *(d - stride), *(d + stride)),mode);
                             else 
@@ -1639,8 +1652,7 @@ namespace QoZ {
                 }
                 */
 
-                
-                
+            
                 
                 
             }
