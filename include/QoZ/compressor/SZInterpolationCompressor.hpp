@@ -7190,7 +7190,7 @@ namespace QoZ {
                         begin_idx=begin,end_idx=end;
                         predict_error += block_interpolation_3d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,3>{dims[0],dims[1],dims[2]},
-                                                                    stride , interp_func, pb,std::array<double,3>{1.0,1.0,1.0},meta,0,tuning);
+                                                                    stride , interp_func, pb,std::array<double,3>{1.0,1.0,1.0},meta,1,tuning);
                                                                     
 
                     }
