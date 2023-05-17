@@ -7126,7 +7126,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                             }
                         }
-
+                        std::cout<<"1d1 fin"<<std::endl;
                         begin_idx=begin,end_idx=begin;
                         end_idx[dims[1]]=end[dims[1]];
                         for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
@@ -7138,6 +7138,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                             }
                         }
+                        std::cout<<"1d2 fin"<<std::endl;
                         begin_idx=begin,end_idx=begin;
                         end_idx[dims[2]]=end[dims[2]];
                         for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
@@ -7149,7 +7150,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                             }
                         }
-
+                        std::cout<<"1d3 fin"<<std::endl;
                         begin_idx=begin,end_idx=begin;
                         end_idx[dims[0]]=end[dims[0]];
                         end_idx[dims[1]]=end[dims[1]];
@@ -7160,7 +7161,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,std::array<double,2>{1.0,1.0},meta,1,tuning);
                         }
                         
-
+                        std::cout<<"2d1 fin"<<std::endl;
                         begin_idx=begin,end_idx=begin;
                         end_idx[dims[0]]=end[dims[0]];
                         end_idx[dims[2]]=end[dims[2]];
@@ -7170,6 +7171,7 @@ namespace QoZ {
                                                                     end_idx,std::array<size_t,2>{dims[0],dims[2]},
                                                                     stride , interp_func, pb,std::array<double,2>{1.0,1.0},meta,1,tuning);
                         }
+                        std::cout<<"2d2 fin"<<std::endl;
                         begin_idx=begin,end_idx=begin;
                         end_idx[dims[1]]=end[dims[1]];
                         end_idx[dims[2]]=end[dims[2]];
@@ -7179,7 +7181,7 @@ namespace QoZ {
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},
                                                                     stride , interp_func, pb,std::array<double,2>{1.0,1.0},meta,1,tuning);
                         }
-                        
+                        std::cout<<"2d3 fin"<<std::endl;
                         begin_idx=begin,end_idx=end;
                         predict_error += block_interpolation_3d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,3>{dims[0],dims[1],dims[2]},
