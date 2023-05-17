@@ -1366,8 +1366,13 @@ namespace QoZ {
         };
 
         inline double quantize_integrated(size_t idx, T &d, T pred, int mode=0){
-            if(mark[idx])
-                std::cout<<"err: "<<std::endl;
+            if(mark[idx]){
+                size_t z=idx%132;
+                size_t temp=idx/132;
+                size_t y=temp%132;
+                size_t x= temp/132;
+                std::cout<<"err: "<<x<<" "<<y<<" "<<z<<std::endl;
+            }
             mark[idx]=true;
             double pred_error=0;
             if(mode==-1){//recover
