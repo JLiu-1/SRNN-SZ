@@ -4908,8 +4908,8 @@ namespace QoZ {
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t i=1;i<n;i+=2){
                             for(size_t j=1;j<m;j+=2){
-                                new_end_idx[direction1]=new_begin_idx[direction1]=math_begin_idx1+i;
-                                new_end_idx[direction2]=new_begin_idx[direction2]=math_begin_idx2+j;
+                                new_end_idx[direction1]=new_begin_idx[direction1]=math_begin_idx1+i*math_stride;
+                                new_end_idx[direction2]=new_begin_idx[direction2]=math_begin_idx2+j*math_stride;
                                 predict_error+=block_interpolation_1d_crossblock(data,  new_begin_idx, new_end_idx, direction3,math_stride,interp_func,pb,meta,cross_block,tuning);
                                 
                             }
@@ -4922,8 +4922,8 @@ namespace QoZ {
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t i=1;i<n;i+=2){
                             for(size_t k=1;k<p;k+=2){
-                                new_end_idx[direction1]=new_begin_idx[direction1]=math_begin_idx1+i;
-                                new_end_idx[direction3]=new_begin_idx[direction3]=math_begin_idx3+k;
+                                new_end_idx[direction1]=new_begin_idx[direction1]=math_begin_idx1+i*math_stride;
+                                new_end_idx[direction3]=new_begin_idx[direction3]=math_begin_idx3+k*math_stride;
                                 predict_error+=block_interpolation_1d_crossblock(data,  new_begin_idx, new_end_idx, direction2,math_stride,interp_func,pb,meta,cross_block,tuning);
                                 
                             }
@@ -4936,7 +4936,7 @@ namespace QoZ {
                         std::cout<<"r2"<<std::endl;
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t i=1;i<n;i+=2){
-                            new_end_idx[direction1]=new_begin_idx[direction1]=math_begin_idx1+i;
+                            new_end_idx[direction1]=new_begin_idx[direction1]=math_begin_idx1+i*math_stride;
                             predict_error+=block_interpolation_2d_crossblock(data,  new_begin_idx, new_end_idx,std::array<size_t,2>{direction2,direction3}
                                                                             ,math_stride,interp_func,pb,std::array<double,2>{coeff_y_yz,coeff_z_yz},meta,cross_block,tuning);
                         }
@@ -4951,8 +4951,8 @@ namespace QoZ {
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t j=1;j<m;j+=2){
                             for(size_t k=1;k<p;k+=2){
-                                new_end_idx[direction2]=new_begin_idx[direction2]=math_begin_idx2+j;
-                                new_end_idx[direction3]=new_begin_idx[direction3]=math_begin_idx3+k;
+                                new_end_idx[direction2]=new_begin_idx[direction2]=math_begin_idx2+j*math_stride;
+                                new_end_idx[direction3]=new_begin_idx[direction3]=math_begin_idx3+k*math_stride;
                                 predict_error+=block_interpolation_1d_crossblock(data,  new_begin_idx, new_end_idx, direction1,math_stride,interp_func,pb,meta,cross_block,tuning);
                                 
                             }
@@ -4965,7 +4965,7 @@ namespace QoZ {
                         std::cout<<"r4"<<std::endl;
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t j=1;j<m;j+=2){
-                            new_end_idx[direction2]=new_begin_idx[direction2]=math_begin_idx2+j;
+                            new_end_idx[direction2]=new_begin_idx[direction2]=math_begin_idx2+j*math_stride;
                             predict_error+=block_interpolation_2d_crossblock(data,  new_begin_idx, new_end_idx,std::array<size_t,2>{direction1,direction3}
                                                                             ,math_stride,interp_func,pb,std::array<double,2>{coeff_x_xz,coeff_z_xz},meta,cross_block,tuning);
                         }
@@ -4978,7 +4978,7 @@ namespace QoZ {
                     std::cout<<"r5"<<std::endl;
                     std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                     for(size_t k=1;k<p;k+=2){
-                        new_end_idx[direction3]=new_begin_idx[direction3]=math_begin_idx3+k;
+                        new_end_idx[direction3]=new_begin_idx[direction3]=math_begin_idx3+k*math_stride;
                         predict_error+=block_interpolation_2d_crossblock(data,  new_begin_idx, new_end_idx,std::array<size_t,2>{direction1,direction2}
                                                                         ,math_stride,interp_func,pb,std::array<double,2>{coeff_x_xy,coeff_y_xy},meta,cross_block,tuning);
                     }
