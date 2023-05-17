@@ -3604,7 +3604,7 @@ namespace QoZ {
                         }
                         //j=1
                         for(k=3;k+3<p;k+=2){
-                            d = data + begin + (n-1)*stride12+stride2+k*stride3;
+                            d = data + begin + (n-1)*stride1+stride2+k*stride3;
                             /*
                             predict_error+=quantize_integrated(d - data, *d, interp_ave3( interp_quad_3(*(d - stride5x1), *(d - stride3x1), *(d - stride1)),
                                 interp_quad_1(*(d - stride2), *(d + stride2), *(d + stride3x2)),
