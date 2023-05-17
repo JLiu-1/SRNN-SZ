@@ -830,6 +830,7 @@ namespace QoZ {
             
             //timer.start();
             assert(quant_inds.size() == num_elements);
+            std::cout<<quant_inds.size()<<std::endl;
             encoder.preprocess_encode(quant_inds, 0);
             size_t bufferSize = 1.2 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
             uchar *buffer = new uchar[bufferSize];
