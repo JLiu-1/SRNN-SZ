@@ -2182,7 +2182,7 @@ namespace QoZ {
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                     size_t j_start;
                     //first half (non-adj)
-                    //std::cout<<"f1"<<std::endl;
+                    std::cout<<"f1"<<std::endl;
                     for (i = 3; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?5:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -2230,7 +2230,7 @@ namespace QoZ {
                         */
                         
                     }
-                    //std::cout<<"f2"<<std::endl;
+                    std::cout<<"f2"<<std::endl;
                     //i=1
                     for(j=5;j+3<m;j+=4){
                         d = data + begin + stride1+j*stride2;
@@ -2259,7 +2259,7 @@ namespace QoZ {
 
 
                     //i=n-3 or n-2
-                     //std::cout<<"f3"<<std::endl;
+                     std::cout<<"f3"<<std::endl;
                     j_start= (i%4==1)?5:3;
                     for(j=j_start;j+3<m;j+=4){
    
@@ -2296,7 +2296,7 @@ namespace QoZ {
 
 
                     //i=n-1 (odd)
-                    // std::cout<<"f4"<<std::endl;
+                     std::cout<<"f4"<<std::endl;
                     if (n % 2 == 0) {
                         j_start= ((n-1)%4==1)?5:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -2332,7 +2332,7 @@ namespace QoZ {
                     }
 
                     //second half (adj)
-                    // std::cout<<"f5"<<std::endl;
+                     std::cout<<"f5"<<std::endl;
                     for (i = 3; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?3:5;
                         for(j=j_start;j+3<m;j+=4){
@@ -2386,7 +2386,7 @@ namespace QoZ {
                     }
 
                     //i=1
-                    // std::cout<<"f6"<<std::endl;
+                     std::cout<<"f6"<<std::endl;
                     for(j=3;j+3<m;j+=4){
                       
                         d = data + begin + stride1+j*stride2;
@@ -2416,7 +2416,7 @@ namespace QoZ {
                     }
 
                     //i= n-3 or n-2
-                    // std::cout<<"f7"<<std::endl;
+                     std::cout<<"f7"<<std::endl;
                     j_start= (i%4==1)?3:5;
                     for(j=j_start;j+3<m;j+=4){
                         
@@ -2452,7 +2452,7 @@ namespace QoZ {
                     }
                     
                     //i==n-1
-                    // std::cout<<"f8"<<std::endl;
+                     std::cout<<"f8"<<std::endl;
                     if (n % 2 == 0) {
                         j_start= ((n-1)%4==1)?3:5;
                         for(j=j_start;j+3<m;j+=4){
@@ -3117,6 +3117,7 @@ namespace QoZ {
 
                 if(n<5){
                     if(m<5){//p>=5
+                        std::cout<<"t1"<<std::endl;
                         begin=begin1+begin2+begin3,end=begin+(p-1)*stride3;
                         for(size_t i=1;i<n;i+=2){
                             for(size_t j=1;j<m;j+=2){
@@ -3128,7 +3129,8 @@ namespace QoZ {
                         return predict_error;
                     }
                     else if(p<5){//m>=5
-                         begin=begin1+begin2+begin3,end=begin+(m-1)*stride2;
+                        std::cout<<"t2"<<std::endl;
+                        begin=begin1+begin2+begin3,end=begin+(m-1)*stride2;
                         for(size_t i=1;i<n;i+=2){
                             for(size_t k=1;k<p;k+=2){
                             
@@ -3141,6 +3143,7 @@ namespace QoZ {
 
                     }
                     else{//mp>=5
+                        std::cout<<"t3"<<std::endl;
                         begin2+=begin1+stride1,end2+=begin1+stride1;
                         for(size_t i=1;i<n;i+=2){
                             predict_error+=block_interpolation_2d(data,  begin2, end2,begin3,end3,  stride2,stride3,interp_func,pb,std::array<double,2>{coeff_y_yz,coeff_z_yz},meta,tuning);
@@ -3154,6 +3157,7 @@ namespace QoZ {
                 else if(m<5){//n>=5
 
                     if(p<5){
+                        std::cout<<"t4"<<std::endl;
                          begin=begin1+begin2+begin3,end=begin+(n-1)*stride1;
                         for(size_t j=1;j<m;j+=2){
                             for(size_t k=1;k<p;k+=2){
@@ -3167,6 +3171,7 @@ namespace QoZ {
 
                     }
                     else{//np>=5
+                        std::cout<<"t5"<<std::endl;
                         begin1+=begin2+stride2,end1+=begin2+stride2;
                         for(size_t j=1;j<m;j+=2){
                             predict_error+=block_interpolation_2d(data,  begin1, end1,begin3,end3,  stride1,stride3,interp_func,pb,std::array<double,2>{coeff_x_xz,coeff_z_xz},meta,tuning);
@@ -3180,6 +3185,7 @@ namespace QoZ {
 
                 }
                 else if(p<5){//mn>=5
+                    std::cout<<"t6"<<std::endl;
                     begin2+=begin3+stride3,end2+=begin3+stride3;
                     for(size_t k=1;k<p;k+=2){
                         predict_error+=block_interpolation_2d(data,  begin1, end1,begin2,end2,  stride1,stride2,interp_func,pb,std::array<double,2>{coeff_x_xy,coeff_x_xy},meta,tuning);
