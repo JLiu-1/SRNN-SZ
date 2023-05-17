@@ -4976,7 +4976,7 @@ namespace QoZ {
                     return predict_error;
 
                 }
-
+                std::cout<<"rf"<<std::endl;
 
                 auto interp_cubic=meta.cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
                 size_t stride3x1=3*stride1,stride3x2=3*stride2,stride3x3=3*stride3,stride2x1=2*stride1,stride2x2=2*stride2,stride2x3=2*stride3;
