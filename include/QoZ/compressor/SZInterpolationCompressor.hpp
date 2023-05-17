@@ -570,6 +570,7 @@ namespace QoZ {
                             if (end_idx[i] > global_dimensions[i] - 1) {
                                 end_idx[i] = global_dimensions[i] - 1;
                             }
+                            std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<" "<<std::endl;
                             double cur_rate=level>=2?1.0:conf.blockwiseSampleRate;
                             size_t  cur_length=(end_idx[i]-start_idx[i])+1,cur_stride=stride*cur_rate;
                             while(cur_stride>stride){
