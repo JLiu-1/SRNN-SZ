@@ -2470,7 +2470,7 @@ namespace QoZ {
                         }
                         //j=m-3 or m-2
                         if(j<m-1){
-                            d = data +begin1 + (n-1)*stride1+j*stride2;
+                            d = data +begin + (n-1)*stride1+j*stride2;
 
                             predict_error+=quantize_integrated(d - data, *d, interp_quad_2_adj(*(d - stride2x2), *(d - stride2), *(d + stride2)) ,mode);
                         }
