@@ -543,7 +543,7 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                    //std::cout<<"a block"<<std::endl;
+                    std::cout<<"a block"<<std::endl;
                     if(!conf.blockwiseTuning){
                         /*
                         if(peTracking)
@@ -4895,6 +4895,7 @@ namespace QoZ {
                 std::cout<<"p3"<<std::endl;
                 if(real_n<5){
                     if(real_m<5){//real_p>=5
+                        std::cout<<"r0"<<std::endl;
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t i=1;i<n;i+=2){
                             for(size_t j=1;j<m;j+=2){
@@ -4908,6 +4909,7 @@ namespace QoZ {
                         return predict_error;
                     }
                     else if(real_p<5){//m>=5
+                        std::cout<<"r1"<<std::endl;
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t i=1;i<n;i+=2){
                             for(size_t k=1;k<p;k+=2){
@@ -4922,6 +4924,7 @@ namespace QoZ {
 
                     }
                     else{//mp>=5
+                        std::cout<<"r2"<<std::endl;
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t i=1;i<n;i+=2){
                             new_end_idx[direction1]=new_begin_idx[direction1]=math_begin_idx1+i;
@@ -4935,6 +4938,7 @@ namespace QoZ {
                 else if(real_m<5){//real_n>=5
 
                     if(real_p<5){
+                        std::cout<<"r3"<<std::endl;
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t j=1;j<m;j+=2){
                             for(size_t k=1;k<p;k+=2){
@@ -4949,6 +4953,7 @@ namespace QoZ {
 
                     }
                     else{//np>=5
+                        std::cout<<"r4"<<std::endl;
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                         for(size_t j=1;j<m;j+=2){
                             new_end_idx[direction2]=new_begin_idx[direction2]=math_begin_idx2+j;
@@ -4961,6 +4966,7 @@ namespace QoZ {
 
                 }
                 else if(real_p<5){//mn>=5
+                    std::cout<<"r5"<<std::endl;
                     std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
                     for(size_t k=1;k<p;k+=2){
                         new_end_idx[direction3]=new_begin_idx[direction3]=math_begin_idx3+k;
