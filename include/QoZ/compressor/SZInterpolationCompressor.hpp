@@ -781,10 +781,10 @@ namespace QoZ {
                         dimension_offsets=global_dimension_offsets;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp)
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                        interpolators[best_meta.interpAlgo],best_meta, stride,tuning,0,1,coeffs);//,cross_block,regressiveInterp);
+                                        interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block,1,coeffs);//,cross_block,regressiveInterp);
                         else
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                        interpolators[best_meta.interpAlgo],best_meta, stride,tuning,0,0);//,cross_block,regressiveInterp);
+                                        interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block,0);//,cross_block,regressiveInterp);
                     }
                     //std::cout<<"a block fin"<<std::endl;
 
