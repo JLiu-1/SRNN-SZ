@@ -1375,12 +1375,12 @@ namespace QoZ {
                 
                 std::cout<<"err: "<<x<<" "<<y<<" "<<z<<std::endl;
             }
-            /*
-            if(x==10 and y==10 and z==129){
+            
+            if(x==0 and y==383 and z==125){
                 std::cout<<"first: "<<x<<" "<<y<<" "<<z<<std::endl;
 
             }
-            */
+            
             mark[idx]=true;
             
             double pred_error=0;
