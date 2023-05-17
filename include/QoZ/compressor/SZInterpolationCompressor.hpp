@@ -7283,7 +7283,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                             }
                         }
-                        begin_idx=begin,end_idx=begin;
+                        begin_idx=begin,end_idx=end;
                         for (size_t i = (begin[dims[0]] ? begin[dims[0]] + 1 : 0); i <= end[dims[0]]; i += 1) {
                             end_idx[dims[0]]=begin_idx[dims[0]]=i;                   
                             predict_error += block_interpolation_2d_crossblock(data, begin_idx,
