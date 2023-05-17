@@ -5778,7 +5778,7 @@ namespace QoZ {
                     //}
                     
                     //second half (adj)
-                    ks1=5;
+                    ks1=(k_start==1)?1:5;
                     ks2=3;
 
                     for (i = i_start; i + 3 < n; i += 2) {
