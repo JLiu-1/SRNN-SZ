@@ -2556,8 +2556,8 @@ namespace QoZ {
                  if(real_n<5){//real_m>=5
                     std::array<size_t,N> new_begin_idx=begin_idx,new_end_idx=end_idx;
                     for(size_t i=1;i<n;i+=2){
-                        new_begin_idx[direction1]=math_begin_idx1+i;
-                        new_end_idx[direction1]=math_begin_idx1+i;
+                        new_begin_idx[direction1]=math_begin_idx1+i*math_stride;
+                        new_end_idx[direction1]=math_begin_idx1+i*math_stride;
                         predict_error+=block_interpolation_1d_crossblock(data, new_begin_idx,new_end_idx,  direction2,math_stride,interp_func,pb,meta,cross_block,tuning);
                     }
                     return predict_error;
@@ -2565,8 +2565,8 @@ namespace QoZ {
                 else if(real_m<5){//real_n>=5
                     std::array<size_t,N> new_begin_idx=begin_idx,new_end_idx=end_idx;
                     for(size_t j=1;j<m;j+=2){
-                        new_begin_idx[direction2]=math_begin_idx2+j;
-                        new_end_idx[direction2]=math_begin_idx2+j;
+                        new_begin_idx[direction2]=math_begin_idx2+j*math_stride;
+                        new_end_idx[direction2]=math_begin_idx2+j*math_stride;
                         predict_error+=block_interpolation_1d_crossblock(data, new_begin_idx,new_end_idx,  direction1,math_stride,interp_func,pb,meta,cross_block,tuning);
                     }
                     return predict_error;
