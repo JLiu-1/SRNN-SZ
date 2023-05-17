@@ -5393,8 +5393,8 @@ namespace QoZ {
                     //first half (non-adj) 
 
                     //for(size_t round=0;round<=1;round++){
-
-                    size_t ks1=3,ks2=(k_start==1)?1:5;
+                    size_t temp_k_start=k_start;
+                    size_t ks1=3,ks2=(temp_k_start==1)?1:5;
 
                     
 
@@ -5779,7 +5779,7 @@ namespace QoZ {
                     //}
                     
                     //second half (adj)
-                    ks1=(k_start==1)?1:5;
+                    ks1=(temp_k_start==1)?1:5;
                     ks2=3;
 
                     for (i = i_start; i + 3 < n; i += 2) {
