@@ -830,7 +830,7 @@ namespace QoZ {
             
             //timer.start();
             assert(quant_inds.size() == num_elements);
-            std::cout<<quant_inds.size()<<std::endl;
+            //std::cout<<quant_inds.size()<<std::endl;
             encoder.preprocess_encode(quant_inds, 0);
             size_t bufferSize = 1.2 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
             uchar *buffer = new uchar[bufferSize];
@@ -7117,10 +7117,28 @@ namespace QoZ {
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},
                                                                     stride , interp_func, pb,std::array<double,2>{1.0,1.0},meta,1,tuning);
                         }
+                        /*
                         begin_idx=begin,end_idx=end;
                         predict_error += block_interpolation_3d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,3>{dims[0],dims[1],dims[2]},
                                                                     stride , interp_func, pb,std::array<double,3>{1.0,1.0,1.0},meta,1,tuning);
+                                                                    */
+                        size_t begin_offset1 = begin[dims[0]] * dimension_offsets[dims[0]] ;
+                        size_t begin_offset2 = begin[dims[1]] * dimension_offsets[dims[1]] ;
+                        size_t begin_offset3 =  begin[dims[2]] * dimension_offsets[dims[2]];
+                        predict_error += block_interpolation_3d(data, begin_offset1,
+                                                                    begin_offset1 +
+                                                                    (end[dims[0]] - begin[dims[0]]) *
+                                                                    dimension_offsets[dims[0]],
+                                                                    begin_offset2,
+                                                                    begin_offset2 +
+                                                                    (end[dims[1]] - begin[dims[1]]) *
+                                                                    dimension_offsets[dims[1]],
+                                                                    begin_offset3,
+                                                                    begin_offset3 +
+                                                                    (end[dims[2]] - begin[dims[2]]) *
+                                                                    dimension_offsets[dims[2]],
+                                                                    stride * dimension_offsets[dims[0]],stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func,pb,std::array<double,3>{1.0,1.0,1.0},meta,tuning);//dim_coeffs
                     }
                 }
                 else{
