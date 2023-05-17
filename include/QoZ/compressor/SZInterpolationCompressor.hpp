@@ -5415,7 +5415,7 @@ namespace QoZ {
                             }
                         
                             //k=p-3 or p-2 or p-1
-                            if(k<p and k!=1){
+                            if(k<p){
                                 d = data + begin + i* stride1+j*stride2+k*stride3;
                                
                                 predict_error+=quantize_integrated(d - data, *d, coeff_x_xy*interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
