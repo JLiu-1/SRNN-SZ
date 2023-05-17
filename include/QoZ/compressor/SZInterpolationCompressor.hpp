@@ -4892,7 +4892,7 @@ namespace QoZ {
                 }
             }
             else{//cubic
-
+                std::cout<<"p3"<<std::endl;
                 if(real_n<5){
                     if(real_m<5){//real_p>=5
                         std::array<size_t,N>new_begin_idx=begin_idx,new_end_idx=end_idx;
