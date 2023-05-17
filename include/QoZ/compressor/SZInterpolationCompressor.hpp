@@ -7120,7 +7120,7 @@ namespace QoZ {
                 }
                 else{
                     const std::array<int, N> dims = dimension_sequences[direction];
-                    if(!=cross_block){
+                    if(!cross_block){
                         //std::array<double,3>dim_coeffs=meta.dimCoeffs;
                         for (size_t i = (begin[dims[0]] ? begin[dims[0]] + 1 : 0); i <= end[dims[0]]; i += 1) {
                             for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
@@ -7190,6 +7190,7 @@ namespace QoZ {
                             predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},
                                                                     stride , interp_func, pb,std::array<double,2>{1.0,1.0},meta,1,tuning);
+                        }
                     }
                 }
 
@@ -7295,6 +7296,7 @@ namespace QoZ {
                         predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},
                                                                     stride , interp_func, pb,std::array<double,2>{1.0,1.0},meta,1,tuning);
+                    }
 
 
                 }
