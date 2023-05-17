@@ -1273,8 +1273,8 @@ namespace QoZ {
                                // prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z);
                                 prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=0;
                             }*/
-                            //if(tuning==0)
-                                //mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
+                            if(tuning==0)
+                                mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
                             quant_inds.push_back(0);
                         }           
                     }
@@ -1366,7 +1366,7 @@ namespace QoZ {
         };
 
         inline double quantize_integrated(size_t idx, T &d, T pred, int mode=0){
-            /*
+            
             size_t z=idx%global_dimensions[2];
             size_t temp=idx/global_dimensions[2];
             size_t y=temp%global_dimensions[1];
@@ -1375,12 +1375,14 @@ namespace QoZ {
                 
                 std::cout<<"err: "<<x<<" "<<y<<" "<<z<<std::endl;
             }
+            /*
             if(x==10 and y==10 and z==129){
                 std::cout<<"first: "<<x<<" "<<y<<" "<<z<<std::endl;
 
             }
-            mark[idx]=true;
             */
+            mark[idx]=true;
+            
             double pred_error=0;
             if(mode==-1){//recover
                 d = quantizer.recover(pred, quant_inds[quant_index++]);
