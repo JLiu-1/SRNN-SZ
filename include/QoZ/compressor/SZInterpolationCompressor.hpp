@@ -4808,12 +4808,16 @@ namespace QoZ {
             size_t direction1=directions[0],direction2=directions[1],direction3=directions[2];
             size_t math_begin_idx1=begin_idx[direction1],math_end_idx1=end_idx[direction1],math_begin_idx2=begin_idx[direction2],math_end_idx2=end_idx[direction2],math_begin_idx3=begin_idx[direction3],math_end_idx3=end_idx[direction3];
             size_t n = (math_end_idx1 - math_begin_idx1) / math_stride + 1, m = (math_end_idx2 - math_begin_idx2) / math_stride + 1, p = (math_end_idx3 - math_begin_idx3) / math_stride + 1;
+
             bool cross_back=cross_block>0;
 
             if (n <= 1||m<=1||p<=1) {
                 return 0;
             }
             size_t real_n=cross_back?(math_end_idx1 / math_stride + 1):n,real_m=cross_back?(math_end_idx2 / math_stride + 1):m,real_p=cross_back?(math_end_idx3 / math_stride + 1):p;
+            std::cout<<math_begin_idx1<<" "<<math_begin_idx2<<" "<<math_begin_idx3<<std::endl;
+            std::cout<<n<<" "<<m<<" "<<p<<std::endl;
+            std::cout<<real_n<<" "<<real_m<<" "<<real_p<<std::endl;
             
             
             double predict_error = 0;
