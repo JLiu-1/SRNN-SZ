@@ -2051,6 +2051,7 @@ namespace QoZ {
             else{//cubic
 
                 if(n<5){//m>=5
+                    std::cout<<"r1"<<std::endl;
                     begin=begin1+begin2+stride1,end=begin+(m-1)*stride2;
                     for(size_t i=1;i<n;i+=2){
                         
@@ -2061,6 +2062,7 @@ namespace QoZ {
                     return predict_error;
                 }
                 else if(m<5){//n>=5
+                    std::cout<<"r2"<<std::endl;
                     begin=begin1+begin2+stride2,end=begin+(n-1)*stride1;
                     for(size_t j=1;j<m;j+=2){
                         
