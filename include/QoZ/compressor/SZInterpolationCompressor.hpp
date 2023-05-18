@@ -589,7 +589,7 @@ namespace QoZ {
                             double temp1=0.5-0.5/cur_rate,temp2=0.5+0.5/cur_rate;
                             sample_starts[i]=((size_t)((temp1*cur_length)/(2*stride)))*2*stride+start_idx[i];
                             sample_ends[i]=((size_t)((temp2*cur_length)/(2*stride)))*2*stride+start_idx[i];
-                           // std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
+                            std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
 
                         }
                         std::cout<<"a0.3"<<std::endl;
