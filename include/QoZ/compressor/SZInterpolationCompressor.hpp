@@ -1416,6 +1416,11 @@ namespace QoZ {
         double block_interpolation_1d_crossblock(T *data, const std::array<size_t,N> &begin_idx, const std::array<size_t,N> &end_idx,const size_t &direction,const size_t &math_stride, const std::string &interp_func, const PredictorBehavior pb,const QoZ::Interp_Meta &meta,int cross_block=1,int tuning=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
             size_t math_begin_idx=begin_idx[direction],math_end_idx=end_idx[direction];
             size_t n = (math_end_idx - math_begin_idx) / math_stride + 1;
+            for(size_t i=0;i<N;i++)
+                std::cout<<begin_idx[i]<<" ";
+            for(size_t i=0;i<N;i++)
+                std::cout<<end_idx[i]<<" ";
+            std::cout<<std::endl;
            // std::cout<<n<<std::endl;
             if (n <= 1) {
                 return 0;
@@ -6802,7 +6807,7 @@ namespace QoZ {
                                                                             stride * dimension_offsets[dims[0]], interp_func, pb,meta,tuning);
                                 }
                             }
-                            std::cout<<"1d1 fin"<<std::endl;
+                            //std::cout<<"1d1 fin"<<std::endl;
                             for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                                 for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                                     size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
@@ -6814,7 +6819,7 @@ namespace QoZ {
                                                                             stride * dimension_offsets[dims[1]], interp_func, pb,meta,tuning);
                                 }
                             }
-                            std::cout<<"1d2 fin"<<std::endl;
+                            //std::cout<<"1d2 fin"<<std::endl;
                             for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
                                     size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
@@ -6826,7 +6831,7 @@ namespace QoZ {
                                                                             stride * dimension_offsets[dims[2]], interp_func, pb,meta,tuning);
                                 }
                             }
-                            std::cout<<"1d3 fin"<<std::endl;
+                            //std::cout<<"1d3 fin"<<std::endl;
                         }
                         
                         else{
