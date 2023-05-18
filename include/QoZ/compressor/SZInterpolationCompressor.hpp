@@ -464,7 +464,7 @@ namespace QoZ {
             int levelwise_predictor_levels=conf.interpMeta_list.size();
 
             for (uint level = start_level; level > end_level && level <= start_level; level--) {
-                std::cout<<"Level: "<<level<<std::endl;
+                ///std::cout<<"Level: "<<level<<std::endl;
                 cur_level=level;
                 if (alpha<0) {
                     if (level >= 3) {
@@ -543,8 +543,8 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                    std::cout<<"a block"<<std::endl;
-                    std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<" "<<std::endl;
+                    //std::cout<<"a block"<<std::endl;
+                    //std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<" "<<std::endl;
                     if(!conf.blockwiseTuning){
                         /*
                         if(peTracking)
@@ -607,9 +607,9 @@ namespace QoZ {
                         
                         if(N==2){
                             for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
-                                sb_ends[0]++;
+                                //sb_ends[0]++;
                                 for(size_t y=sample_starts[1];y<=sample_ends[0];y+=stride){
-                                    sb_ends[1]++;
+                                    //sb_ends[1]++;
                                     size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
                                     orig_sampled_block.push_back(data[global_idx]);
                                     
@@ -647,6 +647,8 @@ namespace QoZ {
                         //std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
                         std::array<size_t,N> global_dimension_offsets=dimension_offsets;
                         dimension_offsets=temp_dim_offsets;
+                        std::array<size_t,N> global_dimensions_temp=global_dimensions;
+                        global_dimensions=sb_ends;
                         
                         QoZ::Interp_Meta best_meta,cur_meta;
                         double best_loss=std::numeric_limits<double>::max();
@@ -675,7 +677,7 @@ namespace QoZ {
                                 interpParadigm_Candidates.push_back(i);
                        
                         }   
-                        std::cout<<"a1"<<std::endl;
+                        //std::cout<<"a1"<<std::endl;
                         /*
 
                         if (conf.naturalSpline){
@@ -702,7 +704,7 @@ namespace QoZ {
                             //std::cout<<orig_sampled_block.size()<<std::endl;
                             
                             status=calculate_interp_coeffs<T,N>(orig_sampled_block.data(), block_dims,coeffs, 2);
-                            std::cout<<"a2"<<std::endl;
+                            //std::cout<<"a2"<<std::endl;
                             if (status!=0){
                                 if(cur_level_meta.cubicSplineType==0)
                                     coeffs=std::vector<double>{-1.0/16.0,9.0/16.0,9.0/16.0,1.0/16.0};
@@ -712,7 +714,7 @@ namespace QoZ {
                             interp_coeffs.insert(interp_coeffs.end(),coeffs.begin(),coeffs.end());
 
                         }
-                        std::cout<<"a3"<<std::endl;
+                        //std::cout<<"a3"<<std::endl;
                         for (auto &interp_op: interpAlgo_Candidates) {
                             cur_meta.interpAlgo=interp_op;
                             for (auto &interp_pd: interpParadigm_Candidates) {
@@ -731,7 +733,7 @@ namespace QoZ {
                                         for(auto adj_interp:adjInterp_Candidates){
                                             if (interp_op!=QoZ::INTERP_ALGO_CUBIC and adj_interp!=0)
                                                 break;
-                                            std::cout<<"a4"<<std::endl;
+                                            //std::cout<<"a4"<<std::endl;
                                             cur_meta.adjInterp=adj_interp;
                                             cur_block=orig_sampled_block;
                                             double cur_loss=std::numeric_limits<double>::max();
@@ -742,7 +744,7 @@ namespace QoZ {
                                             else
                                                 cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
                                                                           interpolators[cur_meta.interpAlgo],cur_meta, 1,2,cross_block,0);//,cross_block,regressiveInterp);
-                                            std::cout<<"a5"<<std::endl;
+                                            //std::cout<<"a5"<<std::endl;
 
                                             //double cur_loss=0.0;
                                             if(cur_loss<best_loss){
@@ -786,6 +788,7 @@ namespace QoZ {
                         std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
                         interp_metas.push_back(best_meta);
                         dimension_offsets=global_dimension_offsets;
+                        global_dimensions=global_dimensions_temp;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp)
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block,1,coeffs);//,cross_block,regressiveInterp);
@@ -1571,8 +1574,8 @@ namespace QoZ {
 
                    
                     //predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride),*(d + stride), *(d+stride2x), *(d + stride3x)),mode);
-                    if(end_idx[0]==503 )
-                        std::cout<<"r1"<<std::endl;
+                    //if(end_idx[0]==503 )
+                    //    std::cout<<"r1"<<std::endl;
                     size_t i_start= (cross_back and math_begin_idx>=math_stride2x)?1:5;
                     for (i = i_start; i + 3 < n; i += 4) {
                         
@@ -1600,8 +1603,8 @@ namespace QoZ {
 
                     
                    
-                    if(end_idx[0]==503 )
-                        std::cout<<"r2"<<std::endl;
+                    //if(end_idx[0]==503 )
+                    //    std::cout<<"r2"<<std::endl;
                     for(auto i:boundary){
                         d = data + begin + i*stride;
                         size_t math_cur_idx=math_begin_idx+i*math_stride;
@@ -1630,8 +1633,8 @@ namespace QoZ {
                                         *(d - stride),mode);
                         }
                     }
-                    if(end_idx[0]==503 )
-                        std::cout<<"r3"<<std::endl;
+                    //if(end_idx[0]==503 )
+                     //   std::cout<<"r3"<<std::endl;
 
 
                     for (i = 3; i + 3 < n; i += 4) {
@@ -1642,8 +1645,8 @@ namespace QoZ {
                         //predict_error+=quantize_integrated(d - data, *d,
                          //           interp_cubic_3(*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x)),mode);
                     }
-                    if(end_idx[0]==503 )
-                        std::cout<<"r4"<<std::endl;
+                    //if(end_idx[0]==503 )
+                     //   std::cout<<"r4"<<std::endl;
 
                     size_t temp=n%4;
                     if(temp!=3 and n>temp+1){
@@ -1653,8 +1656,8 @@ namespace QoZ {
                         //std::cout<<"dwdwa"<<i<<std::endl;
                         d = data + begin + i*stride;
                         size_t math_cur_idx=math_begin_idx+i*math_stride;
-                        if(end_idx[0]==503 )
-                            std::cout<<i<<" "<<n<<" "<<math_cur_idx<<" "<<math_stride3x<<" "<<global_end_idx<<std::endl;
+                        //if(end_idx[0]==503 )
+                         //   std::cout<<i<<" "<<n<<" "<<math_cur_idx<<" "<<math_stride3x<<" "<<global_end_idx<<std::endl;
                         if(i>3 or (cross_back and math_cur_idx>=math_stride3x)){
                             if(i+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx)   )
                                 predict_error+=quantize_integrated(d - data, *d,
@@ -1663,8 +1666,8 @@ namespace QoZ {
                                 predict_error+=quantize_integrated(d - data, *d,
                                         interp_quad_2_adj(*(d - stride2x), *(d - stride), *(d + stride)),mode);
                             else {
-                                if(end_idx[0]==503 )
-                                    std::cout<<"dwad"<<std::endl;
+                                //if(end_idx[0]==503 )
+                                //    std::cout<<"dwad"<<std::endl;
                                 predict_error+=quantize_integrated(d - data, *d,
                                         lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
                             }
@@ -6863,7 +6866,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                                 }
                             }
-                            std::cout<<"1d1 fin"<<std::endl;
+                            //std::cout<<"1d1 fin"<<std::endl;
                             begin_idx=begin,end_idx=begin;
                             end_idx[dims[1]]=end[dims[1]];
                             for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -6877,7 +6880,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                                 }
                             }
-                            std::cout<<"1d2 fin"<<std::endl;
+                            //std::cout<<"1d2 fin"<<std::endl;
                             begin_idx=begin,end_idx=begin;
                             end_idx[dims[2]]=end[dims[2]];
                             for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -6891,7 +6894,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                                 }
                             }
-                            std::cout<<"1d3 fin"<<std::endl;
+                            //std::cout<<"1d3 fin"<<std::endl;
                         }
                     }
                     else{
