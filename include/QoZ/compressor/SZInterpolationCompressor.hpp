@@ -6802,7 +6802,7 @@ namespace QoZ {
                                                                             stride * dimension_offsets[dims[0]], interp_func, pb,meta,tuning);
                                 }
                             }
-                            std::cout<<"1d1 fin"<<std::enl;
+                            std::cout<<"1d1 fin"<<std::endl;
                             for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                                 for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                                     size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
@@ -6814,7 +6814,7 @@ namespace QoZ {
                                                                             stride * dimension_offsets[dims[1]], interp_func, pb,meta,tuning);
                                 }
                             }
-                            std::cout<<"1d2 fin"<<std::enl;
+                            std::cout<<"1d2 fin"<<std::endl;
                             for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
                                     size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
@@ -6826,8 +6826,9 @@ namespace QoZ {
                                                                             stride * dimension_offsets[dims[2]], interp_func, pb,meta,tuning);
                                 }
                             }
+                            std::cout<<"1d3 fin"<<std::endl;
                         }
-                        std::cout<<"1d3 fin"<<std::enl;
+                        
                         else{
                             //std::cout<<"cross_block"<<std::endl;
                             std::array<size_t, N> begin_idx=begin,end_idx=begin;
@@ -6843,7 +6844,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                                 }
                             }
-                            std::cout<<"1d1 fin"<<std::enl;
+                            std::cout<<"1d1 fin"<<std::endl;
                             begin_idx=begin,end_idx=begin;
                             end_idx[dims[1]]=end[dims[1]];
                             for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -6857,7 +6858,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                                 }
                             }
-                            std::cout<<"1d2 fin"<<std::enl;
+                            std::cout<<"1d2 fin"<<std::endl;
                             begin_idx=begin,end_idx=begin;
                             end_idx[dims[2]]=end[dims[2]];
                             for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -6871,7 +6872,7 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                                 }
                             }
-                            std::cout<<"1d3 fin"<<std::enl;
+                            std::cout<<"1d3 fin"<<std::endl;
                         }
                     }
                     else{
