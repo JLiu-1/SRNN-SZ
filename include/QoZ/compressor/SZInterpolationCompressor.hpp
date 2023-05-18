@@ -565,7 +565,7 @@ namespace QoZ {
                         auto end_idx = start_idx;
                         //std::array<size_t,N> block_lengths;
                         std::array<size_t,N> sample_starts,sample_ends;
-                        std::cout<<"a0"<<std::endl;
+                        //std::cout<<"a0"<<std::endl;
                         
                         for (int i = 0; i < N; i++) {
                             end_idx[i] += cur_blocksize ;
@@ -594,7 +594,7 @@ namespace QoZ {
                             std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
 
                         }
-                        std::cout<<"a0.3"<<std::endl;
+                        //std::cout<<"a0.3"<<std::endl;
                          //std::cout<<"----"<<std::endl;
                         std::vector<T> orig_sampled_block;
     
@@ -629,7 +629,7 @@ namespace QoZ {
                                 }
                             }
                         } 
-                        std::cout<<"a0.6"<<std::endl;
+                        //std::cout<<"a0.6"<<std::endl;
                         std::array<size_t,N> temp_dim_offsets;
                         if(N==2){
                             temp_dim_offsets[1]=1;
@@ -666,7 +666,7 @@ namespace QoZ {
                             else
                                 interpDirection_Candidates={10,11};
                         }
-                        std::cout<<"a0.9"<<std::endl;
+                        //std::cout<<"a0.9"<<std::endl;
                         std::vector<uint8_t> adjInterp_Candidates={cur_level_meta.adjInterp};
 
 
