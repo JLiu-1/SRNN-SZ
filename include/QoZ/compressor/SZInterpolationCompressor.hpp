@@ -1416,11 +1416,13 @@ namespace QoZ {
         double block_interpolation_1d_crossblock(T *data, const std::array<size_t,N> &begin_idx, const std::array<size_t,N> &end_idx,const size_t &direction,const size_t &math_stride, const std::string &interp_func, const PredictorBehavior pb,const QoZ::Interp_Meta &meta,int cross_block=1,int tuning=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
             size_t math_begin_idx=begin_idx[direction],math_end_idx=end_idx[direction];
             size_t n = (math_end_idx - math_begin_idx) / math_stride + 1;
+            /*
             for(size_t i=0;i<N;i++)
                 std::cout<<begin_idx[i]<<" ";
             for(size_t i=0;i<N;i++)
                 std::cout<<end_idx[i]<<" ";
             std::cout<<std::endl;
+            */
            // std::cout<<n<<std::endl;
             if (n <= 1) {
                 return 0;
@@ -1569,6 +1571,8 @@ namespace QoZ {
 
                    
                     //predict_error+=quantize_integrated(d - data, *d, interp_cubic_front_adj(*(d -stride),*(d + stride), *(d+stride2x), *(d + stride3x)),mode);
+                    if(end_idx[0]==503 )
+                        std::cout<<"r1"<<std::endl;
                     size_t i_start= (cross_back and math_begin_idx>=math_stride2x)?1:5;
                     for (i = i_start; i + 3 < n; i += 4) {
                         
@@ -1596,7 +1600,8 @@ namespace QoZ {
 
                     
                    
-
+                    if(end_idx[0]==503 )
+                        std::cout<<"r2"<<std::endl;
                     for(auto i:boundary){
                         d = data + begin + i*stride;
                         size_t math_cur_idx=math_begin_idx+i*math_stride;
@@ -1625,7 +1630,8 @@ namespace QoZ {
                                         *(d - stride),mode);
                         }
                     }
-
+                    if(end_idx[0]==503 )
+                        std::cout<<"r3"<<std::endl;
 
 
                     for (i = 3; i + 3 < n; i += 4) {
@@ -1636,6 +1642,8 @@ namespace QoZ {
                         //predict_error+=quantize_integrated(d - data, *d,
                          //           interp_cubic_3(*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x)),mode);
                     }
+                    if(end_idx[0]==503 )
+                        std::cout<<"r4"<<std::endl;
 
                     size_t temp=n%4;
                     if(temp!=3 and n>temp+1){
