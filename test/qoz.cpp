@@ -38,7 +38,6 @@ void usage() {
     printf("	-f: single precision (float type)\n");
     printf("	-d: double precision (double type)\n");
     printf("	-I <width>: integer type (width = 32 or 64)\n");
-    printf("    -q: activate qoz features");
     printf("* configuration file: \n");
     printf("	-c <configuration file> : configuration file qoz.config\n");
     printf("* error control: (the error control parameters here will overwrite the setting in sz.config)\n");
@@ -56,7 +55,7 @@ void usage() {
 //    printf("		-P <point-wise relative error bound>: specifying point-wise relative error bound\n");
     printf("		-S <PSNR>: specifying PSNR\n");
     printf("		-N <normErr>: specifying normErr\n");
-    printf("    -q: activate qoz features");
+    printf("    -q: activate qoz features\n");
     printf("    -T <QoZ tuning target> \n");
     printf("    tuning targets as follows: \n");
     printf("        PSNR (peak signal-to-noise ratio)\n");
