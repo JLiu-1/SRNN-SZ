@@ -30,7 +30,7 @@ namespace QoZ {
     inline void
     calculate_interp_error_vars(T *data, std::vector<size_t> &dims,std::vector<double> &vars,uint8_t interp_op=0,uint8_t nat=0, size_t stride=8,size_t interp_stride=1,T abs_eb=0.0){
 
-        vars.resize(N,0.0);
+        vars.resize(N,1e-20);//stablization
         size_t count=0;
         if(stride<2)
             stride=2;

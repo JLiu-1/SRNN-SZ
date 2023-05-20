@@ -466,11 +466,12 @@ namespace QoZ {
             for (uint level = start_level; level > end_level && level <= start_level; level--) {
                 ///std::cout<<"Level: "<<level<<std::endl;
                 cur_level=level;
+                double cur_eb;
                 if (alpha<0) {
                     if (level >= 3) {
-                        quantizer.set_eb(eb * eb_ratio);
+                        cur_eb=eb * eb_ratio);
                     } else {
-                        quantizer.set_eb(eb);
+                        cur_eb=eb;
                     }
                 }
                 else if (alpha>=1){              
@@ -478,15 +479,16 @@ namespace QoZ {
                     if (cur_ratio>beta){
                         cur_ratio=beta;
                     }            
-                    quantizer.set_eb(eb/cur_ratio);
+                    cur_eb=eb/cur_ratio;
                 }
                 else{              
                     double cur_ratio=1-(level-1)*alpha;
                     if (cur_ratio<beta){
                         cur_ratio=beta;
                     }             
-                    quantizer.set_eb(eb*cur_ratio);
+                    cur_eb=eb*cur_ratio;
                 }
+                quantizer.set_eb(cur_eb);
                 /*
                 uint8_t cur_interpolator;
                 uint8_t cur_paradigm;
@@ -676,10 +678,22 @@ namespace QoZ {
                         //std::cout<<"a0.9"<<std::endl;
                         std::vector<uint8_t> adjInterp_Candidates={cur_level_meta.adjInterp};
 
+                        std::vector<double>interp_vars;
+
+                        std::vector<size_t>block_dims(N,0);
+                        for (size_t i=0;i<N;i++)
+                            block_dims[i]=(sample_ends[i]-sample_starts[i])/stride+1;
 
                         if(conf.multiDimInterp>0){
                             for(size_t i=1;i<=conf.multiDimInterp;i++)
                                 interpParadigm_Candidates.push_back(i);
+                            if(conf.dynamicDimCoeff){
+                               
+                                QoZ::calculate_interp_error_vars<T,N>(orig_sampled_block.data(),block_dims,interp_vars,cur_level_meta.interpAlgo,cur_level_meta.cubicSplineType,2,1,cur_eb);
+                                QoZ::preprocess_vars<N>(interp_vars);
+
+                            }
+
                        
                         }   
                         //std::cout<<"a1"<<std::endl;
@@ -699,15 +713,13 @@ namespace QoZ {
                         */
 
                         //std::vector<T> cur_block;
-                        std::vector<size_t>block_dims(N,0);
-                        for (size_t i=0;i<N;i++)
-                            block_dims[i]=(sample_ends[i]-sample_starts[i])/stride+1;
+                        
                         std::vector<float> coeffs;
                         //std::cout<<"a2"<<std::endl;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
                             int status;
                             //std::cout<<orig_sampled_block.size()<<std::endl;
-                             std::vector<double> temp_coeffs;
+                            std::vector<double> temp_coeffs;
                             status=calculate_interp_coeffs<T,N>(orig_sampled_block.data(), block_dims,temp_coeffs, 2);
                             //std::cout<<"a2"<<std::endl;
                             if (status!=0){
@@ -745,6 +757,11 @@ namespace QoZ {
                                                 break;
                                             //std::cout<<"a4"<<std::endl;
                                             cur_meta.adjInterp=adj_interp;
+
+                                            if(conf.dynamicDimCoeff){
+                                                for(size_t i=0;i<N;i++)
+                                                    cur_meta.dimCoeffs[i]=interp_vars[i];
+                                            }
                                             //cur_block=orig_sampled_block;
                                             double cur_loss=std::numeric_limits<double>::max();
 
@@ -787,6 +804,7 @@ namespace QoZ {
                                                     }
                                                 }
                                             } 
+                                            cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
                                             
 
                                             
