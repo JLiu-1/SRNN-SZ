@@ -7342,7 +7342,7 @@ namespace QoZ {
             }
             else if (paradigm==2){
                 const std::array<int, N> dims = dimension_sequences[direction];
-                //std::array<double,3>dim_coeffs=meta.dimCoeffs;
+                std::array<float,3>dim_coeffs=meta.dimCoeffs;
                 //don't do md interp on dims[0]
 
                 if(!cross_block){
