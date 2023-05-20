@@ -242,7 +242,7 @@ namespace QoZ {
                     }
                     //std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.adjInterp<<std::endl; 
                     if(blockwiseTuning and regressiveInterp and cur_meta.interpAlgo==1){
-                        std::vector<double> coeffs;
+                        std::vector<float> coeffs;
                         for(size_t i=0;i<4;i++)
                             coeffs.push_back(interp_coeffs[coeff_idx++]);
                         block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
