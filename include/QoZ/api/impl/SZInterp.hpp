@@ -1733,7 +1733,7 @@ double Tuning(QoZ::Config &conf, T *data){
                             std::cout<<x<<" ";
                         std::cout<<std::endl;
                         if (conf.naturalSpline){
-                            QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_nat_var[level-1],1,0,stride,interp_stride,cur_eb);
+                            QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_nat_vars[level-1],1,0,stride,interp_stride,cur_eb);
                             QoZ::preprocess_vars<N>(cubic_nat_vars[level-1]);
                             for(auto x:cubic_nat_vars[level-1])
                                 std::cout<<x<<" ";
@@ -1959,7 +1959,6 @@ double Tuning(QoZ::Config &conf, T *data){
                                             }
                                             cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
                                             
-                            
                                         }
                                     }
                                 }   
