@@ -193,6 +193,8 @@ namespace QoZ {
             var_first = cfg.GetBoolean("AlgoSettings", "var_first", var_first);
             blockwiseTuning = cfg.GetBoolean("AlgoSettings", "blockwiseTuning", blockwiseTuning);
             quadInterp = cfg.GetBoolean("AlgoSettings", "quadInterp", quadInterp);
+            freezeDimTest = cfg.GetBoolean("AlgoSettings", "freezeDimTest", freezeDimTest);
+            dynamicDimCoeff = cfg.GetBoolean("AlgoSettings", "dynamicDimCoeff", dynamicDimCoeff);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -507,7 +509,8 @@ namespace QoZ {
         int SSIMBlockSize=8;
         int fixBlockSize=0;
         double blockwiseSampleRate=2.0;
-        bool freezeDimTest=false
+        bool dynamicDimCoeff=false;
+        bool freezeDimTest=false;
         int adaptiveMultiDimStride=8;
         //std::vector<double> lorenzo1_coeffs;
         //std::vector<double> lorenzo2_coeffs;
@@ -562,7 +565,7 @@ namespace QoZ {
         std::string metadata;
         bool pybind_activated=false;
         bool FZ=false;
-        int fused_dim=-1;
+        int frozen_dim=-1;
         int regressiveInterp=0;
         int fullAdjacentInterp=0;
         bool naturalSpline=0;
