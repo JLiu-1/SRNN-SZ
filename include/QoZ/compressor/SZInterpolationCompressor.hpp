@@ -689,7 +689,7 @@ namespace QoZ {
                                 interpParadigm_Candidates.push_back(i);
                             if(conf.dynamicDimCoeff){
                                
-                                QoZ::calculate_interp_error_vars<T,N>(orig_sampled_block.data(),block_dims,interp_vars,cur_level_meta.interpAlgo,cur_level_meta.cubicSplineType,2,1,cur_eb);//cur_eb or 0?
+                                QoZ::calculate_interp_error_vars<T,N>(orig_sampled_block.data(),block_dims,interp_vars,cur_level_meta.interpAlgo,cur_level_meta.cubicSplineType,2,1,0);//cur_eb or 0?
                                 QoZ::preprocess_vars<N>(interp_vars);
 
                             }
