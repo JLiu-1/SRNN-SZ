@@ -36,7 +36,7 @@ namespace QoZ {
             stride=2;
         if(N==3){
             size_t dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
-            size_t is1=dimyz*interp_stride,is3x1=3*is1,is2=dimz*interp_stride,is3x2=3*is2,is3=interp_stride,1s3x3=3*is3;
+            size_t is1=dimyz*interp_stride,is3x1=3*is1,is2=dimz*interp_stride,is3x2=3*is2,is3=interp_stride,is3x3=3*is3;
            // std::cout<<dimx<<" "<<dimy<<" "<<dimz<<std::endl;
             for (size_t i = 3*interp_stride; i < dimx-3*interp_stride; i+=(stride/2)*2*interp_stride) {
                 for (size_t j = 3*interp_stride; j < dimy-3*interp_stride; j+=(stride/2)*2*interp_stride) {
@@ -74,7 +74,7 @@ namespace QoZ {
         }
         else if(N==2){
             size_t  dimx=dims[0],dimy=dims[1];
-            size_t is1=dimy*interp_stride,is3x1=3*is1,is2=interp_stride,1s3x2=3*is2;
+            size_t is1=dimy*interp_stride,is3x1=3*is1,is2=interp_stride,is3x2=3*is2;
             for (size_t i = 3*interp_stride; i < dimx-3*interp_stride; i+=(stride/2)*2*interp_stride) {
                 for (size_t j = 3*interp_stride; j < dimy-3*interp_stride; j+=(stride/2)*2*interp_stride) {
                  
