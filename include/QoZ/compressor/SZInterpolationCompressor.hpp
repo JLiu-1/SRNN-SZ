@@ -79,8 +79,8 @@ namespace QoZ {
             read(blockwiseTuning,buffer_pos, remaining_length);
             //std::cout<<blockwiseTuning<<std::endl;
             read(fixBlockSize,buffer_pos, remaining_length);
-            int fused_dim=-1;
-            read(fused_dim,buffer_pos, remaining_length);
+            int frozen_dim=-1;
+            read(frozen_dim,buffer_pos, remaining_length);
             
             int cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
@@ -142,7 +142,7 @@ namespace QoZ {
             }
             
             else{
-                recover_grid(decData,global_dimensions,maxStep,fused_dim);                   
+                recover_grid(decData,global_dimensions,maxStep,frozen_dim);                   
                 interpolation_level--;           
             }
             size_t meta_index=0,coeff_idx=0;
@@ -665,10 +665,10 @@ namespace QoZ {
                         std::vector<uint8_t> interpDirection_Candidates={0, QoZ::factorial(N) -1};
                         //if(N==3)
                         //   interpDirection_Candidates={0,1,2,3,4,5};
-                        if(conf.fused_dim>=0){
-                            if(conf.fused_dim==0)
+                        if(conf.frozen_dim>=0){
+                            if(conf.frozen_dim==0)
                                 interpDirection_Candidates={6,7};
-                            else if (conf.fused_dim==1)
+                            else if (conf.frozen_dim==1)
                                 interpDirection_Candidates={8,9};
                             else
                                 interpDirection_Candidates={10,11};
@@ -728,12 +728,12 @@ namespace QoZ {
                         for (auto &interp_op: interpAlgo_Candidates) {
                             cur_meta.interpAlgo=interp_op;
                             for (auto &interp_pd: interpParadigm_Candidates) {
-                                if(conf.fused_dim>=0 and interp_pd>1)
+                                if(conf.frozen_dim>=0 and interp_pd>1)
                                     continue;
                                 cur_meta.interpParadigm=interp_pd;
 
                                 for (auto &interp_direction: interpDirection_Candidates) {
-                                    if (conf.fused_dim<0 and (interp_pd==1 or  (interp_pd==2 and N<=2)) and interp_direction!=0)
+                                    if (conf.frozen_dim<0 and (interp_pd==1 or  (interp_pd==2 and N<=2)) and interp_direction!=0)
                                         continue;
                                     cur_meta.interpDirection=interp_direction;
                                     for(auto &cubic_spline_type:cubicSplineType_Candidates){
@@ -872,7 +872,7 @@ namespace QoZ {
             write(levelwise_predictor_levels,buffer_pos);
             write(conf.blockwiseTuning,buffer_pos);
             write(conf.fixBlockSize,buffer_pos);
-            write(conf.fused_dim,buffer_pos);
+            write(conf.frozen_dim,buffer_pos);
             write(cross_block,buffer_pos);
             write(conf.trimToZero,buffer_pos);
             //write(conf.blockOrder,buffer_pos);
@@ -1278,7 +1278,7 @@ namespace QoZ {
 
                 std::array<size_t,3>anchor_strides={maxStep,maxStep,maxStep};
 
-                int fd=conf.fused_dim;
+                int fd=conf.frozen_dim;
                 if(fd>=0)
                     anchor_strides[fd]=1;
                 
@@ -1302,7 +1302,7 @@ namespace QoZ {
             }
         }
  
-        void recover_grid(T *decData,const std::array<size_t,N>& global_dimensions,size_t maxStep,size_t fused_dim=-1){
+        void recover_grid(T *decData,const std::array<size_t,N>& global_dimensions,size_t maxStep,size_t frozen_dim=-1){
             assert(maxStep>0);
             if (N==2){
                 for (size_t x=0;x<global_dimensions[0];x+=maxStep){
@@ -1314,8 +1314,8 @@ namespace QoZ {
             }
             else if(N==3){
                 std::array<size_t,3>anchor_strides={maxStep,maxStep,maxStep};
-                if(fused_dim>=0)
-                    anchor_strides[fused_dim]=1;
+                if(frozen_dim>=0)
+                    anchor_strides[frozen_dim]=1;
                 for (size_t x=0;x<global_dimensions[0];x+=anchor_strides[0]){
                     for (size_t y=0;y<global_dimensions[1];y+=anchor_strides[1]){
                         for(size_t z=0;z<global_dimensions[2];z+=anchor_strides[2]){
@@ -6719,7 +6719,7 @@ namespace QoZ {
             
             else if(paradigm<3){//md or hd
                 const std::array<int, N> dims = dimension_sequences[0];
-                //std::array<double,3>dim_coeffs=meta.dimCoeffs;
+                std::array<float,3>dim_coeffs=meta.dimCoeffs;
                 if(!cross_block){
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
@@ -6745,7 +6745,7 @@ namespace QoZ {
                                                                 begin_offset2 +
                                                                 (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
                                                                 stride * dimension_offsets[dims[0]],
-                                                                stride * dimension_offsets[dims[1]], interp_func, pb,std::array<float,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[0],dim_coeffs[1]}
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb,std::array<float,2>{dim_coeffs[0],dim_coeffs[1]},meta,tuning);//std::array<double,2>{dim_coeffs[0],dim_coeffs[1]}
                 }
                 else{
                     std::array<size_t, N> begin_idx=begin,end_idx=begin;
@@ -6770,7 +6770,7 @@ namespace QoZ {
                     end_idx=end;
                     predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                 end_idx,std::array<size_t,2>{dims[0],dims[1]},
-                                                                stride , interp_func, pb,std::array<float,2>{1.0,1.0},meta,1,tuning);
+                                                                stride , interp_func, pb,std::array<float,2>{dim_coeffs[0],dim_coeffs[1]},meta,1,tuning);
                 }
             }
            
@@ -6945,7 +6945,7 @@ namespace QoZ {
                     }
                 }
                 else{
-                    //dims[0] fused.
+                    //dims[0] frozen.
                     if(!cross_block){
                         for (size_t i = (begin[dims[0]] ? begin[dims[0]] + 1 : 0); i <= end[dims[0]]; i += 1) {
                             for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
@@ -7078,10 +7078,11 @@ namespace QoZ {
             }
             
             else if (paradigm==1){
+                std::array<float,3>dim_coeffs=meta.dimCoeffs;
                 if(!fallback_2d){
                     const std::array<int, N> dims = dimension_sequences[0];
                     if(!cross_block){
-                        //std::array<double,3>dim_coeffs=meta.dimCoeffs;
+                        
                         //std::cout<<dim_coeffs[0]<<std::endl;
                         for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                             for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
@@ -7131,7 +7132,7 @@ namespace QoZ {
                                                                     begin_offset2 +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[1]],interp_func, pb,std::array<float,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]}
+                                                                    stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[1]],interp_func, pb,std::array<float,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]},meta,tuning);//std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]}
                         }
                         
                         //std::cout<<"2d1 fin"<<std::endl;
@@ -7148,7 +7149,7 @@ namespace QoZ {
                                                                     begin_offset2 +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<float,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[2]]}
+                                                                    stride * dimension_offsets[dims[0]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<float,2>{dim_coeffs[dims[0]],dim_coeffs[dims[2]]},meta,tuning);//std::array<double,2>{dim_coeffs[dims[0]],dim_coeffs[dims[2]]}
                         }
                         //std::cout<<"2d2 fin"<<std::endl;
                         for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride2x : 0); i <= end[dims[0]]; i += stride2x) {
@@ -7163,7 +7164,7 @@ namespace QoZ {
                                                                     begin_offset2 +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<float,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
+                                                                    stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
                         }
                         //std::cout<<"2d3 fin"<<std::endl;
                         size_t begin_offset1 = begin[dims[0]] * dimension_offsets[dims[0]] ;
@@ -7181,7 +7182,7 @@ namespace QoZ {
                                                                     begin_offset3 +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[0]],stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func,pb,std::array<float,3>{1.0,1.0,1.0},meta,tuning);//dim_coeffs
+                                                                    stride * dimension_offsets[dims[0]],stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func,pb,dim_coeffs,meta,tuning);//dim_coeffs
                         //std::cout<<"3d fin"<<std::endl;
                     }
                     else{
@@ -7229,7 +7230,7 @@ namespace QoZ {
                             end_idx[dims[2]]=begin_idx[dims[2]]=k;     
                             predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[0],dims[1]},
-                                                                    stride , interp_func, pb,std::array<float,2>{1.0,1.0},meta,1,tuning);
+                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]},meta,1,tuning);
                         }
                         
                         //std::cout<<"2d1 fin"<<std::endl;
@@ -7240,7 +7241,7 @@ namespace QoZ {
                             end_idx[dims[1]]=begin_idx[dims[1]]=j;     
                             predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[0],dims[2]},
-                                                                    stride , interp_func, pb,std::array<float,2>{1.0,1.0},meta,1,tuning);
+                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[0]],dim_coeffs[dims[2]]},meta,1,tuning);
                         }
                         //std::cout<<"2d2 fin"<<std::endl;
                         begin_idx=begin,end_idx=begin;
@@ -7250,13 +7251,13 @@ namespace QoZ {
                             end_idx[dims[0]]=begin_idx[dims[0]]=i; 
                             predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},
-                                                                    stride , interp_func, pb,std::array<float,2>{1.0,1.0},meta,1,tuning);
+                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,1,tuning);
                         }
                         //std::cout<<"2d3 fin"<<std::endl;
                         begin_idx=begin,end_idx=end;
                         predict_error += block_interpolation_3d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,3>{dims[0],dims[1],dims[2]},
-                                                                    stride , interp_func, pb,std::array<float,3>{1.0,1.0,1.0},meta,1,tuning);
+                                                                    stride , interp_func, pb,dim_coeffs,meta,1,tuning);
                                                                     
 
                     }
@@ -7299,7 +7300,7 @@ namespace QoZ {
                                                                     begin_offset2 +
                                                                     (end[dims[2]] - begin[dims[2]]) *
                                                                     dimension_offsets[dims[2]],
-                                                                    stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<float,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
+                                                                    stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
                         }
                     }
                     else{
@@ -7332,7 +7333,7 @@ namespace QoZ {
                             end_idx[dims[0]]=begin_idx[dims[0]]=i;                   
                             predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},
-                                                                    stride , interp_func, pb,std::array<float,2>{1.0,1.0},meta,1,tuning);
+                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,1,tuning);
                         }
                     }
                 }
@@ -7392,7 +7393,7 @@ namespace QoZ {
                                                                 begin_offset2 +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
-                                                                stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<float,2>{1.0,1.0},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
+                                                                stride * dimension_offsets[dims[1]], stride * dimension_offsets[dims[2]],interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,tuning);//std::array<double,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]}
                     }
                 }
                 else{
@@ -7438,7 +7439,7 @@ namespace QoZ {
                         end_idx[dims[0]]=begin_idx[dims[0]]=i;
                         predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},
-                                                                    stride , interp_func, pb,std::array<float,2>{1.0,1.0},meta,1,tuning);
+                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,1,tuning);
                     }
 
 

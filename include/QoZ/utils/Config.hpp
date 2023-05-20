@@ -507,7 +507,8 @@ namespace QoZ {
         int SSIMBlockSize=8;
         int fixBlockSize=0;
         double blockwiseSampleRate=2.0;
-        int adaptiveMultiDimStride=0;
+        bool freezeDimTest=false
+        int adaptiveMultiDimStride=8;
         //std::vector<double> lorenzo1_coeffs;
         //std::vector<double> lorenzo2_coeffs;
         bool verbose=1;

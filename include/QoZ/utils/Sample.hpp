@@ -28,16 +28,19 @@ namespace QoZ {
 
     template<class T, uint N>
     inline void
-    calculate_interp_error_vars(T *data, std::vector<size_t> &dims,std::vector<double> &vars,uint8_t interp_op=0,uint8_t nat=0, size_t stride=6,T abs_eb=0.0){
+    calculate_interp_error_vars(T *data, std::vector<size_t> &dims,std::vector<double> &vars,uint8_t interp_op=0,uint8_t nat=0, size_t stride=8,size_t interp_stride=1,T abs_eb=0.0){
 
         vars.resize(N,0.0);
         size_t count=0;
+        if(stride<2)
+            stride=2;
         if(N==3){
             size_t dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
+            size_t is1=dimyz*interp_stride,is3x1=3*is1,is2=dimz*interp_stride,is3x2=3*is2,is3=interp_stride,1s3x3=3*is3;
            // std::cout<<dimx<<" "<<dimy<<" "<<dimz<<std::endl;
-            for (size_t i = 3; i < dimx-3; i+=stride) {
-                for (size_t j = 3; j < dimy-3; j+=stride) {
-                    for (size_t k = 3; k < dimz-3; k+=stride) {
+            for (size_t i = 3*interp_stride; i < dimx-3*interp_stride; i+=(stride/2)*2*interp_stride) {
+                for (size_t j = 3*interp_stride; j < dimy-3*interp_stride; j+=(stride/2)*2*interp_stride) {
+                    for (size_t k = 3*interp_stride; k < dimz-3*interp_stride; k+=(stride/2)*2*interp_stride) {
                         //std::cout<<i<<" "<<j<<" "<<k<<std::endl;
                         count+=1;
                         size_t idx=i*dimyz+j*dimz+k;
@@ -46,21 +49,21 @@ namespace QoZ {
                         //std::cout<<cur_value<<std::endl;
                         if(interp_op==1){
                             auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
-                            T interp_err=interp_cubic(*(d - 3*dimyz), *(d - dimyz), *(d + dimyz), *(d + 3*dimyz))-cur_value;
+                            T interp_err=interp_cubic(*(d - is3x1), *(d - is1), *(d + is1), *(d + is3x1))-cur_value;
                             vars[0]+=interp_err*interp_err;
-                            interp_err=interp_cubic(*(d - 3*dimz), *(d - dimz), *(d + dimz), *(d + 3*dimz))-cur_value;
+                            interp_err=interp_cubic(*(d - is3x2), *(d - is2), *(d +is2), *(d + is3x2))-cur_value;
                             vars[1]+=interp_err*interp_err;
-                            interp_err=interp_cubic(*(d - 3), *(d - 1), *(d + 1), *(d + 3))-cur_value;
+                            interp_err=interp_cubic(*(d - is3x3), *(d - is3), *(d + is3), *(d + is3x3))-cur_value;
                             vars[2]+=interp_err*interp_err;
                         }
                         else{
-                            T interp_err=interp_linear<T>( *(d - dimyz), *(d + dimyz))-cur_value;
+                            T interp_err=interp_linear<T>( *(d -  is1), *(d + is1))-cur_value;
                             //std::cout<<interp_value<<std::endl;
                             vars[0]+=interp_err*interp_err;
-                            interp_err=interp_linear<T>( *(d - dimz), *(d + dimz))-cur_value;
+                            interp_err=interp_linear<T>( *(d -  is2), *(d + is2))-cur_value;
                             //std::cout<<interp_value<<std::endl;
                             vars[1]+=interp_err*interp_err;
-                            interp_err=interp_linear<T>( *(d - 1), *(d + 1) )-cur_value;
+                            interp_err=interp_linear<T>( *(d -  is3), *(d + is3) )-cur_value;
                             vars[2]+=interp_err*interp_err;
 
                         }
@@ -71,8 +74,9 @@ namespace QoZ {
         }
         else if(N==2){
             size_t  dimx=dims[0],dimy=dims[1];
-            for (size_t i = 3; i < dimx-3; i+=stride) {
-                for (size_t j = 3; j < dimy-3; j+=stride) {
+            size_t is1=dimy*interp_stride,is3x1=3*is1,is2=interp_stride,1s3x2=3*is2;
+            for (size_t i = 3*interp_stride; i < dimx-3*interp_stride; i+=(stride/2)*2*interp_stride) {
+                for (size_t j = 3*interp_stride; j < dimy-3*interp_stride; j+=(stride/2)*2*interp_stride) {
                  
                     count+=1;
                     size_t idx=i*dimy+j;
@@ -80,22 +84,22 @@ namespace QoZ {
                     T cur_value=*d;
                     if(interp_op==1){
                         auto interp_cubic=nat?interp_cubic_2<T>:interp_cubic_1<T>;
-                        T interp_value=interp_cubic(*(d - 3*dimy), *(d - dimy), *(d + dimy), *(d + 3*dimy));
-                        vars[0]+=interp_value*interp_value;
-                        interp_value=interp_cubic(*(d- 3), *(d - 1), *(d + 1), *(d + 3));
-                        vars[1]+=interp_value*interp_value;
+                        T interp_err=interp_cubic(*(d - is3x1), *(d - is1), *(d + is1), *(d + is3x1))-cur_value;
+                        vars[0]+=interp_err*interp_err;
+                        interp_err=interp_cubic(*(d - is3x2), *(d - is2), *(d +is2), *(d + is3x2))-cur_value;
+                        vars[1]+=interp_err*interp_err;
                     }
                     else{
-                        T interp_value=interp_linear( *(d - dimy), *(d + dimy));
-                        vars[0]+=interp_value*interp_value;
-                        interp_value=interp_linear( *(d -1), *(d + 1));
-                        vars[1]+=interp_value*interp_value;
+                        T interp_err=interp_linear<T>( *(d -  is1), *(d + is1))-cur_value;
+                        vars[0]+=interp_err*interp_err;
+                        interp_err=interp_linear<T>( *(d -  is2), *(d + is2))-cur_value;
+                        vars[1]+=interp_err*interp_err;
                     }
                 }
             }
 
         }
-        double offset=0.0;
+        //double offset=0.0;
         
         for (size_t i=0;i<N;i++){
             vars[i]/=double(count);

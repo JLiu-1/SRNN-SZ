@@ -1661,31 +1661,13 @@ double Tuning(QoZ::Config &conf, T *data){
             */
             std::vector<uint8_t> adjInterp_Candidates={0};
 
-            //std::vector<double> linear_interp_vars,cubic_noknot_vars,cubic_nat_vars;
+            
             if(conf.multiDimInterp>0){
                 for(size_t i=1;i<=conf.multiDimInterp;i++)
                     interpParadigm_Candidates.push_back(i);
                 //interpParadigm_Candidates.push_back(conf.multiDimInterp);
                 /*
-                if(conf.adaptiveMultiDimStride>0 ){
-                    QoZ::calculate_interp_error_vars<T,N>(data, global_dims,linear_interp_vars,0,0,conf.adaptiveMultiDimStride,conf.absErrorBound);\
-                    QoZ::preprocess_vars<N>(linear_interp_vars);
-                    for(auto x:linear_interp_vars)
-                        std::cout<<x<<" ";
-                    std::cout<<std::endl;
-                    QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
-                    QoZ::preprocess_vars<N>(cubic_noknot_vars);
-                    for(auto x:cubic_noknot_vars)
-                        std::cout<<x<<" ";
-                    std::cout<<std::endl;
-                    if (conf.naturalSpline){
-                        QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_nat_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
-                        QoZ::preprocess_vars<N>(cubic_nat_vars);
-                        for(auto x:cubic_nat_vars)
-                            std::cout<<x<<" ";
-                        std::cout<<std::endl;
-                    }
-                }
+                
                 */
             }
 
@@ -1717,6 +1699,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                         QoZ::Lossless_zstd());   
                 double best_accumulated_interp_loss_1=0;
                 double best_accumulated_interp_loss_2=0;
+                std::vector<std::vector<double> > linear_interp_vars(conf.levelwisePredictionSelection),cubic_noknot_vars(conf.levelwisePredictionSelection),cubic_nat_vars(conf.levelwisePredictionSelection);
                 for(int level=conf.levelwisePredictionSelection;level>0;level--){
                    // std::cout<<level<<std::endl;
                     int start_level=(level==conf.levelwisePredictionSelection?9999:level);
@@ -1726,6 +1709,39 @@ double Tuning(QoZ::Config &conf, T *data){
                     uint8_t bestDirection = 0;
                     uint8_t bestSplineType=0;
                     */
+                    
+                    if(conf.multiDimInterp>0 and conf.dynamicDimCoeff or (conf.freezeDimTest and level==1 and N>=3)){
+                        
+                        size_t interp_stride=pow(2,level-1);
+                        size_t stride;
+                        double cur_eb=level>=3?conf.absErrorBound/2:conf.absErrorBound;
+                        if(level>=3)
+                            stride=2;
+                        else if(level>=2)
+                            stride= conf.adaptiveMultiDimStride<=4?2:conf.adaptiveMultiDimStride/2;
+                        else
+                            stride= conf.adaptiveMultiDimStride;
+                    
+                        QoZ::calculate_interp_error_vars<T,N>(data, global_dims,linear_interp_vars[level-1],0,0,stride,interp_stride,cur_eb);
+                        QoZ::preprocess_vars<N>(linear_interp_vars[level-1]);
+                        for(auto x:linear_interp_vars[level-1])
+                            std::cout<<x<<" ";
+                        std::cout<<std::endl;
+                        QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars[level-1],1,0,stride,interp_stride,cur_eb);
+                        QoZ::preprocess_vars<N>(cubic_noknot_vars[level-1]);
+                        for(auto x:cubic_noknot_vars[level-1])
+                            std::cout<<x<<" ";
+                        std::cout<<std::endl;
+                        if (conf.naturalSpline){
+                            QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_nat_var[level-1],1,0,stride,interp_stride,cur_eb);
+                            QoZ::preprocess_vars<N>(cubic_nat_vars[level-1]);
+                            for(auto x:cubic_nat_vars[level-1])
+                                std::cout<<x<<" ";
+                            std::cout<<std::endl;
+                        }
+                    }
+
+
                     double best_interp_absloss=std::numeric_limits<double>::max();
                     //conf.cmprAlgo = QoZ::ALGO_INTERP;    
                     QoZ::Interp_Meta cur_meta;
@@ -1754,23 +1770,23 @@ double Tuning(QoZ::Config &conf, T *data){
                                             continue;
                                         */
                                         cur_meta.adjInterp=adj_interp;
-                                        /*
-                                        if(conf.adaptiveMultiDimStride>0 and interp_pd>0 and level==1){
+                                        
+                                        if(conf.dynamicDimCoeff>0 and interp_pd>0){
                                             if(interp_op==0){
                                                 for(size_t i=0;i<N;i++)
-                                                    cur_meta.dimCoeffs[i]=linear_interp_vars[i];
+                                                    cur_meta.dimCoeffs[i]=linear_interp_vars[level-1][i];
                                             }
                                             else if (cubic_spline_type==0){
                                                 for(size_t i=0;i<N;i++)
-                                                    cur_meta.dimCoeffs[i]=cubic_noknot_vars[i];
+                                                    cur_meta.dimCoeffs[i]=cubic_noknot_vars[level-1][i];
                                             }
                                             else{
                                                 for(size_t i=0;i<N;i++)
-                                                    cur_meta.dimCoeffs[i]=cubic_nat_vars[i];
+                                                    cur_meta.dimCoeffs[i]=cubic_nat_vars[level-1][i];
                                             }
 
                                         }
-                                        */
+                                        
                                         conf.interpMeta=cur_meta;
 
 
@@ -1787,7 +1803,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                             best_meta=cur_meta;
                                             best_interp_absloss=cur_absloss;
                                         }
-                                        //cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
+                                        cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
                         
                                     }
                                 }
@@ -1846,9 +1862,9 @@ double Tuning(QoZ::Config &conf, T *data){
                 
                     
 
-                //fusedim
+                //frozendim
                 
-                if(conf.adaptiveMultiDimStride>0 and N==3 ){
+                if(conf.freezeDimTest and N>=3 ){
 
                     std::vector<QoZ::Interp_Meta> tempmeta_list=conf.interpMeta_list;
                     conf.interpMeta_list=interpMeta_list;      
@@ -1860,19 +1876,19 @@ double Tuning(QoZ::Config &conf, T *data){
 
 
 
-                    std::vector<double> cubic_noknot_vars;
-                    QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
-                    size_t fused_dim=0;
-                    double cur_vars=cubic_noknot_vars[0];
+                    //std::vector<double> cubic_noknot_vars;
+                    //QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
+                    size_t frozen_dim=0;
+                    double cur_vars=cubic_noknot_vars[0][0];
                     for(size_t i=1;i<N;i++){
-                        if(cubic_noknot_vars[i]>cur_vars){
-                            fused_dim=i;
-                            cur_vars=cubic_noknot_vars[i];
+                        if(cubic_noknot_vars[0][i]>cur_vars){
+                            frozen_dim=i;
+                            cur_vars=cubic_noknot_vars[0][i];
                         }
                     }
-                    if(fused_dim==0)
+                    if(frozen_dim==0)
                         interpDirection_Candidates={6,7};
-                    else if (fused_dim==1)
+                    else if (frozen_dim==1)
                         interpDirection_Candidates={8,9};
                     else
                         interpDirection_Candidates={10,11};
@@ -1908,6 +1924,22 @@ double Tuning(QoZ::Config &conf, T *data){
                                                 break;
                                            
                                             cur_meta.adjInterp=adj_interp;
+
+                                            if(conf.dynamicDimCoeff>0 and interp_pd>0){
+                                                if(interp_op==0){
+                                                    for(size_t i=0;i<N;i++)
+                                                        cur_meta.dimCoeffs[i]=linear_interp_vars[level-1][i];
+                                                }
+                                                else if (cubic_spline_type==0){
+                                                    for(size_t i=0;i<N;i++)
+                                                        cur_meta.dimCoeffs[i]=cubic_noknot_vars[level-1][i];
+                                                }
+                                                else{
+                                                    for(size_t i=0;i<N;i++)
+                                                        cur_meta.dimCoeffs[i]=cubic_nat_vars[level-1][i];
+                                                }
+
+                                            }
                                             
                                             conf.interpMeta=cur_meta;
 
@@ -1925,7 +1957,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                                 best_meta=cur_meta;
                                                 best_interp_absloss=cur_absloss;
                                             }
-                                            //cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
+                                            cur_meta.dimCoeffs={1.0/3.0,1.0/3.0,1.0/3.0};
                                             
                             
                                         }
@@ -1963,7 +1995,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
                     std::cout<<best_interp_cr_1<<" "<<best_interp_cr_2<<std::endl;
                     if(best_interp_cr_2>best_interp_cr_1*1.05){
-                        conf.fused_dim=fused_dim;
+                        conf.frozen_dim=frozen_dim;
                         interpMeta_lists[wave_idx]=interpMeta_list;
                     }
                 
@@ -2019,7 +2051,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 uint8_t bestDirection = 0;
                 uint8_t bestCubicSplineType =0;
                 */
-                //fusedim not added.
+                //frozendim not added.
                 QoZ::Interp_Meta best_meta,cur_meta;
                     //conf.cmprAlgo == QoZ::ALGO_INTERP;
                 double cur_best_interp_cr=0.0;
