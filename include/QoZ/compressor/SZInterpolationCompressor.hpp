@@ -1,5 +1,5 @@
 #ifndef _SZ_INTERPOLATION_COMPRESSSOR_HPP
-#-define _SZ_INTERPOLATION_COMPRESSSOR_HPP
+#define _SZ_INTERPOLATION_COMPRESSSOR_HPP
 #include "QoZ/compressor/Compressor.hpp"
 #include "QoZ/predictor/Predictor.hpp"
 #include "QoZ/predictor/LorenzoPredictor.hpp"
