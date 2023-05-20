@@ -1,5 +1,5 @@
 #ifndef _SZ_INTERPOLATION_COMPRESSSOR_HPP
-#define _SZ_INTERPOLATION_COMPRESSSOR_HPP
+#-define _SZ_INTERPOLATION_COMPRESSSOR_HPP
 #include "QoZ/compressor/Compressor.hpp"
 #include "QoZ/predictor/Predictor.hpp"
 #include "QoZ/predictor/LorenzoPredictor.hpp"
@@ -597,12 +597,13 @@ namespace QoZ {
                         //std::cout<<"a0.3"<<std::endl;
                          //std::cout<<"----"<<std::endl;
                         std::vector<T> orig_sampled_block;
-    
+                        /*
                         std::array<size_t,N>sb_starts;
                         std::fill(sb_starts.begin(),sb_starts.end(),0);
                         std::array<size_t,N>sb_ends;
                         for(size_t i=0;i<N;i++)
                             sb_ends[i]=(sample_ends[i]-sample_starts[i])/stride+1;
+                        */
                         //std::fill(sb_ends.begin(),sb_ends.end(),0);
                         
                         if(N==2){
@@ -630,6 +631,7 @@ namespace QoZ {
                             }
                         } 
                         //std::cout<<"a0.6"<<std::endl;
+                        /*
                         std::array<size_t,N> temp_dim_offsets;
                         if(N==2){
                             temp_dim_offsets[1]=1;
@@ -641,14 +643,17 @@ namespace QoZ {
                             temp_dim_offsets[0]=(sb_ends[2])*(sb_ends[1]);
                        
                         }
-                        for(size_t i=0;i<N;i++)
-                            sb_ends[i]--;
+                        
                         //std::cout<<sb_ends[0]<<" "<<sb_ends[1]<<" "<<sb_ends[2]<<std::endl;
                         //std::cout<<temp_dim_offsets[0]<<" "<<temp_dim_offsets[1]<<" "<<temp_dim_offsets[2]<<std::endl;
+                        
                         std::array<size_t,N> global_dimension_offsets=dimension_offsets;
                         dimension_offsets=temp_dim_offsets;
                         std::array<size_t,N> global_dimensions_temp=global_dimensions;
                         global_dimensions=sb_ends;
+                        for(size_t i=0;i<N;i++)
+                            sb_ends[i]--;
+                        */
                         
                         QoZ::Interp_Meta best_meta,cur_meta;
                         double best_loss=std::numeric_limits<double>::max();
@@ -693,10 +698,10 @@ namespace QoZ {
                         }
                         */
 
-                        std::vector<T> cur_block;
+                        //std::vector<T> cur_block;
                         std::vector<size_t>block_dims(N,0);
                         for (size_t i=0;i<N;i++)
-                            block_dims[i]=sb_ends[i]+1;
+                            block_dims[i]=(sample_ends[i]-sample_starts[i])/stride+1;
                         std::vector<double> coeffs;
                         //std::cout<<"a2"<<std::endl;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
@@ -735,15 +740,15 @@ namespace QoZ {
                                                 break;
                                             //std::cout<<"a4"<<std::endl;
                                             cur_meta.adjInterp=adj_interp;
-                                            cur_block=orig_sampled_block;
+                                            //cur_block=orig_sampled_block;
                                             double cur_loss=std::numeric_limits<double>::max();
 
                                             if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp)
-                                                cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
-                                                                          interpolators[cur_meta.interpAlgo],cur_meta, 1,2,cross_block,1,coeffs);//,cross_block,regressiveInterp);
+                                                cur_loss=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
+                                                                          interpolators[cur_meta.interpAlgo],cur_meta, stride,2,cross_block,1,coeffs);//,cross_block,regressiveInterp);
                                             else
-                                                cur_loss=block_interpolation(cur_block.data(), sb_starts, sb_ends, PB_predict_overwrite,
-                                                                          interpolators[cur_meta.interpAlgo],cur_meta, 1,2,cross_block,0);//,cross_block,regressiveInterp);
+                                                cur_loss=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
+                                                                          interpolators[cur_meta.interpAlgo],cur_meta, stride,2,cross_block,0);//,cross_block,regressiveInterp);
                                             //std::cout<<"a5"<<std::endl;
 
                                             //double cur_loss=0.0;
@@ -752,12 +757,12 @@ namespace QoZ {
                                                 best_meta=cur_meta;
                                             }
                                             size_t local_idx=0;
-                                            /*
+                                            
                                             if(N==2){
                                                 for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
-                                                    //sb_dims[0]++;
+                                                    
                                                     for(size_t y=sample_starts[1];y<=sample_ends[0];y+=stride){
-                                                        //sb_dims[1]++;
+                                                       
                                                         size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
                                                         data[global_idx]=orig_sampled_block[local_idx++];
                                                         
@@ -766,18 +771,18 @@ namespace QoZ {
                                             }
                                             else if(N==3){
                                                 for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=stride){
-                                                   // sb_dims[0]++;
+                                                   
                                                     for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=stride){
-                                                       // sb_dims[1]++;
+                                                      
                                                         for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=stride){
-                                                           // sb_dims[2]++;
+                                                          
                                                             size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                                             data[global_idx]=orig_sampled_block[local_idx++];
                                                         }
                                                     }
                                                 }
                                             } 
-                                            */
+                                            
 
                                             
                                         }
@@ -787,8 +792,8 @@ namespace QoZ {
                         }
                         //std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
                         interp_metas.push_back(best_meta);
-                        dimension_offsets=global_dimension_offsets;
-                        global_dimensions=global_dimensions_temp;
+                        //dimension_offsets=global_dimension_offsets;
+                        //global_dimensions=global_dimensions_temp;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp)
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block,1,coeffs);//,cross_block,regressiveInterp);
