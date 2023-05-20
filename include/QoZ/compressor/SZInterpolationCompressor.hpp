@@ -718,7 +718,7 @@ namespace QoZ {
                             }
                             else{
                                 for(size_t i=0;i<4;i++)
-                                    coeffs=temp_coeffs[i];
+                                    coeffs[i]=temp_coeffs[i];
                             }
                             interp_coeffs.insert(interp_coeffs.end(),coeffs.begin(),coeffs.end());
 
