@@ -7135,7 +7135,7 @@ namespace QoZ {
                         std::array<size_t, N>steps;
                         std::array<size_t, N> begin_idx=begin,end_idx=end;
                         steps[dims[1]]=1;
-                        begin_idx[dims[0]]=(begin[dims[0]] ? begin[dims[1]] + 1 : 0);
+                        begin_idx[dims[0]]=(begin[dims[0]] ? begin[dims[0]] + 1 : 0);
                         begin_idx[dims[2]]=(begin[dims[2]] ? begin[dims[2]] + stride2x : 0);
                         steps[dims[0]]=1;
                         steps[dims[2]]=stride2x;
@@ -7481,7 +7481,7 @@ namespace QoZ {
                         std::array<size_t, N>steps;
                         std::array<size_t, N> begin_idx=begin,end_idx=end;
                         steps[dims[1]]=1;
-                        begin_idx[dims[0]]=(begin[dims[0]] ? begin[dims[1]] + 1 : 0);
+                        begin_idx[dims[0]]=(begin[dims[0]] ? begin[dims[0]] + 1 : 0);
                         begin_idx[dims[2]]=(begin[dims[2]] ? begin[dims[2]] + stride2x : 0);
                         steps[dims[0]]=1;
                         steps[dims[2]]=stride2x;

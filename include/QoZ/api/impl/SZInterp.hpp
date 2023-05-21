@@ -1733,8 +1733,6 @@ double Tuning(QoZ::Config &conf, T *data){
                             }
                         }
                         QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars[level-1],1,0,stride,interp_stride,cur_eb);
-                        for(auto x:cubic_noknot_vars[level-1])
-                            std::cout<<x<<" ";
                         QoZ::preprocess_vars<N>(cubic_noknot_vars[level-1]);
                         for(auto x:cubic_noknot_vars[level-1])
                             std::cout<<x<<" ";
