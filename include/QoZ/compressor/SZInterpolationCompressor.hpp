@@ -1520,13 +1520,15 @@ namespace QoZ {
         } 
 
         double block_interpolation_1d_crossblock_3d(T *data, const std::array<size_t,N> &begin_idx, const std::array<size_t,N> &end_idx,const size_t &direction, std::array<size_t,N> &steps,const size_t &math_stride, const std::string &interp_func, const PredictorBehavior pb,const QoZ::Interp_Meta &meta,int cross_block=1,int tuning=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
-            size_t math_begin_idx=begin_idx[direction],math_end_idx=end_idx[direction];
-            size_t n = (math_end_idx - math_begin_idx) / math_stride + 1;
+            
             for(size_t i=0;i<N;i++){
                 if(end_idx[i]<begin_idx[i])
                     return 0;
-
             }
+
+            size_t math_begin_idx=begin_idx[direction],math_end_idx=end_idx[direction];
+            size_t n = (math_end_idx - math_begin_idx) / math_stride + 1;
+            
 
             /*
             if(n==2 and begin_idx[1]==0 and begin_idx[2]==0){
@@ -1691,7 +1693,7 @@ namespace QoZ {
                             for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                 for(size_t k=begins[2];k<ends[2];k+=steps[2]){
                                     d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
-                                    size_t main_idx=direction==0?i:(direction==1?j:k);
+                                    size_t main_idx=ii;
                                    size_t math_cur_idx=math_begin_idx+main_idx*math_stride;
                                    if( main_idx>=3 or (cross_back and math_cur_idx>=math_stride3x) ){
                                         if(main_idx+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) ){
@@ -1790,7 +1792,7 @@ namespace QoZ {
                             for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                 for(size_t k=begins[2];k<ends[2];k+=steps[2]){
                                     d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
-                                    size_t main_idx=direction==0?i:(direction==1?j:k);
+                                    size_t main_idx=ii;
                        
                                     size_t math_cur_idx=math_begin_idx+ main_idx*math_stride;
                                     if(main_idx>3 or (cross_back and math_cur_idx>=math_stride3x)){
@@ -1845,7 +1847,7 @@ namespace QoZ {
                     size_t temp=n%4;
                     if(temp!=3 and n>temp+1){
 
-                        //i=n-1-temp;
+                        size_t ii =n-1-temp;
                         begins[direction]=n-1-temp;
                         ends[direction]=begins[direction]+1;
                         
@@ -1855,7 +1857,7 @@ namespace QoZ {
                                 for(size_t k=begins[2];k<ends[2];k+=steps[2]){
                     
                                     d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
-                                    size_t main_idx=direction==0?i:(direction==1?j:k);
+                                    size_t main_idx=ii;
                                     size_t math_cur_idx=math_begin_idx+main_idx*math_stride;
                                     //if(end_idx[0]==503 )
                                      //   std::cout<<i<<" "<<n<<" "<<math_cur_idx<<" "<<math_stride3x<<" "<<global_end_idx<<std::endl;
