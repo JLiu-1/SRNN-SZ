@@ -7234,6 +7234,15 @@ namespace QoZ {
                         begin_idx[dims[2]]=(begin[dims[2]] ? begin[dims[2]] + stride2x : 0);
                         steps[dims[1]]=stride2x;
                         steps[dims[2]]=stride2x;
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<begin_idx[i]<<" ";
+                        std::cout<<std::endl;
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<end_idx[i]<<std::endl;
+                        std::cout<<std::endl;
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<steps[i]<<std::endl;
+                        std::cout<<std::endl;
 
 
                         predict_error += block_interpolation_1d_crossblock_3d(data, begin_idx,
