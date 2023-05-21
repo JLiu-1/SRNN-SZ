@@ -117,6 +117,7 @@ namespace QoZ {
                 vars[i]+=abs_eb*abs_eb*(1.0/12)*0.5;
             }
         }
+        std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
 
 
@@ -125,6 +126,7 @@ namespace QoZ {
     template<uint N>
     inline void
     preprocess_vars(std::vector<double>&vars){
+        std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
         if(N==2){
             double a=vars[1],b=vars[0];
             vars[0]=a/(a+b);
@@ -136,6 +138,7 @@ namespace QoZ {
             vars[1]=b/(a+b+c);
             vars[2]=c/(a+b+c);
         }
+        std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
 
     }
