@@ -1674,7 +1674,7 @@ namespace QoZ {
                     }
 
                     for(auto ii:boundary){
-                        //std::cout<<ii<<std::endl;
+                        std::cout<<ii<<std::endl;
 
                         begins[direction]=ii;
                         ends[direction]=ii+1;
@@ -1697,8 +1697,8 @@ namespace QoZ {
                                             
                                         }
                                         else {
-                                            //if(mode==0)
-                                            //std::cout<<"n-1 "<<i<<std::endl;
+                                            if(mode==0)
+                                            std::cout<<"n-1 "<<i<<std::endl;
                                             predict_error+=quantize_integrated(d - data, *d,
                                                     interp_linear1(*(d - stride3x), *(d - stride)),mode);
                                             
@@ -7238,10 +7238,10 @@ namespace QoZ {
                             std::cout<<begin_idx[i]<<" ";
                         std::cout<<std::endl;
                         for(size_t i=0;i<N;i++)
-                            std::cout<<end_idx[i]<<std::endl;
+                            std::cout<<end_idx[i]<<" ";
                         std::cout<<std::endl;
                         for(size_t i=0;i<N;i++)
-                            std::cout<<steps[i]<<std::endl;
+                            std::cout<<steps[i]<<" ";
                         std::cout<<std::endl;
 
 
