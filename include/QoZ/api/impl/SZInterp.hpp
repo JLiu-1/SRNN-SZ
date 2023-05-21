@@ -1718,24 +1718,26 @@ double Tuning(QoZ::Config &conf, T *data){
                             stride= conf.adaptiveMultiDimStride<=4?2:conf.adaptiveMultiDimStride/2;
                         else
                             stride= conf.adaptiveMultiDimStride;
-                    
-                        QoZ::calculate_interp_error_vars<T,N>(data, global_dims,linear_interp_vars[level-1],0,0,stride,interp_stride,cur_eb);
-                        QoZ::preprocess_vars<N>(linear_interp_vars[level-1]);
-                        for(auto x:linear_interp_vars[level-1])
-                            std::cout<<x<<" ";
-                        std::cout<<std::endl;
+                        if(conf.multiDimInterp>0 and conf.dynamicDimCoeff){
+                            QoZ::calculate_interp_error_vars<T,N>(data, global_dims,linear_interp_vars[level-1],0,0,stride,interp_stride,cur_eb);
+                            QoZ::preprocess_vars<N>(linear_interp_vars[level-1]);
+                            for(auto x:linear_interp_vars[level-1])
+                                std::cout<<x<<" ";
+                            std::cout<<std::endl;
+                            if (conf.naturalSpline){
+                                QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_nat_vars[level-1],1,1,stride,interp_stride,cur_eb);
+                                QoZ::preprocess_vars<N>(cubic_nat_vars[level-1]);
+                                for(auto x:cubic_nat_vars[level-1])
+                                    std::cout<<x<<" ";
+                                std::cout<<std::endl;
+                            }
+                        }
                         QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars[level-1],1,0,stride,interp_stride,cur_eb);
                         QoZ::preprocess_vars<N>(cubic_noknot_vars[level-1]);
                         for(auto x:cubic_noknot_vars[level-1])
                             std::cout<<x<<" ";
                         std::cout<<std::endl;
-                        if (conf.naturalSpline){
-                            QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_nat_vars[level-1],1,0,stride,interp_stride,cur_eb);
-                            QoZ::preprocess_vars<N>(cubic_nat_vars[level-1]);
-                            for(auto x:cubic_nat_vars[level-1])
-                                std::cout<<x<<" ";
-                            std::cout<<std::endl;
-                        }
+                        
                     }
 
 
