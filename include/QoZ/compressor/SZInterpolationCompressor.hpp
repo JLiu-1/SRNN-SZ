@@ -3192,7 +3192,8 @@ namespace QoZ {
                 ends[i]=end_idx[i]-begin_idx[i]+1;
                 strides[i]=dimension_offsets[i];
             }
-            strides[direction]=stride;
+            strides[direction1]=stride1;
+            strides[direction2]=stride2;
 
             //uint8_t cubicSplineType=meta.cubicSplineType;
             size_t stride1=math_stride*dimension_offsets[direction1],stride2=math_stride*dimension_offsets[direction2];
@@ -3952,7 +3953,7 @@ namespace QoZ {
                         std::array<size_t,N>temp_start=begin_idx,temp_end=end_idx;
                         for(size_t sub=sub_start;sub<=sub_end;sub+=sub_step){
                             temp_start[sub_direction]=temp_end[sub_direction]=sub;
-                            prediction_error+=block_interpolation_2d_crossblock(data, temp_start, temp_end,directions,math_stride, interp_func, pb,dim_coeffs,meta,cross_block,tuning);
+                            predict_error+=block_interpolation_2d_crossblock(data, temp_start, temp_end,directions,math_stride, interp_func, pb,dim_coeffs,meta,cross_block,tuning);
                         }
 
 
