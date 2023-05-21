@@ -36,10 +36,7 @@ namespace QoZ {
 
         // quantize the data with a prediction value, and returns the quantization index
         int quantize(T data, T pred) {
-            if(this->trimToZero and fabs(data)<=this->error_bound){
-                
-                return this->trimToZero-1;
-            }
+            
             T diff = data - pred;
             int quant_index = (int) (fabs(diff) * this->error_bound_reciprocal) + 1;
             if (quant_index < this->radius * 2) {
@@ -68,15 +65,7 @@ namespace QoZ {
         // int quantize(T data, T pred, T& dec_data);
         int quantize_and_overwrite(T &data, T pred,bool save_unpred=true) {
 
-            if(this->trimToZero>0 and fabs(data)<=this->error_bound){
-                data=0;
-                if(this->trimToZero==1 and save_unpred)
-                    unpred.push_back(0);
-                //std::cout<<data<<" "<<this->trimToZero-1<<std::endl;
-
-                return this->trimToZero-1;
-            }
-
+            
             T diff = data - pred;
             int quant_index = (int) (fabs(diff) * this->error_bound_reciprocal) + 1;
             if (quant_index < this->radius * 2) {
@@ -91,7 +80,7 @@ namespace QoZ {
                     quant_index_shifted = this->radius + half_index;
                 }
                 T decompressed_data = pred + quant_index * this->error_bound;
-                if (fabs(decompressed_data - data) > this->error_bound or (this->trimToZero==2 and quant_index_shifted==1)) {
+                if (fabs(decompressed_data - data) > this->error_bound) {
                     //std::cout<<data<<std::endl;
                     if(save_unpred)
                         unpred.push_back(data);
@@ -109,13 +98,7 @@ namespace QoZ {
 
         int quantize_and_overwrite(T ori, T pred, T &dest,bool save_unpred=true) {
 
-            if(this->trimToZero>0 and fabs(ori)<=this->error_bound){
-                if(this->trimToZero==1 and save_unpred)
-                    unpred.push_back(0);
-                //std::cout<<ori<<" "<<this->trimToZero-1<<std::endl;
-                dest = 0;
-                return this->trimToZero-1;
-            }
+            
             T diff = ori - pred;
             int quant_index = (int) (fabs(diff) * this->error_bound_reciprocal) + 1;
             if (quant_index < this->radius * 2) {
@@ -130,7 +113,7 @@ namespace QoZ {
                     quant_index_shifted = this->radius + half_index;
                 }
                 T decompressed_data = pred + quant_index * this->error_bound;
-                if (fabs(decompressed_data - ori) > this->error_bound or (this->trimToZero==2 and quant_index_shifted==1)) {
+                if (fabs(decompressed_data - ori) > this->error_bound) {
                     if(save_unpred)
                         unpred.push_back(ori);
                     dest = ori;
@@ -159,9 +142,7 @@ namespace QoZ {
         // recover the data using the quantization index
         T recover(T pred, int quant_index) {
 
-            if(this->trimToZero==2 and quant_index==1){
-                return 0;
-            }
+            
             if (quant_index) {
                 return recover_pred(pred, quant_index);
             } else {
@@ -253,7 +234,7 @@ namespace QoZ {
         double error_bound;
         double error_bound_reciprocal;
         int radius; // quantization interval radius
-        int trimToZero=0;
+        //int trimToZero=0;
     };
 
 }

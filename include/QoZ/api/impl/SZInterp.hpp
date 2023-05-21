@@ -429,12 +429,9 @@ void SZ_decompress_Interp(QoZ::Config &conf, char *cmpData, size_t cmpSize, T *d
                     QoZ::Lossless_zstd());
 
         
-            if (!conf.blockwiseTuning)
-                sz.decompress(cmpDataPos, first, decData);
-            else{
-               
-                sz.decompress_block(cmpDataPos, first, decData);
-            }
+            
+            sz.decompress(cmpDataPos, first, decData);
+            
         }
       
         //QoZ::writefile<T>("waved.qoz.dec.sigmo", decData, conf.num);
@@ -1822,11 +1819,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         
                     if(conf.pdTuningRealComp){
                         //place to add real compression,need to deal the problem that the sampled_blocks are changed. 
-                        /*                 
-                        conf.interpAlgo=bestInterpAlgo;
-                        conf.interpDirection=bestDirection;
-                        conf.cubicSplineType=bestSplineType;
-                        */
+                        
                         conf.interpMeta=best_meta;
                         for (int i=0;i<num_sampled_blocks;i++){
 
@@ -1842,11 +1835,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 }
                 //conf.interpAlgo_list=interpAlgo_list;
                 //conf.interpDirection_list=interpDirection_list;
-                /*
-                interpAlgo_lists[wave_idx]=interpAlgo_list;
-                interpDirection_lists[wave_idx]=interpDirection_list;
-                cubicSplineType_lists[wave_idx]=cubicSplineType_list;
-                */
+                
                 interpMeta_lists[wave_idx]=interpMeta_list;
 
                 //determine 
@@ -2697,62 +2686,17 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
         if(!useSperr)
             conf.absErrorBound*=conf.wavelet_rel_coeff;
-        /*
-        if(conf.coeffTracking%2==1)
-            QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
-        if(conf.coeffTracking>1){
-            size_t count=0;
-            if(conf.wavelet>1){
-                for (size_t i=0;i<conf.num;i++){
-                    if(fabs(coeffData[i])>conf.absErrorBound)
-                        count++;
-                }
-
-            }
-            else{
-                for (size_t i=0;i<conf.num;i++){
-                    if(fabs(data[i])>conf.absErrorBound)
-                        count++;
-                }
-
-            }
-            std::cout<<"Significant coeff rate: "<<(float)count/conf.num<<std::endl;
-        }
-        */
+        
         ori_wave=conf.wavelet;
         
         
-            /*
-            if(conf.transformation==1){
-                for(size_t i=0;i<conf.num;i++)
-                    data[i]=QoZ::sigmoid<double>(data[i]);
-                //std::cout<<"transed"<<std::endl;
-            }
-            else if(conf.transformation==2){
-                for(size_t i=0;i<conf.num;i++)
-                    data[i]=QoZ::tanh<double>(data[i]);
-            } 
-            */
+            
             //QoZ::writefile<T>("waved.qoz.ori.sigmo", data, conf.num);    
     }
    
     conf.wavelet=0; 
 
-
-    if(conf.preTrim>0){
-        if(ori_wave>1){
-            for(size_t i=0;i<conf.num;i++){
-                if(fabs(coeffData[i])<=conf.preTrim*conf.absErrorBound)
-                    coeffData[i]=0;
-            }
-        }
-        else{
-            for(size_t i=0;i<conf.num;i++){
-                if(fabs(data[i])<=conf.preTrim*conf.absErrorBound)
-                    data[i]=0;
-            }
-        }
-    }
+    
 
     if(conf.verbose)
         std::cout << "====================================== BEGIN TUNING ================================" << std::endl;
