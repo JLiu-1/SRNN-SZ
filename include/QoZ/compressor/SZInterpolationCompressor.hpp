@@ -1528,7 +1528,7 @@ namespace QoZ {
 
             }
 
-            
+            /*
             if(n==2 and begin_idx[1]==0 and begin_idx[2]==0){
                 for(size_t i=0;i<N;i++)
                     std::cout<<begin_idx[i]<<" ";
@@ -1540,14 +1540,14 @@ namespace QoZ {
                     std::cout<<steps[i]<<" ";
                 std::cout<<std::endl;
             }
+            */
 
             
            // std::cout<<n<<std::endl;
             if (n <= 1) {
                 return 0;
             }
-            if(n==2 and begin_idx[1]==0 and begin_idx[2]==0)
-                std::cout<<"s1"<<std::endl;
+           
             double predict_error = 0;
             bool cross_back=cross_block>0;
             bool cross_front=cross_block>0;
@@ -1559,8 +1559,7 @@ namespace QoZ {
                     }
                 }
             }
-            if(n==2 and begin_idx[1]==0 and begin_idx[2]==0)
-                std::cout<<"s2"<<std::endl;
+            
             size_t begin=0,global_end_idx=global_dimensions[direction];
             for(size_t i=0;i<N;i++)
                 begin+=dimension_offsets[i]*begin_idx[i];
@@ -1650,11 +1649,9 @@ namespace QoZ {
                     size_t i_start= (cross_back and math_begin_idx>=math_stride2x)?1:3;
 
                     begins[direction]=i_start;
-                    ends[direction]=n-3;
+                    ends[direction]=(n>=3)?(n-3):0;
                     steps[direction]=2;
-                    if(n==2 and begin_idx[1]==0 and begin_idx[2]==0)
-                        std::cout<<"s4"<<std::endl;
-
+                  
                     for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                             for(size_t k=begins[2];k<ends[2];k+=steps[2]){
@@ -1669,8 +1666,7 @@ namespace QoZ {
                         
                     }
 
-                    if(n==2 and begin_idx[1]==0 and begin_idx[2]==0)
-                        std::cout<<"s5"<<std::endl;
+                  
                     std::vector<size_t> boundary;
                     if(i_start==3 or n<=4)
                         boundary.push_back(1);
@@ -1752,7 +1748,7 @@ namespace QoZ {
                     //    std::cout<<"r1"<<std::endl;
                     size_t i_start= (cross_back and math_begin_idx>=math_stride2x)?1:5;
                     begins[direction]=i_start;
-                    ends[direction]=n-3;
+                    ends[direction]=(n>=3)?(n-3):0;
                     steps[direction]=4;
                     for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
@@ -1830,7 +1826,7 @@ namespace QoZ {
                      //   std::cout<<"r3"<<std::endl;
 
                     begins[direction]=3;
-                    ends[direction]=n-3;
+                    ends[direction]=(n>=3)?(n-3):0;
                     for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                             for(size_t k=begins[2];k<ends[2];k+=steps[2]){
