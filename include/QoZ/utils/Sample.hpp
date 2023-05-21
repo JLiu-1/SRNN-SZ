@@ -102,6 +102,7 @@ namespace QoZ {
         //double offset=0.0;
         
         for (size_t i=0;i<N;i++){
+            
             vars[i]/=double(count);
             if(interp_op==1){
                 if(nat)
