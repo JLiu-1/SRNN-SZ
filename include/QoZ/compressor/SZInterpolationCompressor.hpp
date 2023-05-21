@@ -1552,15 +1552,10 @@ namespace QoZ {
            
             double predict_error = 0;
             bool cross_back=cross_block>0;
-            bool cross_front=cross_block>0;
-            if(cross_front){
-                for(size_t i=0;i<N;i++){
-                    if(i!=direction and begin_idx[i]%(2*math_stride)!=0){
-                        cross_front=false;
-                        break;
-                    }
-                }
-            }
+            ///
+            bool global_cross_front=cross_block>0;
+            
+            
             
             size_t begin=0,global_end_idx=global_dimensions[direction];
             for(size_t i=0;i<N;i++)
@@ -1606,6 +1601,7 @@ namespace QoZ {
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                             for(size_t k=begins[2];k<ends[2];k+=steps[2]){
                                 T *d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
+                                
                                 if(cross_front and math_end_idx+math_stride<global_end_idx)
                                     predict_error+=quantize_integrated(d - data, *d, interp_linear(*(d - stride), *(d + stride)),mode);
                                 else if (n < 3) {                              
@@ -1692,6 +1688,16 @@ namespace QoZ {
                         for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                             for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                 for(size_t k=begins[2];k<ends[2];k+=steps[2]){
+                                    bool cross_front=global_cross_front;
+                                    if(cross_front){
+                                        std::array<size_t,N>idxs{begin_idx[0]+i,begin_idx[1]+j,begin_idx[2]+k};
+                                        for(size_t t=0;t<N;t++){
+                                            if(t!=direction and idxs[t]%(2*math_stride)!=0){
+                                                cross_front=false;
+                                                break;
+                                            }
+                                        }
+                                    }
                                     d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
                                     size_t main_idx=ii;
                                    size_t math_cur_idx=math_begin_idx+main_idx*math_stride;
@@ -1791,6 +1797,16 @@ namespace QoZ {
                         for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                             for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                 for(size_t k=begins[2];k<ends[2];k+=steps[2]){
+                                    bool cross_front=global_cross_front;
+                                    if(cross_front){
+                                        std::array<size_t,N>idxs{begin_idx[0]+i,begin_idx[1]+j,begin_idx[2]+k};
+                                        for(size_t t=0;t<N;t++){
+                                            if(t!=direction and idxs[t]%(2*math_stride)!=0){
+                                                cross_front=false;
+                                                break;
+                                            }
+                                        }
+                                    }
                                     d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
                                     size_t main_idx=ii;
                        
@@ -1855,6 +1871,16 @@ namespace QoZ {
                         for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                             for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                 for(size_t k=begins[2];k<ends[2];k+=steps[2]){
+                                    bool cross_front=global_cross_front;
+                                    if(cross_front){
+                                        std::array<size_t,N>idxs{begin_idx[0]+i,begin_idx[1]+j,begin_idx[2]+k};
+                                        for(size_t t=0;t<N;t++){
+                                            if(t!=direction and idxs[t]%(2*math_stride)!=0){
+                                                cross_front=false;
+                                                break;
+                                            }
+                                        }
+                                    }
                     
                                     d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
                                     size_t main_idx=ii;
