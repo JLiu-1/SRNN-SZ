@@ -1682,7 +1682,7 @@ namespace QoZ {
                     }
 
                     for(auto ii:boundary){
-                        //std::cout<<ii<<std::endl;
+                        std::cout<<ii<<std::endl;
 
                         begins[direction]=ii;
                         ends[direction]=ii+1;
