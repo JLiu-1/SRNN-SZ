@@ -1600,6 +1600,16 @@ namespace QoZ {
                     for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                             for(size_t k=begins[2];k<ends[2];k+=steps[2]){
+                                bool cross_front=global_cross_front;
+                                if(cross_front){
+                                    std::array<size_t,N>idxs{begin_idx[0]+i,begin_idx[1]+j,begin_idx[2]+k};
+                                    for(size_t t=0;t<N;t++){
+                                        if(t!=direction and idxs[t]%(2*math_stride)!=0){
+                                            cross_front=false;
+                                            break;
+                                        }
+                                    }
+                                }
                                 T *d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
                                 
                                 if(cross_front and math_end_idx+math_stride<global_end_idx)
