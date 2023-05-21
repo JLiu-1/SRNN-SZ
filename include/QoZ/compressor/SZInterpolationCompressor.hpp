@@ -3185,7 +3185,7 @@ namespace QoZ {
             size_t begin=0,global_end_idx1=global_dimensions[direction1],global_end_idx2=global_dimensions[direction2];
             for(size_t i=0;i<N;i++)
                 begin+=dimension_offsets[i]*begin_idx[i];
-
+            size_t stride1=math_stride*dimension_offsets[direction1],stride2=math_stride*dimension_offsets[direction2];
             std::array<size_t,N>begins,ends,strides;
             for(size_t i=0;i<N;i++){
                 begins[i]=0;
@@ -3196,7 +3196,7 @@ namespace QoZ {
             strides[direction2]=stride2;
 
             //uint8_t cubicSplineType=meta.cubicSplineType;
-            size_t stride1=math_stride*dimension_offsets[direction1],stride2=math_stride*dimension_offsets[direction2];
+            
             
 
 
