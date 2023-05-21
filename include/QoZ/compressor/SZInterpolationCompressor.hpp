@@ -1658,8 +1658,8 @@ namespace QoZ {
                     for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                             for(size_t k=begins[2];k<ends[2];k+=steps[2]){
-                                if(n==2 and begin_idx[1]==0 and begin_idx[2]==0)
-                                    std::cout<<i<<" "<<j<<" "<<k<<std::endl;
+                                //if(n==2 and begin_idx[1]==0 and begin_idx[2]==0)
+                                   // std::cout<<i<<" "<<j<<" "<<k<<std::endl;
 
                                 d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
                                 predict_error+=quantize_integrated(d - data, *d,
@@ -1687,7 +1687,7 @@ namespace QoZ {
                     }
 
                     for(auto ii:boundary){
-                        std::cout<<ii<<std::endl;
+                        //std::cout<<ii<<std::endl;
 
                         begins[direction]=ii;
                         ends[direction]=ii+1;
