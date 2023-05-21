@@ -3159,7 +3159,7 @@ namespace QoZ {
             }
             
             //if(n==2 and begin_idx[1]==0 and begin_idx[2]==0){
-            
+
                 for(size_t i=0;i<N;i++)
                     std::cout<<begin_idx[i]<<" ";
                 std::cout<<std::endl;
@@ -3426,7 +3426,7 @@ namespace QoZ {
                             }
                         }
                     }
-
+                     std::cout<<"p2.3"<<std::endl;
                     begins[direction2]=j_start;
                     ends[direction2]=(m>=3)?(m-3):0;
 
@@ -3443,7 +3443,7 @@ namespace QoZ {
                             }
                         }
                     }
-                    
+                     std::cout<<"p2.6"<<std::endl;
                     //j=m-3 or m-2
                     if(j<m-1){
                         begins[direction2]=j;
@@ -3459,6 +3459,7 @@ namespace QoZ {
                             }
                         }
                     }
+                     std::cout<<"p2.9"<<std::endl;
                     //j=m-1
                     if(m%2==0){
                         begins[direction2]=m-1;
