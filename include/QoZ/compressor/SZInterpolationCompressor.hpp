@@ -3159,6 +3159,7 @@ namespace QoZ {
             }
             
             //if(n==2 and begin_idx[1]==0 and begin_idx[2]==0){
+            
                 for(size_t i=0;i<N;i++)
                     std::cout<<begin_idx[i]<<" ";
                 std::cout<<std::endl;
