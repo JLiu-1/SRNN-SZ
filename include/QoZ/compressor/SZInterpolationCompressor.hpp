@@ -7492,7 +7492,8 @@ namespace QoZ {
                                                                             stride , interp_func, pb,meta,cross_block,tuning);
                         
 
-                
+                 
+                 
 
                         begin_idx[dims[2]]=begin[dims[2]];
 
