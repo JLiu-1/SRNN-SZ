@@ -30,10 +30,7 @@ namespace QoZ {
             error_bound_reciprocal = 1.0 / eb;
         }
 
-        void setTrimToZero(int ttz=1){
-            trimToZero=ttz;
-        }
-
+      
         // quantize the data with a prediction value, and returns the quantization index
         int quantize(T data, T pred) {
             
