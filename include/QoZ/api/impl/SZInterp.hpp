@@ -1872,11 +1872,11 @@ double Tuning(QoZ::Config &conf, T *data){
                     //std::vector<double> cubic_noknot_vars;
                     //QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars,1,0,conf.adaptiveMultiDimStride,conf.absErrorBound);
                     size_t frozen_dim=0;
-                    double cur_vars=cubic_noknot_vars[0][0];
+                    double cur_weight=cubic_noknot_vars[0][0];
                     for(size_t i=1;i<N;i++){
-                        if(cubic_noknot_vars[0][i]>cur_vars){
+                        if(cubic_noknot_vars[0][i]<cur_vars){
                             frozen_dim=i;
-                            cur_vars=cubic_noknot_vars[0][i];
+                            cur_weight=cubic_noknot_vars[0][i];
                         }
                     }
                     if(frozen_dim==0)

@@ -37,7 +37,7 @@ namespace QoZ {
         if(N==3){
             size_t dimx=dims[0],dimy=dims[1],dimz=dims[2],dimyz=dimy*dimz;
             size_t is1=dimyz*interp_stride,is3x1=3*is1,is2=dimz*interp_stride,is3x2=3*is2,is3=interp_stride,is3x3=3*is3;
-            std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
+           // std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
             //std::cout<<interp_stride<<" "<<stride<<std::endl;
             for (size_t i = 3*interp_stride; i < dimx-3*interp_stride; i+=(stride/2)*2*interp_stride) {
@@ -72,7 +72,7 @@ namespace QoZ {
                     }
                 }
             }
-            std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
+            //std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
         }
         else if(N==2){
@@ -117,7 +117,7 @@ namespace QoZ {
                 vars[i]+=abs_eb*abs_eb*(1.0/12)*0.5;
             }
         }
-        std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
+        //std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
 
 
@@ -126,7 +126,7 @@ namespace QoZ {
     template<uint N>
     inline void
     preprocess_vars(std::vector<double>&vars){
-        std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
+        //std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
         if(N==2){
             double a=vars[1],b=vars[0];
             vars[0]=a/(a+b);
@@ -138,7 +138,7 @@ namespace QoZ {
             vars[1]=b/(a+b+c);
             vars[2]=c/(a+b+c);
         }
-        std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
+        //std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
 
     }
