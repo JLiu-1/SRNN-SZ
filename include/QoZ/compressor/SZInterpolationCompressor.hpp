@@ -3430,7 +3430,12 @@ namespace QoZ {
                     begins[direction2]=j_start;
                     ends[direction2]=(m>=3)?(m-3):0;
 
-                   
+                    for(size_t i=0;i<N;i++)
+                        std::cout<<begins[i]<<" ";
+                    std::cout<<std::endl;
+                    for(size_t i=0;i<N;i++)
+                        std::cout<<ends[i]<<" ";
+                    std::cout<<std::endl;
                     for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                             for(size_t k=begins[2];k<ends[2];k+=steps[2]){
