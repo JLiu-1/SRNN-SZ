@@ -1528,19 +1528,20 @@ namespace QoZ {
 
             }
 
-            /*
             
-            for(size_t i=0;i<N;i++)
-                std::cout<<begin_idx[i]<<" ";
-            std::cout<<std::endl;
-            for(size_t i=0;i<N;i++)
-                std::cout<<end_idx[i]<<" ";
-            std::cout<<std::endl;
-            for(size_t i=0;i<N;i++)
-                std::cout<<steps[i]<<" ";
-            std::cout<<std::endl;
+            if(n==2 and begin_idx[1]==0 and begin_idx[2]==0){
+                for(size_t i=0;i<N;i++)
+                    std::cout<<begin_idx[i]<<" ";
+                std::cout<<std::endl;
+                for(size_t i=0;i<N;i++)
+                    std::cout<<end_idx[i]<<" ";
+                std::cout<<std::endl;
+                for(size_t i=0;i<N;i++)
+                    std::cout<<steps[i]<<" ";
+                std::cout<<std::endl;
+            }
 
-            */
+            
            // std::cout<<n<<std::endl;
             if (n <= 1) {
                 return 0;
@@ -1657,6 +1658,9 @@ namespace QoZ {
                     for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                             for(size_t k=begins[2];k<ends[2];k+=steps[2]){
+                                if(n==2 and begin_idx[1]==0 and begin_idx[2]==0)
+                                    std::cout<<i<<" "<<j<<" "<<k<<std::endl;
+
                                 d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
                                 predict_error+=quantize_integrated(d - data, *d,
                                             interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
@@ -1706,8 +1710,8 @@ namespace QoZ {
                                             
                                         }
                                         else {
-                                            if(mode==0)
-                                            std::cout<<"n-1 "<<i<<std::endl;
+                                            //if(mode==0)
+                                            //std::cout<<"n-1 "<<main_idx<<std::endl;
                                             predict_error+=quantize_integrated(d - data, *d,
                                                     interp_linear1(*(d - stride3x), *(d - stride)),mode);
                                             
