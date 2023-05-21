@@ -1579,8 +1579,7 @@ namespace QoZ {
             
 
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
-            if(n==2 and begin_idx[1]==0 and begin_idx[2]==0)
-                std::cout<<"s3"<<std::endl;
+            
 
             if (interp_func == "linear") {
                 begins[direction]=1;
