@@ -3157,6 +3157,20 @@ namespace QoZ {
                 if(end_idx[i]<begin_idx[i])
                     return 0;
             }
+            
+            //if(n==2 and begin_idx[1]==0 and begin_idx[2]==0){
+                for(size_t i=0;i<N;i++)
+                    std::cout<<begin_idx[i]<<" ";
+                std::cout<<std::endl;
+                for(size_t i=0;i<N;i++)
+                    std::cout<<end_idx[i]<<" ";
+                std::cout<<std::endl;
+                for(size_t i=0;i<N;i++)
+                    std::cout<<steps[i]<<" ";
+                std::cout<<std::endl;
+           // }
+            
+
             size_t direction1=directions[0],direction2=directions[1];
             size_t math_begin_idx1=begin_idx[direction1],math_end_idx1=end_idx[direction1],math_begin_idx2=begin_idx[direction2],math_end_idx2=end_idx[direction2];
             size_t n = (math_end_idx1 - math_begin_idx1) / math_stride + 1, m = (math_end_idx2 - math_begin_idx2) / math_stride + 1;
@@ -3321,13 +3335,14 @@ namespace QoZ {
                     steps[direction1]=2;
 
                     steps[direction2]=2;
-
+                    /*
                     begins[direction1]=i_start;
                     ends[direction1]=(n>=3)?(n-3):0;
                     begins[direction2]=j_start;
                     ends[direction2]=(m>=3)?(m-3):0;
-
+                        */
                     //i=1
+                    std::cout<<"p1"<<std::endl;
                     if(i1_b){
 
                         begins[direction1]=1;
@@ -3390,7 +3405,7 @@ namespace QoZ {
                             }
                         }
                     }
-
+                    std::cout<<"p2"<<std::endl;
                     begins[direction1]=i_start;
                     ends[direction1]=(n>=3)?(n-3):0;
 
@@ -3461,7 +3476,7 @@ namespace QoZ {
                     }
                    // }
                     //std::cout<<i<<std::endl;
-                    
+                    std::cout<<"p3"<<std::endl;
                     //i= n-3 or n-2
                     if(i<n-1){
                         begins[direction2]=i;
@@ -3522,6 +3537,7 @@ namespace QoZ {
                         }
                     }
                     //i=n-1 (odd)
+                    std::cout<<"p4"<<std::endl;
                     if (n%2==0) {
                         begins[direction1]=n-1;
                         ends[direction1]=n;
@@ -3578,6 +3594,7 @@ namespace QoZ {
                             }
                         } 
                     }
+                    std::cout<<"p5"<<std::endl;
                 }
                 else{
                     if(direction1!=2 or direction2!=2){//temp. Too hard to generalize....
