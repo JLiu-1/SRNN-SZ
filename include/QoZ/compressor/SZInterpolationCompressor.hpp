@@ -1053,7 +1053,7 @@ namespace QoZ {
                 if(x==47 and y==215 and z==152){
                 std::cout<<"first: "<<x<<" "<<y<<" "<<z<<std::endl;
 
-            }
+            
             if(mark[idx] and mode==0 and x==47 and y==215 and z==152){
                 
 
