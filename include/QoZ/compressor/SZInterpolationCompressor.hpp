@@ -1049,7 +1049,7 @@ namespace QoZ {
             
             mark[idx]=true;
             */
-            if(mark[idx]){
+            if(mark[idx] and tuning==0){
                 
                 std::cout<<"err: "<<idx<<std::endl;
             }
