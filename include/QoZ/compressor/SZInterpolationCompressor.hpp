@@ -741,6 +741,7 @@ namespace QoZ {
             
             //timer.start();
             assert(quant_inds.size() == num_elements);
+            /*
             std::cout<<quant_inds.size()<<std::endl;
             for(size_t i=0;i<num_elements;i++){
                 if(!mark[i]){
@@ -750,7 +751,7 @@ namespace QoZ {
                     size_t x= temp/global_dimensions[1];
                     std::cout<<x<<" "<<y<<" "<<z<<std::endl;
                 }
-            }
+            }*/
             encoder.preprocess_encode(quant_inds, 0);
             size_t bufferSize = 1.2 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
             uchar *buffer = new uchar[bufferSize];
@@ -884,8 +885,8 @@ namespace QoZ {
                 dimension_sequences.push_back(sequence);
             } while (std::next_permutation(sequence.begin(), sequence.end()));  
             
-            mark.clear();
-            mark.resize(num_elements,false);
+            //mark.clear();
+            //mark.resize(num_elements,false);
             
             
         }
@@ -939,8 +940,8 @@ namespace QoZ {
                                // prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z);
                                 prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=0;
                             }*/
-                            if(tuning==0)
-                                mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
+                            //if(tuning==0)
+                            //    mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
                             quant_inds.push_back(0);
                         }           
                     }
@@ -1045,7 +1046,7 @@ namespace QoZ {
             }
             
             mark[idx]=true;
-            */
+            *//*
             size_t z=idx%global_dimensions[2];
                 size_t temp=idx/global_dimensions[2];
                 size_t y=temp%global_dimensions[1];
@@ -1063,7 +1064,7 @@ namespace QoZ {
                 std::cout<<"err: "<<x<<" "<<y<<" "<<z<<std::endl;
                 
             }
-            mark[idx]=true;
+            mark[idx]=true;*/
             
             double pred_error=0;
             if(mode==-1){//recover
@@ -3641,7 +3642,7 @@ namespace QoZ {
                     //std::cout<<"p5"<<std::endl;
                 }
                 else{
-                    if(direction1!=2 or direction2!=2){//temp. Too hard to generalize....
+                    if(direction1!=2 and direction2!=2){//temp. Too hard to generalize....
                         auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                         size_t j_start_temp=(j_start==1)?1:5;
                         size_t k_start=begins[2],k_end=ends[2],k_step=steps[2],k_stride=strides[2];
