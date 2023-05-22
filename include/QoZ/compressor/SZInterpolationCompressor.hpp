@@ -1033,10 +1033,7 @@ namespace QoZ {
 
         inline double quantize_integrated(size_t idx, T &d, T pred, int mode=0){
             /*
-            size_t z=idx%global_dimensions[2];
-            size_t temp=idx/global_dimensions[2];
-            size_t y=temp%global_dimensions[1];
-            size_t x= temp/global_dimensions[1];
+            
             if(mark[idx]){
                 
                 std::cout<<"err: "<<x<<" "<<y<<" "<<z<<std::endl;
@@ -1050,8 +1047,15 @@ namespace QoZ {
             mark[idx]=true;
             */
             if(mark[idx] and mode==0){
+                size_t z=idx%global_dimensions[2];
+                size_t temp=idx/global_dimensions[2];
+                size_t y=temp%global_dimensions[1];
+                size_t x= temp/global_dimensions[1];
                 
-                std::cout<<"err: "<<idx<<std::endl;
+              
+                
+                std::cout<<"err: "<<x<<" "<<y<<" "<<z<<std::endl;
+                
             }
             mark[idx]=true;
             
