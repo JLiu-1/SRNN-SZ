@@ -1050,7 +1050,7 @@ namespace QoZ {
                 size_t temp=idx/global_dimensions[2];
                 size_t y=temp%global_dimensions[1];
                 size_t x= temp/global_dimensions[1];
-                if(x==47 and y==215 and z==152){
+                if(x==47 and y==215 and z==152)
                 std::cout<<"first: "<<x<<" "<<y<<" "<<z<<std::endl;
 
             
