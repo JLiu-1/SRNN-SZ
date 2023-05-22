@@ -3465,6 +3465,8 @@ namespace QoZ {
                              for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                 for(size_t k=begins[2];k<ends[2];k+=steps[2]){
                                     T *d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];  
+                                    if(i==12 and j==349 and k==285)
+                                        std::cout<<d-data<<std::endl;
                                     //predict_error+=quantize_tuning(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
                                     //                                , interp_quad_2(*(d - stride3x2), *(d - stride2), *(d + stride2)) ),tuning);
                                     predict_error+=quantize_integrated(d - data, *d,interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1)),mode);
