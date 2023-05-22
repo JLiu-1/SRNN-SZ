@@ -3523,8 +3523,8 @@ namespace QoZ {
                     //std::cout<<"p3"<<std::endl;
                     //i= n-3 or n-2
                     if(n>2){
-                        begins[direction2]=n+n%2-3;
-                        ends[direction2]=begins[direction2]+1;
+                        begins[direction1]=n+n%2-3;
+                        ends[direction1]=begins[direction1]+1;
                         //j=1
                         if(j1_b){
                             begins[direction2]=1;
