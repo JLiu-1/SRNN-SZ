@@ -3331,7 +3331,7 @@ namespace QoZ {
                     //bool in_b= (n%2==0) and n>2;
                     bool j1_b=(j_start==3) and m>4;
 
-                    bool im1_b=
+                    //bool im1_b=
                     //bool jm_b= (m%2==0) and m>2;
 
                     
