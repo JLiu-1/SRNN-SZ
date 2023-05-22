@@ -3330,6 +3330,8 @@ namespace QoZ {
                     bool i1_b=(i_start==3) and n>4;
                     //bool in_b= (n%2==0) and n>2;
                     bool j1_b=(j_start==3) and m>4;
+
+                    bool im1_b=
                     //bool jm_b= (m%2==0) and m>2;
 
                     
@@ -3343,7 +3345,7 @@ namespace QoZ {
                     ends[direction2]=(m>=3)?(m-3):0;
                         */
                     //i=1
-                    std::cout<<"p1"<<std::endl;
+                   // std::cout<<"p1"<<std::endl;
                     if(i1_b){
 
                         begins[direction1]=1;
@@ -3378,9 +3380,9 @@ namespace QoZ {
                         }
                            
                         //j=m-3 or m-2
-                        if(j<m-1){
-                            begins[direction2]=j;
-                            ends[direction2]=j+1;
+                        if(m>2){
+                            begins[direction2]=m+m%2-3;
+                            ends[direction2]=begins[direction2]+1;
                             for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                                 for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                     for(size_t k=begins[2];k<ends[2];k+=steps[2]){
@@ -3406,7 +3408,7 @@ namespace QoZ {
                             }
                         }
                     }
-                    std::cout<<"p2"<<std::endl;
+                   // std::cout<<"p2"<<std::endl;
                     begins[direction1]=i_start;
                     ends[direction1]=(n>=3)?(n-3):0;
 
@@ -3426,10 +3428,10 @@ namespace QoZ {
                             }
                         }
                     }
-                     std::cout<<"p2.3"<<std::endl;
+                     //std::cout<<"p2.3"<<std::endl;
                     begins[direction2]=j_start;
                     ends[direction2]=(m>=3)?(m-3):0;
-
+                    /*
                     for(size_t i=0;i<N;i++)
                         std::cout<<begins[i]<<" ";
                     std::cout<<std::endl;
@@ -3439,6 +3441,7 @@ namespace QoZ {
                     for(size_t i=0;i<N;i++)
                         std::cout<<strides[i]<<" ";
                     std::cout<<std::endl;
+                    */
                     for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                             for(size_t k=begins[2];k<ends[2];k+=steps[2]){
@@ -3448,8 +3451,7 @@ namespace QoZ {
                                     */
 
                                 T *d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];  
-                                if(i==12 and j==349 and k==285)
-                                        std::cout<<d-data<<" "<<stride1<<" "<<stride3x1<<" "<<stride2<<" "<<stride3x2<<" "<<std::endl;
+                                
 
                                 //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
                                 //                                        ,interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ),mode);
@@ -3458,11 +3460,11 @@ namespace QoZ {
                             }
                         }
                     }
-                     std::cout<<"p2.6"<<std::endl;
+                    // std::cout<<"p2.6"<<std::endl;
                     //j=m-3 or m-2
-                    if(j<m-1){
-                        begins[direction2]=j;
-                        ends[direction2]=j+1;
+                    if(m>2){
+                        begins[direction2]=m+m%2-3;
+                        ends[direction2]=begins[direction2]+1;
                          for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                              for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                 for(size_t k=begins[2];k<ends[2];k+=steps[2]){
@@ -3475,7 +3477,7 @@ namespace QoZ {
                             }
                         }
                     }
-                     std::cout<<"p2.9"<<std::endl;
+                     //std::cout<<"p2.9"<<std::endl;
                     //j=m-1
                     if(m%2==0){
                         begins[direction2]=m-1;
@@ -3494,11 +3496,11 @@ namespace QoZ {
                     }
                    // }
                     //std::cout<<i<<std::endl;
-                    std::cout<<"p3"<<std::endl;
+                    //std::cout<<"p3"<<std::endl;
                     //i= n-3 or n-2
-                    if(i<n-1){
-                        begins[direction2]=i;
-                        ends[direction2]=i+1;
+                    if(n>2){
+                        begins[direction2]=n+n%2-3;
+                        ends[direction2]=begins[direction2]+1;
                         //j=1
                         if(j1_b){
                             begins[direction2]=1;
@@ -3527,9 +3529,9 @@ namespace QoZ {
                         }
                         
                         //j=m-3 or m-2
-                        if(j<m-1){
-                            begins[direction2]=j;
-                            ends[direction2]=j+1;
+                        if(m>2){
+                            begins[direction2]=m+m%2-3;
+                            ends[direction2]=begins[direction2]+1;
                             for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                                 for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                     for(size_t k=begins[2];k<ends[2];k+=steps[2]){
@@ -3555,7 +3557,7 @@ namespace QoZ {
                         }
                     }
                     //i=n-1 (odd)
-                    std::cout<<"p4"<<std::endl;
+                    //std::cout<<"p4"<<std::endl;
                     if (n%2==0) {
                         begins[direction1]=n-1;
                         ends[direction1]=n;
@@ -3585,9 +3587,9 @@ namespace QoZ {
                         }
                         
                         //j=m-3 or m-2
-                        if(j<m-1){
-                            begins[direction2]=j;
-                            ends[direction2]=j+1;
+                        if(m>2){
+                            begins[direction2]=m+m%2-3;
+                            ends[direction2]=begins[direction2]+1;
                             for(size_t i=begins[0];i<ends[0];i+=steps[0]){
                                 for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                                     for(size_t k=begins[2];k<ends[2];k+=steps[2]){
@@ -3612,7 +3614,7 @@ namespace QoZ {
                             }
                         } 
                     }
-                    std::cout<<"p5"<<std::endl;
+                    //std::cout<<"p5"<<std::endl;
                 }
                 else{
                     if(direction1!=2 or direction2!=2){//temp. Too hard to generalize....
