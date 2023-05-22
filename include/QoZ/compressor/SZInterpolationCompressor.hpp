@@ -741,7 +741,11 @@ namespace QoZ {
             
             //timer.start();
             assert(quant_inds.size() == num_elements);
-            //std::cout<<quant_inds.size()<<std::endl;
+            std::cout<<quant_inds.size()<<std::endl;
+            for(size_t i=0;i<num_elements;i++){
+                if(!mark[i])
+                    std::cout<<i<<std::endl;
+            }
             encoder.preprocess_encode(quant_inds, 0);
             size_t bufferSize = 1.2 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
             uchar *buffer = new uchar[bufferSize];
@@ -875,8 +879,8 @@ namespace QoZ {
                 dimension_sequences.push_back(sequence);
             } while (std::next_permutation(sequence.begin(), sequence.end()));  
             
-            //mark.clear();
-            //mark.resize(num_elements,false);
+            mark.clear();
+            mark.resize(num_elements,false);
             
             
         }
@@ -1040,6 +1044,11 @@ namespace QoZ {
             
             mark[idx]=true;
             */
+            if(mark[idx]){
+                
+                std::cout<<"err: "<<idx<<std::endl;
+            }
+            mark[idx]=true;
             
             double pred_error=0;
             if(mode==-1){//recover
