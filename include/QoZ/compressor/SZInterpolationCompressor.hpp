@@ -743,8 +743,13 @@ namespace QoZ {
             assert(quant_inds.size() == num_elements);
             std::cout<<quant_inds.size()<<std::endl;
             for(size_t i=0;i<num_elements;i++){
-                if(!mark[i])
-                    std::cout<<i<<std::endl;
+                if(!mark[i]){
+                    size_t z=i%global_dimensions[2];
+                    size_t temp=i/global_dimensions[2];
+                    size_t y=temp%global_dimensions[1];
+                    size_t x= temp/global_dimensions[1];
+                    std::cout<<x<<" "<<y<<" "<<z<<std::endl;
+                }
             }
             encoder.preprocess_encode(quant_inds, 0);
             size_t bufferSize = 1.2 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
@@ -934,8 +939,8 @@ namespace QoZ {
                                // prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z);
                                 prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=0;
                             }*/
-                            //if(tuning==0)
-                             //   mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
+                            if(tuning==0)
+                                mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
                             quant_inds.push_back(0);
                         }           
                     }
