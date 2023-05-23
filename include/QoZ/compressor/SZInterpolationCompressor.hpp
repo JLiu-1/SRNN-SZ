@@ -8322,6 +8322,7 @@ namespace QoZ {
                 }
                 else{
                     const std::array<int, N> dims = dimension_sequences[direction];
+                    //there should better be a line to swap dims[1] and dims[2] when dims[1]>dims[2]. Currently controlled in the tuning step.
                     /*
                     if(!cross_block){
                         //std::array<double,3>dim_coeffs=meta.dimCoeffs;
@@ -8420,13 +8421,21 @@ namespace QoZ {
                             }
                         }
                         */
+                        /*
                         begin_idx=begin,end_idx=end;
                         for (size_t i = (begin[dims[0]] ? begin[dims[0]] + 1 : 0); i <= end[dims[0]]; i += 1) {
                             end_idx[dims[0]]=begin_idx[dims[0]]=i;                   
                             predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},
-                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,1,tuning);
+                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,cross_block,tuning);
                         }
+                        */
+                        begin_idx[dims[1]]=begin[dims[1]];
+                        predict_error += block_interpolation_2d_crossblock_3d(data, begin_idx,
+                                                                    end_idx,std::array<size_t,2>{dims[1],dims[2]},steps,
+                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,cross_block,tuning);
+                        //steps[dims[2]]=stride2x;
+
                    // }
                 }
 

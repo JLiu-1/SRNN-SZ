@@ -1905,6 +1905,8 @@ double Tuning(QoZ::Config &conf, T *data){
                                 
 
                                 for (auto &interp_direction: interpDirection_Candidates) {
+                                    if (interp_pd>=1  and interp_direction%2!=0)//only dims[0] matters.
+                                        continue;
                                     cur_meta.interpDirection=interp_direction;
                                     for(auto &cubic_spline_type:cubicSplineType_Candidates){
                                         if (interp_op!=QoZ::INTERP_ALGO_CUBIC and cubic_spline_type!=0)
