@@ -581,7 +581,7 @@ inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound
     //else{
         if (conf.tuningTarget!=QoZ::TUNING_TARGET_CR){    
             if(conf.wavelet==0){        
-                beta_list={1.5,2,3,4};
+                beta_list={1.5,2,3,4};//may remove 1.5
             }
             else{
                 beta_list={2,3};
@@ -2468,7 +2468,104 @@ double Tuning(QoZ::Config &conf, T *data){
                 }
     
             }
+
+            if(conf.fineGrainTuning and !use_sperr<T,N>(conf)){//currently skip SPERR fgtuning
+                double last_best_alpha=bestalpha,last_best_beta=bestbeta;
+                if(last_best_alpha==1)
+                    alpha_list={1.125};
+                else
+                    alpha_list={last_best_alpha-0.125,last_best_alpha,last_best_alpha+0.125};
+                if(last_best_beta==1.5)
+                    beta_list={1.25,1.5,1.75};
+                else if (last_best_beta==2.0)
+                    beta_list={1.75,2.0,2.5};
+                else
+                    beta_list={last_best_beta-0.5,last_best_beta,last_best_beta+0.5};
+
+                for(auto gamma:gamma_list){
+                    for (auto alpha:alpha_list){
+                        for (auto beta:beta_list){
+                            conf.absErrorBound=oriabseb;
+                            
+                            if (( (alpha>=1 and alpha>beta) or (alpha<0 and beta!=-1) ) )
+                                continue;
+                            if( alpha==last_best_alpha and beta==last_best_beta){
+                                if ( ((alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)))
+                                    break;
+                                continue;
+
+                            }
+                            conf.alpha=alpha;
+                            conf.beta=beta; 
+                            conf.wavelet_rel_coeff=gamma;
+                            if(wave_idx>0 and !use_sperr<T,N>(conf))
+                                conf.absErrorBound*=conf.wavelet_rel_coeff;
+                            //printf("%d %.2f %.2f %.2f\n",wave_idx,gamma,alpha,beta);                  
+                            std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
+                                                                                orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
+                            double bitrate=results.first;
+                            double metric=results.second;
+                            //printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
+                            if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
+                                bestalpha=alpha;
+                                bestbeta=beta;
+                                bestgamma=gamma;
+                                bestb=bitrate;
+                                bestm=metric;
+                                bestWave=wave_idx;
+                                useInterp=true;
+                                //printf("Best: %.2f %.2f %.2f %.4f %.2f\n",bestgamma,bestalpha,bestbeta,bestb,bestm);
+                            }
+                            else if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric<=bestm and bitrate>=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate>bestb) ){
+                                if ( ((alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf))
+                                    break;
+
+                                continue;
+                            }
+                            else{
+                                double eb_fixrate;
+                                /*
+                                if (metric>bestm)
+                                    eb_fixrate=rel_bound>1e-4?1.2:1.1;
+                                else
+                                    eb_fixrate=rel_bound>1e-4?0.8:0.9;
+                                    */
+                                eb_fixrate=bitrate/bestb;
+                                double orieb=conf.absErrorBound;
+                                conf.absErrorBound*=eb_fixrate;
+                                    
+                                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
+                                                                                    orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
+                                conf.absErrorBound=orieb;
+
+                                double bitrate_r=results.first;
+                                double metric_r=results.second;
+                                double a=(metric-metric_r)/(bitrate-bitrate_r);
+                                double b=metric-a*bitrate;
+                                double reg=a*bestb+b;
+                                    //printf("%.2f %.2f %.2f %.4f %.2f\n",gamma,alpha,beta,bitrate_r,metric_r);
+                                    //printf("%.2f %.2f %.2f %.4f %.2f\n",gamma,alpha,beta,bestb,reg);      
+                                    //conf.absErrorBound=orig_eb;
+                                if (reg>bestm){
+                                    bestalpha=alpha;
+                                    bestbeta=beta;
+                                    bestgamma=gamma;           
+                                    bestb=bitrate;
+                                    bestm=metric;
+                                    bestWave=wave_idx;
+                                    useInterp=true;
+                                    //printf("Best: %.2f %.2f %.2f %.4f %.2f\n",bestgamma,bestalpha,bestbeta,bestb,bestm);
+                                }
+                            }
+                            if ( ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf) )
+                                break;
+
+                        }
+                    }
+    
+                }
                // delete sz;
+            }
             //add lorenzo
             conf.absErrorBound=oriabseb;
             if(conf.testLorenzo and conf.wavelet==0 and !use_sperr<T,N>(conf)){    

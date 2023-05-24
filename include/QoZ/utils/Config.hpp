@@ -167,7 +167,8 @@ namespace QoZ {
             autoTuningRate = cfg.GetReal("AlgoSettings", "autoTuningRate", autoTuningRate);
             predictorTuningRate = cfg.GetReal("AlgoSettings", "predictorTuningRate", predictorTuningRate);
             wavelet_rel_coeff = cfg.GetReal("AlgoSettings", "wavelet_rel_coeff", wavelet_rel_coeff);
-            preTrim = cfg.GetReal("AlgoSettings", "preTrim", preTrim);
+            
+            //preTrim = cfg.GetReal("AlgoSettings", "preTrim", preTrim);
             waveletTuningRate = cfg.GetReal("AlgoSettings", "waveletTuningRate", waveletTuningRate);
             waveletBrFix = cfg.GetReal("AlgoSettings", "waveletBrFix", waveletBrFix);
             waveletBrFix2 = cfg.GetReal("AlgoSettings", "waveletBrFix2", waveletBrFix2);
@@ -195,6 +196,7 @@ namespace QoZ {
             quadInterp = cfg.GetBoolean("AlgoSettings", "quadInterp", quadInterp);
             freezeDimTest = cfg.GetBoolean("AlgoSettings", "freezeDimTest", freezeDimTest);
             dynamicDimCoeff = cfg.GetBoolean("AlgoSettings", "dynamicDimCoeff", dynamicDimCoeff);
+            fineGrainTuning = cfg.GetBoolean("AlgoSettings", "fineGrainTuning", fineGrainTuning);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -249,7 +251,7 @@ namespace QoZ {
             wavelet=cfg.GetInteger("AlgoSettings", "wavelet", wavelet);
             offsetPredictor=cfg.GetInteger("AlgoSettings", "offsetPredictor", offsetPredictor);
             //transformation=cfg.GetInteger("AlgoSettings", "transformation", transformation);
-            trimToZero = cfg.GetInteger("AlgoSettings", "trimToZero", trimToZero);
+           // trimToZero = cfg.GetInteger("AlgoSettings", "trimToZero", trimToZero);
             pid = cfg.GetInteger("AlgoSettings", "pid", pid);
             //blockOrder = cfg.GetInteger("AlgoSettings", "blockOrder", blockOrder);
             //coeffTracking = cfg.GetInteger("AlgoSettings", "coeffTracking", coeffTracking);
@@ -539,8 +541,8 @@ namespace QoZ {
         std::vector<float> predictionErrors;//for debug, to delete in final version.
         std::vector<uint8_t> interp_ops;//for debug, to delete in final version.
         std::vector<uint8_t> interp_dirs;//for debug, to delete in final version.
-        int trimToZero=0;//1: trim only when quantizing;2: also trim before compression.
-        double preTrim=0.0;//trim small numbers to zero before compression.
+        //int trimToZero=0;//1: trim only when quantizing;2: also trim before compression.
+        //double preTrim=0.0;//trim small numbers to zero before compression.
         //int blockOrder = 0;//order of blocks.
         int waveletTest = 1;
         double waveletTuningRate = 0.0;
@@ -570,6 +572,7 @@ namespace QoZ {
         int fullAdjacentInterp=0;
         bool naturalSpline=0;
         bool quadInterp=false;
+        bool fineGrainTuning=false;
         //bool profilingFix=true;//only for test
 
        // double anchorThreshold=0.0;
