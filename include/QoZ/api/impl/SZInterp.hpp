@@ -1707,7 +1707,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     uint8_t bestSplineType=0;
                     */
                     
-                    if(conf.multiDimInterp>0 and (conf.dynamicDimCoeff or (conf.freezeDimTest and level==1 and N>=3))){
+                    if(conf.multiDimInterp>0 and (conf.dynamicDimCoeff or (conf.freezeDimTest and level==1 and N>=3) ) ){
+                        std::cout<<"a "<<level<<" "<<conf.dynamicDimCoeff<<" "<<conf.freezeDimTest<<std::endl;
                         
                         size_t interp_stride=pow(2,level-1);
                         size_t stride;
