@@ -1707,7 +1707,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     uint8_t bestSplineType=0;
                     */
                     
-                    if(conf.multiDimInterp>0 and conf.dynamicDimCoeff or (conf.freezeDimTest and level==1 and N>=3)){
+                    if(conf.multiDimInterp>0 and (conf.dynamicDimCoeff or (conf.freezeDimTest and level==1 and N>=3))){
                         
                         size_t interp_stride=pow(2,level-1);
                         size_t stride;
@@ -2043,7 +2043,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 uint8_t bestDirection = 0;
                 uint8_t bestCubicSplineType =0;
                 */
-                //frozendim not added.
+                //frozendim and dynamic dim not added.
                 QoZ::Interp_Meta best_meta,cur_meta;
                     //conf.cmprAlgo == QoZ::ALGO_INTERP;
                 double cur_best_interp_cr=0.0;
@@ -2471,6 +2471,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             if(conf.fineGrainTuning and !use_sperr<T,N>(conf)){//currently skip SPERR fgtuning
                 double last_best_alpha=bestalpha,last_best_beta=bestbeta;
+                //The following list building to refine.
                 if(last_best_alpha==1)
                     alpha_list={1.125};
                 else
