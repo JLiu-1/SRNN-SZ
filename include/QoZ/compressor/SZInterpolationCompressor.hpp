@@ -3337,7 +3337,7 @@ namespace QoZ {
             }
                     
             else{//cubic
-                std::cout<<real_n<<" "<<real_m<<" "<<n<<" "<<m<<std::endl;
+                //std::cout<<real_n<<" "<<real_m<<" "<<n<<" "<<m<<std::endl;
                  if(real_n<5){//real_m>=5
                     std::array<size_t,N> new_begin_idx=begin_idx,new_end_idx=end_idx,new_steps=steps;
                     //for(size_t i=1;i<n;i+=2){
@@ -3353,7 +3353,7 @@ namespace QoZ {
                    // for(size_t j=1;j<m;j+=2){
                         new_begin_idx[direction2]=math_begin_idx2+math_stride;
                         new_end_idx[direction2]=math_begin_idx2+(m-1)*math_stride;
-                        new_steps[direction1]=2*math_stride;
+                        new_steps[direction2]=2*math_stride;
                         predict_error+=block_interpolation_1d_crossblock_3d(data, new_begin_idx,new_end_idx,  direction1,new_steps,math_stride,interp_func,pb,meta,cross_block,tuning);
                     //}
                     return predict_error;
