@@ -3337,7 +3337,7 @@ namespace QoZ {
             }
                     
             else{//cubic
-
+                std::cout<<real_n<<" "<<real_m<<" "<<n<<" "<<m<<std::endl
                  if(real_n<5){//real_m>=5
                     std::array<size_t,N> new_begin_idx=begin_idx,new_end_idx=end_idx,new_steps=steps;
                     //for(size_t i=1;i<n;i+=2){
@@ -8496,7 +8496,7 @@ namespace QoZ {
                         predict_error += block_interpolation_2d_crossblock_3d(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},steps,
                                                                     stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,cross_block,tuning);
-                        //std::cout<<"2d"<<std::endl;
+                        std::cout<<"2d"<<std::endl;
                         //steps[dims[2]]=stride2x;
 
                    // }
