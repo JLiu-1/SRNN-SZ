@@ -419,7 +419,8 @@ namespace QoZ {
                         }
                     }
                     //std::cout<<"a block"<<std::endl;
-                    //std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<" "<<std::endl;
+                    std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<" "<<std::endl;
+                     std::cout<<end_idx[0]<<" "<<end_idx[1]<<" "<<end_idx[2]<<" "<<std::endl;
                     if(!conf.blockwiseTuning){
                         /*
                         if(peTracking)
@@ -1035,20 +1036,20 @@ namespace QoZ {
 
         inline double quantize_integrated(size_t idx, T &d, T pred, int mode=0){
             
-            
-            if(mark[idx]){
-                size_t z=idx%global_dimensions[2];
+            size_t z=idx%global_dimensions[2];
                 size_t temp=idx/global_dimensions[2];
                 size_t y=temp%global_dimensions[1];
                 size_t x= temp/global_dimensions[1];
+            if(mark[idx]){
+                
                 
                 std::cout<<"err: "<<x<<" "<<y<<" "<<z<<std::endl;
             }
-            /*
-            if(x==255 and y==0 and z==125){
+            
+            else if(x==0 and y==20 and z==3592){
                 std::cout<<"first: "<<x<<" "<<y<<" "<<z<<std::endl;
 
-            }*/
+            }
             
             mark[idx]=true;
             /*
@@ -8395,7 +8396,7 @@ namespace QoZ {
                     }*/
                     //else{
                         //std::array<double,3>dim_coeffs=meta.dimCoeffs;
-                        //std::cout<<"1d0"<<std::endl;
+                        std::cout<<"1d0"<<std::endl;
                         std::array<size_t, N>steps;
                         std::array<size_t, N> begin_idx=begin,end_idx=end;
                         steps[dims[1]]=1;
@@ -8421,7 +8422,7 @@ namespace QoZ {
                         
 
                  
-                        //std::cout<<"1d1"<<std::endl;
+                        std::cout<<"1d1"<<std::endl;
 
                         begin_idx[dims[2]]=begin[dims[2]];
 
@@ -8443,7 +8444,7 @@ namespace QoZ {
                         predict_error += block_interpolation_1d_crossblock_3d(data, begin_idx,
                                                                             end_idx,dims[2],steps,
                                                                             stride , interp_func, pb,meta,cross_block,tuning);
-                       // std::cout<<"1d2"<<std::endl;
+                        std::cout<<"1d2"<<std::endl;
 
                         /*
 
