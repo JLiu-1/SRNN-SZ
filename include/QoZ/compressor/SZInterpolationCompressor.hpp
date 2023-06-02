@@ -2865,7 +2865,8 @@ namespace QoZ {
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                     size_t j_start_temp=(j_start==1)?1:5;
                     //first half (non-adj)
-                    //std::cout<<"f1"<<std::endl;
+                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                    std::cout<<"f1"<<std::endl;
                     for (i = i_start; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?j_start_temp:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -2913,7 +2914,8 @@ namespace QoZ {
                         */
                         
                     }
-                    //std::cout<<"f2"<<std::endl;
+                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                    std::cout<<"f2"<<std::endl;
                     //i=1
                     if(i_start==3 and n>4){
                         for(j=j_start_temp;j+3<m;j+=4){
@@ -2945,7 +2947,8 @@ namespace QoZ {
                     }
 
                     //i=n-3 or n-2
-                     //std::cout<<"f3"<<std::endl;
+                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                     std::cout<<"f3"<<std::endl;
                     if(i<n-1){
                         j_start= (i%4==1)?j_start_temp:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -2984,7 +2987,8 @@ namespace QoZ {
 
 
                     //i=n-1 (odd)
-                    // std::cout<<"f4"<<std::endl;
+                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                     std::cout<<"f4"<<std::endl;
                     if (n % 2 == 0) {
                         j_start= ((n-1)%4==1)?j_start_temp:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -3020,7 +3024,8 @@ namespace QoZ {
                     }
 
                     //second half (adj)
-                    // std::cout<<"f5"<<std::endl;
+                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                     std::cout<<"f5"<<std::endl;
                     for (i = i_start; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?3:j_start_temp;
                         for(j=j_start;j+3<m;j+=4){
@@ -3074,7 +3079,8 @@ namespace QoZ {
                     }
 
                     //i=1
-                    // std::cout<<"f6"<<std::endl;
+                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                    std::cout<<"f6"<<std::endl;
                     if(i_start==3 and n>4){
                         for(j=3;j+3<m;j+=4){
                           
@@ -3105,7 +3111,8 @@ namespace QoZ {
                         }
                     }
                     //i= n-3 or n-2
-                    // std::cout<<"f7"<<std::endl;
+                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                    std::cout<<"f7"<<std::endl;
                     if(i<n-1){
                         j_start= (i%4==1)?3:j_start_temp;
                         for(j=j_start;j+3<m;j+=4){
@@ -3143,7 +3150,8 @@ namespace QoZ {
                     }
                     
                     //i==n-1
-                    // std::cout<<"f8"<<std::endl;
+                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                     std::cout<<"f8"<<std::endl;
                     if (n % 2 == 0) {
                         j_start= ((n-1)%4==1)?3:j_start_temp;
                         for(j=j_start;j+3<m;j+=4){
