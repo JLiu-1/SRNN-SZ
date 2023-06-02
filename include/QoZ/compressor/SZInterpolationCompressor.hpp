@@ -8376,6 +8376,16 @@ namespace QoZ {
                         steps[dims[0]]=1;
                         steps[dims[2]]=stride2x;
 
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<begin_idx[i]<<" ";
+                        std::cout<<std::endl;
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<end_idx[i]<<" ";
+                        std::cout<<std::endl;
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<steps[i]<<" ";
+                        std::cout<<std::endl;
+
 
                         predict_error += block_interpolation_1d_crossblock_3d(data, begin_idx,
                                                                             end_idx,dims[1],steps,
@@ -8391,12 +8401,21 @@ namespace QoZ {
                         //begin_idx[dims[2]]=(begin[dims[2]] ? begin[dims[2]] + stride2x : 0);
                         //steps[dims[0]]=stride2x;
                         steps[dims[1]]=stride2x;
-
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<begin_idx[i]<<" ";
+                        std::cout<<std::endl;
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<end_idx[i]<<" ";
+                        std::cout<<std::endl;
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<steps[i]<<" ";
+                        std::cout<<std::endl;
 
                         predict_error += block_interpolation_1d_crossblock_3d(data, begin_idx,
                                                                             end_idx,dims[2],steps,
                                                                             stride , interp_func, pb,meta,cross_block,tuning);
                         std::cout<<"1d2"<<std::endl;
+
                         /*
 
                         std::array<size_t, N> begin_idx=begin,end_idx=begin;
@@ -8433,6 +8452,15 @@ namespace QoZ {
                         }
                         */
                         begin_idx[dims[1]]=begin[dims[1]];
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<begin_idx[i]<<" ";
+                        std::cout<<std::endl;
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<end_idx[i]<<" ";
+                        std::cout<<std::endl;
+                        for(size_t i=0;i<N;i++)
+                            std::cout<<steps[i]<<" ";
+                        std::cout<<std::endl;
                         predict_error += block_interpolation_2d_crossblock_3d(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},steps,
                                                                     stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,cross_block,tuning);
