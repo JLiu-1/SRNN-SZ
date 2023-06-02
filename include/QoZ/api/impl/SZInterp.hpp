@@ -1697,7 +1697,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 double best_accumulated_interp_loss_1=0;
                 double best_accumulated_interp_loss_2=0;
                 std::vector<std::vector<double> > linear_interp_vars(conf.levelwisePredictionSelection),cubic_noknot_vars(conf.levelwisePredictionSelection),cubic_nat_vars(conf.levelwisePredictionSelection);
-                std::cout<<"a "<<conf.dynamicDimCoeff<<" "<<conf.freezeDimTest<<std::endl;
+                //std::cout<<"a "<<conf.dynamicDimCoeff<<" "<<conf.freezeDimTest<<std::endl;
                 for(int level=conf.levelwisePredictionSelection;level>0;level--){
                    // std::cout<<level<<std::endl;
                     int start_level=(level==conf.levelwisePredictionSelection?9999:level);
@@ -1707,9 +1707,9 @@ double Tuning(QoZ::Config &conf, T *data){
                     uint8_t bestDirection = 0;
                     uint8_t bestSplineType=0;
                     */
-                    
+                    std::cout<<"a "<<level<<" "<<conf.dynamicDimCoeff<<" "<<conf.freezeDimTest<<std::endl;
                     if(conf.multiDimInterp>0 and (conf.dynamicDimCoeff>0 or (conf.freezeDimTest>0 and level==1 and N>=3) ) ){
-                        //std::cout<<"a "<<level<<" "<<conf.dynamicDimCoeff<<" "<<conf.freezeDimTest<<std::endl;
+                        
                         
                         size_t interp_stride=pow(2,level-1);
                         size_t stride;
