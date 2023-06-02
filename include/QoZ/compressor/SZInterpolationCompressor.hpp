@@ -4015,6 +4015,8 @@ namespace QoZ {
                         //std::cout<<sub_start<<" "<<sub_end<<" "<<sub_step<<std::endl;
                         std::array<size_t,N>temp_start=begin_idx,temp_end=end_idx;
                         for(size_t sub=sub_start;sub<=sub_end;sub+=sub_step){
+                            if(end_idx[1]==1799 and end_idx[2]==3599)
+                                std::cout<<sub<<std::endl;
                             temp_start[sub_direction]=temp_end[sub_direction]=sub;
                             predict_error+=block_interpolation_2d_crossblock(data, temp_start, temp_end,directions,math_stride, interp_func, pb,dim_coeffs,meta,cross_block,tuning);
                         }
