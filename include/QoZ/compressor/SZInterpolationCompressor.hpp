@@ -2871,7 +2871,7 @@ namespace QoZ {
                         j_start= (i%4==1)?j_start_temp:3;
                         for(j=j_start;j+3<m;j+=4){
                             if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599 and math_stride==1)    
-                                std::cout<<i<<" "<<j<<std::endl;
+                                std::cout<<begin_idx[1]+i<<" "<<begin_idx[2]+j<<std::endl;
 
  
                             d = data + begin + i* stride1+j*stride2;
