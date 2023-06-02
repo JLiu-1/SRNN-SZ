@@ -2881,6 +2881,9 @@ namespace QoZ {
  
                             d = data + begin + i* stride1+j*stride2;
                             size_t idx=d-data;
+
+                            //if(!mark[idx-stride3x1])
+
                             
 
 
