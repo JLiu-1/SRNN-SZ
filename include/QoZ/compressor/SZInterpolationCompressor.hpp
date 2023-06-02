@@ -2876,8 +2876,10 @@ namespace QoZ {
  
                             d = data + begin + i* stride1+j*stride2;
                             size_t idx=data-d;
-                            if(begin_idx[1]+i==1635 and begin_idx[2]+j==3595)
+                            if(begin_idx[1]+i==1635 and begin_idx[2]+j==3595){
+                                std::cout<<begin<<" "<<i<<" "<<j<<" "<<stride1<<" "<<stride2<<std::endl;
                                 std::cout<<idx<<" "<<idx+stride3x1<<std::endl;
+                            }
 
 
                             //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
