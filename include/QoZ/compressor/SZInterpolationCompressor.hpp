@@ -885,8 +885,8 @@ namespace QoZ {
                 dimension_sequences.push_back(sequence);
             } while (std::next_permutation(sequence.begin(), sequence.end()));  
             
-            //mark.clear();
-            //mark.resize(num_elements,false);
+            mark.clear();
+            mark.resize(num_elements,false);
             
             
         }
@@ -940,8 +940,8 @@ namespace QoZ {
                                // prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z);
                                 prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=0;
                             }*/
-                            //if(tuning==0)
-                            //    mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
+                            if(tuning==0)
+                                mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
                             quant_inds.push_back(0);
                         }           
                     }
@@ -967,6 +967,7 @@ namespace QoZ {
                     for (size_t y=0;y<global_dimensions[1];y+=anchor_strides[1]){
                         for(size_t z=0;z<global_dimensions[2];z+=anchor_strides[2]){
                             decData[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=quantizer.recover_unpred();
+                            mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
                             quant_index++;
                         }    
                     }
@@ -1033,9 +1034,13 @@ namespace QoZ {
         };
 
         inline double quantize_integrated(size_t idx, T &d, T pred, int mode=0){
-            /*
+            
             
             if(mark[idx]){
+                size_t z=idx%global_dimensions[2];
+                size_t temp=idx/global_dimensions[2];
+                size_t y=temp%global_dimensions[1];
+                size_t x= temp/global_dimensions[1];
                 
                 std::cout<<"err: "<<x<<" "<<y<<" "<<z<<std::endl;
             }
@@ -1046,7 +1051,7 @@ namespace QoZ {
             }
             
             mark[idx]=true;
-            *//*
+            /*
             size_t z=idx%global_dimensions[2];
                 size_t temp=idx/global_dimensions[2];
                 size_t y=temp%global_dimensions[1];
@@ -2865,8 +2870,8 @@ namespace QoZ {
                     auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
                     size_t j_start_temp=(j_start==1)?1:5;
                     //first half (non-adj)
-                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
-                    std::cout<<"f1"<<std::endl;
+                    //if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                   // std::cout<<"f1"<<std::endl;
                     for (i = i_start; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?j_start_temp:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -2876,10 +2881,7 @@ namespace QoZ {
  
                             d = data + begin + i* stride1+j*stride2;
                             size_t idx=d-data;
-                            if(begin_idx[1]+i==1635 and begin_idx[2]+j==3595){
-                                std::cout<<begin<<" "<<i<<" "<<j<<" "<<stride1<<" "<<stride2<<std::endl;
-                                std::cout<<idx<<" "<<idx+stride3x1<<std::endl;
-                            }
+                            
 
 
                             //predict_error+=quantize_integrated(d - data, *d, interp_linear( interp_cubic(*(d - stride3x1), *(d - stride1), *(d + stride1), *(d + stride3x1))
@@ -2888,8 +2890,8 @@ namespace QoZ {
                                                                     +coeff_y*interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ,mode);
                         }
                         //j=1
-                        if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599 and math_stride==1)    
-                                std::cout<<"wow"<<std::endl;
+                        //if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599 and math_stride==1)    
+                        //        std::cout<<"wow"<<std::endl;
                         if(j_start==5 and m>4){
                             
                             d = data + begin + i* stride1+stride2;
@@ -2900,8 +2902,8 @@ namespace QoZ {
                         }
                         
                         //j=m-3 or m-2 or j=m-1
-                        if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599 and math_stride==1)    
-                                std::cout<<"wow2"<<std::endl;
+                       // if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599 and math_stride==1)    
+                        //        std::cout<<"wow2"<<std::endl;
                         if(j<m){
                             d = data +begin + i* stride1+j*stride2;
 
@@ -2926,8 +2928,8 @@ namespace QoZ {
                         */
                         
                     }
-                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
-                    std::cout<<"f2"<<std::endl;
+                   // if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                   // std::cout<<"f2"<<std::endl;
                     //i=1
                     if(i_start==3 and n>4){
                         for(j=j_start_temp;j+3<m;j+=4){
@@ -2959,8 +2961,8 @@ namespace QoZ {
                     }
 
                     //i=n-3 or n-2
-                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
-                     std::cout<<"f3"<<std::endl;
+                   // if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                   //  std::cout<<"f3"<<std::endl;
                     if(i<n-1){
                         j_start= (i%4==1)?j_start_temp:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -2999,8 +3001,8 @@ namespace QoZ {
 
 
                     //i=n-1 (odd)
-                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
-                     std::cout<<"f4"<<std::endl;
+                   // if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                   //  std::cout<<"f4"<<std::endl;
                     if (n % 2 == 0) {
                         j_start= ((n-1)%4==1)?j_start_temp:3;
                         for(j=j_start;j+3<m;j+=4){
@@ -3036,8 +3038,8 @@ namespace QoZ {
                     }
 
                     //second half (adj)
-                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
-                     std::cout<<"f5"<<std::endl;
+                    //if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                     //std::cout<<"f5"<<std::endl;
                     for (i = i_start; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?3:j_start_temp;
                         for(j=j_start;j+3<m;j+=4){
@@ -3091,8 +3093,8 @@ namespace QoZ {
                     }
 
                     //i=1
-                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
-                    std::cout<<"f6"<<std::endl;
+                    //if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                    //std::cout<<"f6"<<std::endl;
                     if(i_start==3 and n>4){
                         for(j=3;j+3<m;j+=4){
                           
@@ -3123,8 +3125,8 @@ namespace QoZ {
                         }
                     }
                     //i= n-3 or n-2
-                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
-                    std::cout<<"f7"<<std::endl;
+                    //if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                   // std::cout<<"f7"<<std::endl;
                     if(i<n-1){
                         j_start= (i%4==1)?3:j_start_temp;
                         for(j=j_start;j+3<m;j+=4){
@@ -3162,8 +3164,8 @@ namespace QoZ {
                     }
                     
                     //i==n-1
-                    if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
-                     std::cout<<"f8"<<std::endl;
+                   // if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599)
+                    // std::cout<<"f8"<<std::endl;
                     if (n % 2 == 0) {
                         j_start= ((n-1)%4==1)?3:j_start_temp;
                         for(j=j_start;j+3<m;j+=4){
@@ -8476,7 +8478,7 @@ namespace QoZ {
                         }
                         */
                         begin_idx[dims[1]]=begin[dims[1]];
-                        
+                        /*
                         for(size_t i=0;i<N;i++)
                             std::cout<<begin_idx[i]<<" ";
                         std::cout<<std::endl;
@@ -8486,7 +8488,7 @@ namespace QoZ {
                         for(size_t i=0;i<N;i++)
                             std::cout<<steps[i]<<" ";
                         std::cout<<std::endl;
-                         
+                         */
                         predict_error += block_interpolation_2d_crossblock_3d(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},steps,
                                                                     stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,cross_block,tuning);
