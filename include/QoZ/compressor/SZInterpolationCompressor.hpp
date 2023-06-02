@@ -4012,7 +4012,7 @@ namespace QoZ {
                     else{
                         size_t sub_direction=3-direction1-direction2;
                         size_t sub_start=begin_idx[sub_direction],sub_end=end_idx[sub_direction],sub_step=steps[sub_direction];
-                        std::cout<<sub_start<<" "<<sub_end<<" "<<sub_step<<std::endl;
+                        //std::cout<<sub_start<<" "<<sub_end<<" "<<sub_step<<std::endl;
                         std::array<size_t,N>temp_start=begin_idx,temp_end=end_idx;
                         for(size_t sub=sub_start;sub<=sub_end;sub+=sub_step){
                             temp_start[sub_direction]=temp_end[sub_direction]=sub;
@@ -8454,7 +8454,7 @@ namespace QoZ {
                         }
                         */
                         begin_idx[dims[1]]=begin[dims[1]];
-                        /*
+                        
                         for(size_t i=0;i<N;i++)
                             std::cout<<begin_idx[i]<<" ";
                         std::cout<<std::endl;
@@ -8464,7 +8464,7 @@ namespace QoZ {
                         for(size_t i=0;i<N;i++)
                             std::cout<<steps[i]<<" ";
                         std::cout<<std::endl;
-                         */
+                         
                         predict_error += block_interpolation_2d_crossblock_3d(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},steps,
                                                                     stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,cross_block,tuning);
