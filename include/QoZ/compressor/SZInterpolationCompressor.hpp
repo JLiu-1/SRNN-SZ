@@ -419,8 +419,8 @@ namespace QoZ {
                         }
                     }
                     //std::cout<<"a block"<<std::endl;
-                    std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<" "<<std::endl;
-                     std::cout<<end_idx[0]<<" "<<end_idx[1]<<" "<<end_idx[2]<<" "<<std::endl;
+                   // std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<" "<<std::endl;
+                   //  std::cout<<end_idx[0]<<" "<<end_idx[1]<<" "<<end_idx[2]<<" "<<std::endl;
                     if(!conf.blockwiseTuning){
                         /*
                         if(peTracking)
@@ -1035,7 +1035,7 @@ namespace QoZ {
         };
 
         inline double quantize_integrated(size_t idx, T &d, T pred, int mode=0){
-            
+            /*
             size_t z=idx%global_dimensions[2];
                 size_t temp=idx/global_dimensions[2];
                 size_t y=temp%global_dimensions[1];
@@ -1052,7 +1052,7 @@ namespace QoZ {
             }
             
             mark[idx]=true;
-            /*
+            
             size_t z=idx%global_dimensions[2];
                 size_t temp=idx/global_dimensions[2];
                 size_t y=temp%global_dimensions[1];
@@ -2876,8 +2876,7 @@ namespace QoZ {
                     for (i = i_start; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?j_start_temp:3;
                         for(j=j_start;j+3<m;j+=4){
-                            if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599 and math_stride==1)    
-                                std::cout<<begin_idx[1]+i<<" "<<begin_idx[2]+j<<std::endl;
+                            
 
  
                             d = data + begin + i* stride1+j*stride2;
@@ -4041,8 +4040,7 @@ namespace QoZ {
                         //std::cout<<sub_start<<" "<<sub_end<<" "<<sub_step<<std::endl;
                         std::array<size_t,N>temp_start=begin_idx,temp_end=end_idx;
                         for(size_t sub=sub_start;sub<=sub_end;sub+=sub_step){
-                            if(end_idx[1]==1799 and end_idx[2]==3599)
-                                std::cout<<sub<<std::endl;
+                          
                             temp_start[sub_direction]=temp_end[sub_direction]=sub;
                             predict_error+=block_interpolation_2d_crossblock(data, temp_start, temp_end,directions,math_stride, interp_func, pb,dim_coeffs,meta,cross_block,tuning);
                         }
@@ -8396,7 +8394,7 @@ namespace QoZ {
                     }*/
                     //else{
                         //std::array<double,3>dim_coeffs=meta.dimCoeffs;
-                        std::cout<<"1d0"<<std::endl;
+                        //std::cout<<"1d0"<<std::endl;
                         std::array<size_t, N>steps;
                         std::array<size_t, N> begin_idx=begin,end_idx=end;
                         steps[dims[1]]=1;
@@ -8422,7 +8420,7 @@ namespace QoZ {
                         
 
                  
-                        std::cout<<"1d1"<<std::endl;
+                      //  std::cout<<"1d1"<<std::endl;
 
                         begin_idx[dims[2]]=begin[dims[2]];
 
@@ -8444,7 +8442,7 @@ namespace QoZ {
                         predict_error += block_interpolation_1d_crossblock_3d(data, begin_idx,
                                                                             end_idx,dims[2],steps,
                                                                             stride , interp_func, pb,meta,cross_block,tuning);
-                        std::cout<<"1d2"<<std::endl;
+                    //    std::cout<<"1d2"<<std::endl;
 
                         /*
 
@@ -8496,7 +8494,7 @@ namespace QoZ {
                         predict_error += block_interpolation_2d_crossblock_3d(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[1],dims[2]},steps,
                                                                     stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[1]],dim_coeffs[dims[2]]},meta,cross_block,tuning);
-                        std::cout<<"2d"<<std::endl;
+                        //std::cout<<"2d"<<std::endl;
                         //steps[dims[2]]=stride2x;
 
                    // }
