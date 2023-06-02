@@ -1649,7 +1649,7 @@ double Tuning(QoZ::Config &conf, T *data){
             }
 
             //std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_CUBIC};//temp. 
-            std::vector<uint8_t> interpParadigm_Candidates={};
+            std::vector<uint8_t> interpParadigm_Candidates={0};
             std::vector<uint8_t> cubicSplineType_Candidates={0};
             std::vector<uint8_t> interpDirection_Candidates={0, QoZ::factorial(N) -1};
             /*
@@ -1707,7 +1707,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     uint8_t bestDirection = 0;
                     uint8_t bestSplineType=0;
                     */
-                    std::cout<<"a "<<level<<" "<<conf.dynamicDimCoeff<<" "<<conf.freezeDimTest<<std::endl;
+                   // std::cout<<"a "<<level<<" "<<conf.dynamicDimCoeff<<" "<<conf.freezeDimTest<<std::endl;
                     if(conf.multiDimInterp>0 and (conf.dynamicDimCoeff>0 or (conf.freezeDimTest>0 and level==1 and N>=3) ) ){
                         
                         
