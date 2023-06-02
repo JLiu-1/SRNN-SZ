@@ -2875,7 +2875,7 @@ namespace QoZ {
 
  
                             d = data + begin + i* stride1+j*stride2;
-                            size_t idx=data-d;
+                            size_t idx=d-data;
                             if(begin_idx[1]+i==1635 and begin_idx[2]+j==3595){
                                 std::cout<<begin<<" "<<i<<" "<<j<<" "<<stride1<<" "<<stride2<<std::endl;
                                 std::cout<<idx<<" "<<idx+stride3x1<<std::endl;
