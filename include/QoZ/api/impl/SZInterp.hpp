@@ -1697,6 +1697,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 double best_accumulated_interp_loss_1=0;
                 double best_accumulated_interp_loss_2=0;
                 std::vector<std::vector<double> > linear_interp_vars(conf.levelwisePredictionSelection),cubic_noknot_vars(conf.levelwisePredictionSelection),cubic_nat_vars(conf.levelwisePredictionSelection);
+                std::cout<<"a "<<conf.dynamicDimCoeff<<" "<<conf.freezeDimTest<<std::endl;
                 for(int level=conf.levelwisePredictionSelection;level>0;level--){
                    // std::cout<<level<<std::endl;
                     int start_level=(level==conf.levelwisePredictionSelection?9999:level);
