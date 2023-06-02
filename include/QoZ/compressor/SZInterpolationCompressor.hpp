@@ -886,8 +886,8 @@ namespace QoZ {
                 dimension_sequences.push_back(sequence);
             } while (std::next_permutation(sequence.begin(), sequence.end()));  
             
-            mark.clear();
-            mark.resize(num_elements,false);
+           // mark.clear();
+           // mark.resize(num_elements,false);
             
             
         }
@@ -941,8 +941,8 @@ namespace QoZ {
                                // prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z);
                                 prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=0;
                             }*/
-                            if(tuning==0)
-                                mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
+                           // if(tuning==0)
+                           //     mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
                             quant_inds.push_back(0);
                         }           
                     }
@@ -968,7 +968,7 @@ namespace QoZ {
                     for (size_t y=0;y<global_dimensions[1];y+=anchor_strides[1]){
                         for(size_t z=0;z<global_dimensions[2];z+=anchor_strides[2]){
                             decData[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=quantizer.recover_unpred();
-                            mark[x*global_dimensions[1]*global_dimensions[2]+y*global_dimensions[2]+z]=true;
+                            //mark[x*global_dimensions[1]*global_dimensions[2]+y*global_dimensions[2]+z]=true;
                             quant_index++;
                         }    
                     }
