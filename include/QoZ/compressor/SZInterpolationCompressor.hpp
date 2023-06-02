@@ -2870,6 +2870,8 @@ namespace QoZ {
                     for (i = i_start; i + 3 < n; i += 2) {
                         j_start= (i%4==1)?j_start_temp:3;
                         for(j=j_start;j+3<m;j+=4){
+                            if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599 and math_stride==1)    
+                                std::cout<<i<<" "<<j<<std::endl;
 
  
                             d = data + begin + i* stride1+j*stride2;
@@ -2880,6 +2882,8 @@ namespace QoZ {
                                                                     +coeff_y*interp_cubic(*(d - stride3x2), *(d - stride2), *(d + stride2), *(d + stride3x2)) ,mode);
                         }
                         //j=1
+                        if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599 and math_stride==1)    
+                                std::cout<<"wow"<<std::endl;
                         if(j_start==5 and m>4){
                             
                             d = data + begin + i* stride1+stride2;
@@ -2890,6 +2894,8 @@ namespace QoZ {
                         }
                         
                         //j=m-3 or m-2 or j=m-1
+                        if(end_idx[0]==21 and end_idx[1]==1799 and end_idx[2]==3599 and math_stride==1)    
+                                std::cout<<"wow2"<<std::endl;
                         if(j<m){
                             d = data +begin + i* stride1+j*stride2;
 
