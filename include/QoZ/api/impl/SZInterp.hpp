@@ -1736,10 +1736,11 @@ double Tuning(QoZ::Config &conf, T *data){
                         }
                         QoZ::calculate_interp_error_vars<T,N>(data, global_dims,cubic_noknot_vars[level-1],1,0,stride,interp_stride,cur_eb);
                         QoZ::preprocess_vars<N>(cubic_noknot_vars[level-1]);
+                        /*
                         for(auto x:cubic_noknot_vars[level-1])
                             std::cout<<x<<" ";
                         std::cout<<std::endl;
-                        
+                        */
                     }
 
 
@@ -1799,7 +1800,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                             delete []cmprData;                              
                                             cur_absloss+=conf.decomp_square_error;
                                         }
-                                        std::cout<<(int)interp_op<<" "<<(int)interp_pd<<" "<<(int)interp_direction<<" "<<(int)cubic_spline_type<<" "<<(int)adj_interp<<" "<<cur_absloss<<std::endl; 
+                                        //std::cout<<(int)interp_op<<" "<<(int)interp_pd<<" "<<(int)interp_direction<<" "<<(int)cubic_spline_type<<" "<<(int)adj_interp<<" "<<cur_absloss<<std::endl; 
                                         if (cur_absloss<best_interp_absloss){
                                             best_meta=cur_meta;
                                             best_interp_absloss=cur_absloss;
@@ -1987,7 +1988,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     double best_interp_cr_2=sizeof(T)*8.0/results.first;     
                     conf.interpMeta_list=tempmeta_list;
 
-                    std::cout<<best_interp_cr_1<<" "<<best_interp_cr_2<<std::endl;
+                    //std::cout<<best_interp_cr_1<<" "<<best_interp_cr_2<<std::endl;
                     if(best_interp_cr_2>best_interp_cr_1*1.05){
                         conf.frozen_dim=frozen_dim;
                         interpMeta_lists[wave_idx]=interpMeta_list;
