@@ -419,7 +419,7 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                    std::cout<<"a block"<<std::endl;
+                   // std::cout<<"a block"<<std::endl;
                    // std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<" "<<std::endl;
                    //  std::cout<<end_idx[0]<<" "<<end_idx[1]<<" "<<end_idx[2]<<" "<<std::endl;
                     if(!conf.blockwiseTuning){
@@ -442,7 +442,7 @@ namespace QoZ {
                         auto end_idx = start_idx;
                         //std::array<size_t,N> block_lengths;
                         std::array<size_t,N> sample_starts,sample_ends;
-                        std::cout<<"a0"<<std::endl;
+                        //std::cout<<"a0"<<std::endl;
                         
                         for (int i = 0; i < N; i++) {
                             end_idx[i] += cur_blocksize ;
@@ -471,7 +471,7 @@ namespace QoZ {
                            // std::cout<<start_idx[i]<<" "<<end_idx[i]<<" "<<sample_starts[i]<<" "<<sample_ends[i]<<" "<<stride<<std::endl;
 
                         }
-                        std::cout<<"a0.3"<<std::endl;
+                        //std::cout<<"a0.3"<<std::endl;
                          //std::cout<<"----"<<std::endl;
                         std::vector<T> orig_sampled_block;
                         /*
@@ -511,7 +511,7 @@ namespace QoZ {
                                 }
                             }
                         } 
-                        std::cout<<"a0.6"<<std::endl;
+                        //std::cout<<"a0.6"<<std::endl;
                         /*
                         std::array<size_t,N> temp_dim_offsets;
                         if(N==2){
@@ -554,7 +554,7 @@ namespace QoZ {
                             else
                                 interpDirection_Candidates={10,11};
                         }
-                        std::cout<<"a0.9"<<std::endl;
+                       // std::cout<<"a0.9"<<std::endl;
                         std::vector<uint8_t> adjInterp_Candidates={cur_level_meta.adjInterp};
 
                         std::vector<double>interp_vars;
@@ -562,7 +562,7 @@ namespace QoZ {
                         std::vector<size_t>block_dims(N,0);
                         for (size_t i=0;i<N;i++)
                             block_dims[i]=(sample_ends[i]-sample_starts[i])/stride+1;
-                        std::cout<<"a0.93"<<std::endl;
+                       // std::cout<<"a0.93"<<std::endl;
                         if(conf.multiDimInterp>0){
                             for(size_t i=1;i<=conf.multiDimInterp;i++)
                                 interpParadigm_Candidates.push_back(i);
@@ -579,7 +579,7 @@ namespace QoZ {
                             */
                        
                         }   
-                        std::cout<<"a1"<<std::endl;
+                       // std::cout<<"a1"<<std::endl;
                         /*
 
                         if (conf.naturalSpline){
@@ -598,7 +598,7 @@ namespace QoZ {
                         //std::vector<T> cur_block;
                         
                         std::vector<float> coeffs;
-                        std::cout<<"a2"<<std::endl;
+                        //std::cout<<"a2"<<std::endl;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
                             int status;
                             //std::cout<<orig_sampled_block.size()<<std::endl;
@@ -618,7 +618,7 @@ namespace QoZ {
                             interp_coeffs.insert(interp_coeffs.end(),coeffs.begin(),coeffs.end());
 
                         }
-                        std::cout<<"a3"<<std::endl;
+                       // std::cout<<"a3"<<std::endl;
 
                         for (auto &interp_op: interpAlgo_Candidates) {
                             cur_meta.interpAlgo=interp_op;
@@ -638,7 +638,7 @@ namespace QoZ {
                                         for(auto adj_interp:adjInterp_Candidates){
                                             if (interp_op!=QoZ::INTERP_ALGO_CUBIC and adj_interp!=0)
                                                 break;
-                                            std::cout<<"a4"<<std::endl;
+                                           // std::cout<<"a4"<<std::endl;
                                             cur_meta.adjInterp=adj_interp;
 
                                             if(conf.dynamicDimCoeff){
@@ -658,7 +658,7 @@ namespace QoZ {
                                             else
                                                 cur_loss=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
                                                                           interpolators[cur_meta.interpAlgo],cur_meta, stride,2,cross_block,0);//,cross_block,regressiveInterp);
-                                            std::cout<<"a5"<<std::endl;
+                                           // std::cout<<"a5"<<std::endl;
 
                                             //double cur_loss=0.0;
                                             if(cur_loss<best_loss){
@@ -701,7 +701,7 @@ namespace QoZ {
                                 }
                             }
                         }
-                        std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
+                        //std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
                         interp_metas.push_back(best_meta);
                         //dimension_offsets=global_dimension_offsets;
                         //global_dimensions=global_dimensions_temp;
@@ -712,7 +712,7 @@ namespace QoZ {
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block,0);//,cross_block,regressiveInterp);
                     }
-                    std::cout<<"a block fin"<<std::endl;
+                    //std::cout<<"a block fin"<<std::endl;
 
                     
                         
