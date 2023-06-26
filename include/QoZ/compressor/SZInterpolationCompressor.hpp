@@ -4065,7 +4065,7 @@ namespace QoZ {
                                 }
                             } 
                         }
-                        quant_index=quant_idx;
+
                     }
                     else{
                         size_t sub_direction=3-direction1-direction2;
@@ -4077,6 +4077,7 @@ namespace QoZ {
                             temp_start[sub_direction]=temp_end[sub_direction]=sub;
                             predict_error+=block_interpolation_2d_crossblock(data, temp_start, temp_end,directions,math_stride, interp_func, pb,dim_coeffs,meta,cross_block,tuning);
                         }
+                        return predict_error;
 
 
 
@@ -4084,6 +4085,7 @@ namespace QoZ {
                 }
     
             }      
+             quant_index=quant_idx;
 
            
             return predict_error;
