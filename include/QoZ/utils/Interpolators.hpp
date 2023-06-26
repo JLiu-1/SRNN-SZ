@@ -56,41 +56,35 @@ namespace QoZ {
         return (-3 * a + 23 * b + 23 * c - 3 * d) / 40;//nat
     }
 
-    template<class T,bool cst>
-    inline typename std::enable_if<cst==false, T>::type
-    interp_cubic(T a, T b, T c, T d){
-        return (-a + 9 * b + 9 * c - d) / 16;
+    template<class T>
+    inline T interp_cubic(uint8_t cst, T a, T b, T c, T d){
+        if (cst==0)
+            return (-a + 9 * b + 9 * c - d) / 16;
+        else
+            return (-3 * a + 23 * b + 23 * c - 3 * d) / 40;
     }
 
-    template<class T,bool cst>
-    inline typename std::enable_if<cst==true, T>::type
-    interp_cubic(T a, T b, T c, T d){
-        return (-3 * a + 23 * b + 23 * c - 3 * d) / 40;
+   
+
+    template<class T>
+    inline T interp_cubic_adj(uint8_t cst, T a, T b, T c, T d,T e,T f) {
+        if (cst==0)
+            return (-b+4*c+4*d-e)/6;
+        else
+            return (-4*b+15*c+10*d-f)/20;
     }
 
-    template<class T,bool cst>
-    inline typename std::enable_if<cst==false, T>::type
-    interp_cubic_adj(T a, T b, T c, T d,T e,T f) {
-        return (-b+4*c+4*d-e)/6;
+    template<class T>
+    inline T interp_cubic_adj2(uint8_t cst, T a, T b, T c, T d,T f) {
+        if (cst==0)
+            return (-4*b+15*c+10*d-f)/20;
+        else
+            return (12*a-72*b+181*c+118*d-15*f)/224;
     }
 
-    template<class T,bool cst>
-    inline typename std::enable_if<cst==true, T>::type
-    interp_cubic_adj(T a, T b, T c, T d,T e,T f) {
-        return (3*a-18*b+46*c+46*d-18*e+3*f)/62;
-    }
+    
 
-    template<class T,bool cst>
-    inline typename std::enable_if<cst==false, T>::type
-    interp_cubic_adj2(T a, T b, T c, T d,T f) {
-        return (-4*b+15*c+10*d-f)/20;
-    }
 
-    template<class T,bool cst>
-    inline typename std::enable_if<cst==true, T>::type
-    interp_cubic_adj2(T a, T b, T c, T d,T f) {
-        return (12*a-72*b+181*c+118*d-15*f)/224;
-    }
 
 
 
