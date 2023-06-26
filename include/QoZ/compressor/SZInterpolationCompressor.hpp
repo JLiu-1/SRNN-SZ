@@ -262,7 +262,7 @@ namespace QoZ {
                
             }
             quantizer.postdecompress_data();
-            std::cout<<quant_index<<std::endl;
+            //std::cout<<quant_index<<std::endl;
             return decData;
         }
         
@@ -812,7 +812,7 @@ namespace QoZ {
             lossless.postcompress_data(buffer);
             //timer.stop("Lossless") ;
             compressed_size += interp_compressed_size;
-            std::cout<<quant_index<<std::endl;
+          //  std::cout<<quant_index<<std::endl;
             return lossless_data;
         }
 
