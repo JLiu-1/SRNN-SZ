@@ -558,7 +558,7 @@ namespace QoZ {
                         std::vector<size_t>block_dims(N,0);
                         for (size_t i=0;i<N;i++)
                             block_dims[i]=(sample_ends[i]-sample_starts[i])/stride+1;
-
+                        std::cout<<"a0.93"<<std::endl;
                         if(conf.multiDimInterp>0){
                             for(size_t i=1;i<=conf.multiDimInterp;i++)
                                 interpParadigm_Candidates.push_back(i);
@@ -568,9 +568,11 @@ namespace QoZ {
                                 QoZ::preprocess_vars<N>(interp_vars);
 
                             }
+                            /*
                             for (size_t i=0;i<N;i++)
                                 std::cout<<interp_vars[i]<<" ";
                             std::cout<<std::endl;
+                            */
                        
                         }   
                         std::cout<<"a1"<<std::endl;
@@ -638,11 +640,11 @@ namespace QoZ {
                                             if(conf.dynamicDimCoeff){
                                                 for(size_t i=0;i<N;i++){
                                                     cur_meta.dimCoeffs[i]=interp_vars[i];
-                                                    std::cout<<cur_meta.dimCoeffs[i]<<" ";
+                                                    //std::cout<<cur_meta.dimCoeffs[i]<<" ";
                                                 }
 
                                             }
-                                            std::cout<<std::endl;
+                                           // std::cout<<std::endl;
                                             //cur_block=orig_sampled_block;
                                             double cur_loss=std::numeric_limits<double>::max();
 
