@@ -1992,6 +1992,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     if(best_interp_cr_2>best_interp_cr_1*1.05){
                         conf.frozen_dim=frozen_dim;
                         interpMeta_lists[wave_idx]=interpMeta_list;
+                        std::cout<<"Dim "<<frozen_dim<<" frozen"<<std::endl;
                     }
                 
 
