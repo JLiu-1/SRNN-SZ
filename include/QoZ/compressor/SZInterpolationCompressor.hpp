@@ -568,7 +568,9 @@ namespace QoZ {
                                 QoZ::preprocess_vars<N>(interp_vars);
 
                             }
-
+                            for (size_t i=0;i<N;i++)
+                                std::cout<<interp_vars[i]<<" ";
+                            std::cout<<std::endl;
                        
                         }   
                         std::cout<<"a1"<<std::endl;
