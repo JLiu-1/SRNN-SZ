@@ -1800,7 +1800,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                             delete []cmprData;                              
                                             cur_absloss+=conf.decomp_square_error;
                                         }
-                                        //std::cout<<(int)interp_op<<" "<<(int)interp_pd<<" "<<(int)interp_direction<<" "<<(int)cubic_spline_type<<" "<<(int)adj_interp<<" "<<cur_absloss<<std::endl; 
+                                        std::cout<<(int)interp_op<<" "<<(int)interp_pd<<" "<<(int)interp_direction<<" "<<(int)cubic_spline_type<<" "<<(int)adj_interp<<" "<<cur_absloss<<std::endl; 
                                         if (cur_absloss<best_interp_absloss){
                                             best_meta=cur_meta;
                                             best_interp_absloss=cur_absloss;
@@ -1948,7 +1948,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                                 delete []cmprData;                              
                                                 cur_absloss+=conf.decomp_square_error;
                                             }
-                                            std::cout<<(int)interp_op<<" "<<(int)interp_pd<<" "<<(int)interp_direction<<" "<<(int)cubic_spline_type<<" "<<(int)adj_interp<<" "<<cur_absloss<<std::endl; 
+                                           // std::cout<<(int)interp_op<<" "<<(int)interp_pd<<" "<<(int)interp_direction<<" "<<(int)cubic_spline_type<<" "<<(int)adj_interp<<" "<<cur_absloss<<std::endl; 
                                             if (cur_absloss<best_interp_absloss){
                                                 best_meta=cur_meta;
                                                 best_interp_absloss=cur_absloss;
