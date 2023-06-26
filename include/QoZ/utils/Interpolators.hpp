@@ -71,7 +71,7 @@ namespace QoZ {
         if (cst==0)
             return (-b+4*c+4*d-e)/6;
         else
-            return (-4*b+15*c+10*d-f)/20;
+            return (3*a-18*b+46*c+46*d-18*e+3*f)/62;
     }
 
     template<class T>
