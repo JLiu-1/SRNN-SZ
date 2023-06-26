@@ -486,7 +486,7 @@ namespace QoZ {
                         for(size_t i=0;i<N;i++)
                             sample_strides[i]=stride;
                         if(conf.frozen_dim>=0)
-                            recov_strides[conf.frozen_dim]=1;
+                            sample_strides[conf.frozen_dim]=1;
                         if(N==2){
                             for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=sample_strides[0]){
                                 //sb_ends[0]++;
