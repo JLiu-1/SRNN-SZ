@@ -4065,6 +4065,7 @@ namespace QoZ {
                                 }
                             } 
                         }
+                        quant_index=quant_idx;
                     }
                     else{
                         size_t sub_direction=3-direction1-direction2;
@@ -4078,12 +4079,13 @@ namespace QoZ {
                         }
 
 
+
                     }
                 }
     
             }      
 
-            quant_index=quant_idx;
+           
             return predict_error;
         }
         double block_interpolation_3d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t begin3, size_t end3, size_t stride1,size_t stride2,size_t stride3, const std::string &interp_func, const PredictorBehavior pb,const std::array<float,3> &dim_coeffs,const QoZ::Interp_Meta &meta,int tuning=0) {
