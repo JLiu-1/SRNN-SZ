@@ -1396,6 +1396,7 @@ namespace QoZ {
                 
                 
             }
+            quant_index=quant_idx;
             return predict_error;
         }
       
@@ -1409,6 +1410,7 @@ namespace QoZ {
             size_t stride3x = 3 * stride;
             size_t stride5x = 5 * stride;
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
+            size_t quant_idx=quant_index;
             if (interp_func == "linear" || n < 5) {
                 for (size_t i = 1; i + 1 < n; i += 2) {
                     T *d = data + begin + i * stride;
@@ -1563,7 +1565,7 @@ namespace QoZ {
 
             size_t math_begin_idx=begin_idx[direction],math_end_idx=end_idx[direction];
             size_t n = (math_end_idx - math_begin_idx) / math_stride + 1;
-            size_t quant_idx=quant_index;
+           
          
             
 
@@ -7644,7 +7646,7 @@ namespace QoZ {
 
                 }
             }
-           
+
             quant_index=quant_idx;
             return predict_error;
         }
