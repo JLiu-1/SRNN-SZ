@@ -675,11 +675,14 @@ namespace QoZ {
                                                 }
                                             }
                                             else if(N==3){
-                                                for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=stride){
+                                                std::array<size_t,3>recov_strides={stride,stride,stride};
+                                                if(conf.frozen_dim>=0)
+                                                    recov_strides[conf.frozen_dim]=1;
+                                                for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=recov_strides[0]){
                                                    
-                                                    for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=stride){
+                                                    for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=recov_strides[1]){
                                                       
-                                                        for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=stride){
+                                                        for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=recov_strides[2]){
                                                           
                                                             size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                                             data[global_idx]=orig_sampled_block[local_idx++];
