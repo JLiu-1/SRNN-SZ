@@ -1315,7 +1315,8 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.sperrWithoutWave=false;//maybe selective
         //profStride not included.
     }
-    
+    if(conf.multiDimInterp==0)
+        conf.dynamicDimCoeff=0;
     size_t sampling_num, sampling_block;
     double best_interp_cr=0.0;
     double best_lorenzo_ratio=0.0;
