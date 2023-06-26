@@ -119,7 +119,7 @@ namespace QoZ {
                 vars[i]+=abs_eb*abs_eb*(1.0/12)*0.5;
             }
         }
-        //std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
+        std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
 
 
