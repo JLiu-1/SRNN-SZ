@@ -262,6 +262,7 @@ namespace QoZ {
                
             }
             quantizer.postdecompress_data();
+            std::cout<<quant_index<<std::endl;
             return decData;
         }
         
@@ -811,6 +812,7 @@ namespace QoZ {
             lossless.postcompress_data(buffer);
             //timer.stop("Lossless") ;
             compressed_size += interp_compressed_size;
+            std::cout<<quant_index<<std::endl;
             return lossless_data;
         }
 
@@ -5913,7 +5915,7 @@ namespace QoZ {
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
             size_t quant_idx=quant_index;
             
-            if (interp_func == "linear" || (n<5 || m<5 || p<5) ){//nmpcond temp added
+            if (interp_func == "linear" || (real_n<5 and real_m<5 and real_p<5) ){//nmpcond temp added
                 
                 for (size_t i = 1; i + 1 < n; i += 2) {
                     for(size_t j=1;j+1<m;j+=2){
