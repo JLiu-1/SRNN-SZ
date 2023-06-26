@@ -39,10 +39,10 @@ namespace QoZ {
             size_t is1=dimyz*interp_stride,is3x1=3*is1,is2=dimz*interp_stride,is3x2=3*is2,is3=interp_stride,is3x3=3*is3;
            // std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
-            std::cout<<interp_stride<<" "<<stride<<std::endl;
-            for (size_t i = 3*interp_stride; i < dimx-3*interp_stride; i+=(stride/2)*2*interp_stride) {
-                for (size_t j = 3*interp_stride; j < dimy-3*interp_stride; j+=(stride/2)*2*interp_stride) {
-                    for (size_t k = 3*interp_stride; k < dimz-3*interp_stride; k+=(stride/2)*2*interp_stride) {
+           // std::cout<<interp_stride<<" "<<stride<<std::endl;
+            for (size_t i = 3*interp_stride; i+3*interp_stride < dimx; i+=(stride/2)*2*interp_stride) {
+                for (size_t j = 3*interp_stride; j+3*interp_stride < dimy; j+=(stride/2)*2*interp_stride) {
+                    for (size_t k = 3*interp_stride; k+3*interp_stride < dimz; k+=(stride/2)*2*interp_stride) {
                         //std::cout<<i<<" "<<j<<" "<<k<<std::endl;
                         count+=1;
                         size_t idx=i*dimyz+j*dimz+k;
@@ -72,14 +72,14 @@ namespace QoZ {
                     }
                 }
             }
-            std::cout<<"nopost:"<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
+            //std::cout<<"nopost:"<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
         }
         else if(N==2){
             size_t  dimx=dims[0],dimy=dims[1];
             size_t is1=dimy*interp_stride,is3x1=3*is1,is2=interp_stride,is3x2=3*is2;
-            for (size_t i = 3*interp_stride; i < dimx-3*interp_stride; i+=(stride/2)*2*interp_stride) {
-                for (size_t j = 3*interp_stride; j < dimy-3*interp_stride; j+=(stride/2)*2*interp_stride) {
+            for (size_t i = 3*interp_stride;i+3*interp_stride < dimx; i+=(stride/2)*2*interp_stride) {
+                for (size_t j = 3*interp_stride; j+3*interp_stride < dimy; j+=(stride/2)*2*interp_stride) {
                  
                     count+=1;
                     size_t idx=i*dimy+j;
@@ -119,7 +119,7 @@ namespace QoZ {
                 vars[i]+=abs_eb*abs_eb*(1.0/12)*0.5;
             }
         }
-        std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
+       //std::cout<<vars[0]<<" "<<vars[1]<<" "<<vars[2]<<std::endl;
 
 
 
