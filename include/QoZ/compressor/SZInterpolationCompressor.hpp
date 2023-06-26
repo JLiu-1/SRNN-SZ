@@ -4112,7 +4112,7 @@ namespace QoZ {
          
 
 
-            if (interp_func == "linear" || (n<5 & m<5 & p<5) ){//nmpcond temp added
+            if (interp_func == "linear" || (n<5 and m<5 and p<5) ){//nmpcond temp added
                 
                 for (size_t i = 1; i + 1 < n; i += 2) {
                     for(size_t j=1;j+1<m;j+=2){
@@ -5913,7 +5913,7 @@ namespace QoZ {
             int mode=(pb == PB_predict_overwrite)?tuning:-1;
             size_t quant_idx=quant_index;
             
-            if (interp_func == "linear" || (real_n<5 & real_m<5 & real_p<5) ){//nmpcond temp added
+            if (interp_func == "linear" || (n<5 || m<5 || p<5) ){//nmpcond temp added
                 
                 for (size_t i = 1; i + 1 < n; i += 2) {
                     for(size_t j=1;j+1<m;j+=2){
