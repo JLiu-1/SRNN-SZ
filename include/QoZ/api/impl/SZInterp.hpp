@@ -1229,7 +1229,7 @@ void setWaveFixRates(QoZ::Config &conf,double rel_bound){
     
 
 }
-void seLorenzoFixRates(QoZ::Config &conf,double rel_bound){
+void setLorenzoFixRates(QoZ::Config &conf,double rel_bound){
     double e1=1e-5;
     double e2=1e-4;
     double e3=1e-3;
