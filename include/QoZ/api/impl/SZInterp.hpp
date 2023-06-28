@@ -1273,7 +1273,7 @@ double Tuning(QoZ::Config &conf, T *data){
         //deactivate FZ-related parts.
         //conf.profiling=0;
         //conf.var_first=0;
-        //conf.testLorenzo=0;
+        conf.testLorenzo=0;
         conf.waveletAutoTuning=0;
         conf.waveletTest=0;
         //conf.waveAutoFix=1;
@@ -1298,6 +1298,7 @@ double Tuning(QoZ::Config &conf, T *data){
         }
 
         if(conf.QoZ>=2){
+            conf.testLorenzo=1;
             conf.multiDimInterp=1;
             conf.naturalSpline=1;
             conf.fullAdjacentInterp=1;
@@ -1344,6 +1345,7 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.sperrWithoutWave=false;//maybe selective
         //profStride not included.
     }
+
     if(conf.multiDimInterp==0)
         conf.dynamicDimCoeff=0;
     size_t sampling_num, sampling_block;

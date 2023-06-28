@@ -466,7 +466,9 @@ int main(int argc, char *argv[]) {
     if (testLorenzo){
         conf.testLorenzo=1;
     }
-    conf.maxStep=maxStep;
+    if(maxStep>0)
+        conf.maxStep=maxStep;
+    if(conf.sampleBlockSize>0)
     conf.sampleBlockSize=sampleBlockSize;
 
     if (errBoundMode != nullptr) {
