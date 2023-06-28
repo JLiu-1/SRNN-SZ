@@ -1129,7 +1129,7 @@ std::pair <double,double> setABwithRelBound(double rel_bound,int configuration=0
     return std::pair<double,double>(cur_alpha,cur_beta);
 }
 
-void setFixRates(QoZ::Config &conf,double rel_bound){
+void setWaveFixRates(QoZ::Config &conf,double rel_bound){
     if(1){//if(conf.sperr>=1){
        // double em1=5e-5;//old
        // double em1=5e-5;//nf1
@@ -1223,6 +1223,13 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
     }
 
     
+    
+    
+    
+    
+
+}
+void seLorenzoFixRates(QoZ::Config &conf,double rel_bound){
     double e1=1e-5;
     double e2=1e-4;
     double e3=1e-3;
@@ -1249,10 +1256,6 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         conf.lorenzoBrFix=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
     else 
         conf.lorenzoBrFix=f3;
-    
-    
-    
-
 }
 
 template<class T, QoZ::uint N>
@@ -1517,9 +1520,14 @@ double Tuning(QoZ::Config &conf, T *data){
     }
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;
-
-    if(conf.waveletAutoTuning>0 and conf.waveAutoFix)
-        setFixRates(conf,rel_bound);
+    if(conf.autoTuningRate>0){
+        if (conf.waveletAutoTuning>0 and conf.waveAutoFix)
+            setWaveFixRates(conf,rel_bound);
+        
+        if (conf.testLorenzo>0)
+            setLorenzoFixRates(conf,rel_bound);
+    }
+    
 
     bool blockwiseTuning=conf.blockwiseTuning;
     conf.blockwiseTuning=false;
@@ -2164,7 +2172,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
     }
     
-    else if (!conf.blockwiseTuning){
+    else{// if (!conf.blockwiseTuning){ //recently modified. not sure.
         QoZ::Timer timer(true);
         //size_t sampling_num, sampling_block;
         //std::vector<size_t> sample_dims(N);         
