@@ -1267,7 +1267,7 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.testLorenzo=0;
    // QoZ::Timer timer(true);
     //timer.stop("")
-    if(conf.QoZ){
+    if(conf.QoZ>0){
         if(conf.autoTuningRate<=0)
             conf.autoTuningRate = (N==2?0.01:0.005);
         if(conf.predictorTuningRate<=0)
@@ -1295,6 +1295,20 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.pyBind=0;
         conf.fixWave=-1;
         conf.sperrWithoutWave=false;
+
+        if(conf.QoZ>=2){
+            conf.multiDimInterp=1;
+            conf.naturalSpline=1;
+            conf.adjInterp=1;
+            conf.freezeDimTest=1;
+        }
+        if(conf.QoZ>=3){
+            conf.dynamicDimCoeff=1;
+        }
+        if(conf.QoZ>=4){
+            conf.crossBlock=1;
+            conf.blockwiseTuning=1;
+        }
     }   
     //Add conf.FZ
     

@@ -55,14 +55,15 @@ void usage() {
 //    printf("		-P <point-wise relative error bound>: specifying point-wise relative error bound\n");
     printf("		-S <PSNR>: specifying PSNR\n");
     printf("		-N <normErr>: specifying normErr\n");
-    printf("    -q: activate qoz features\n");
+    printf("    -q: activate qoz features or not (default activated. set -q 0 to use sz3 based compression.)");
     printf("    -T <QoZ tuning target> \n");
     printf("    tuning targets as follows: \n");
     printf("        PSNR (peak signal-to-noise ratio)\n");
     printf("        CR (compression ratio)\n");
     printf("        SSIM (structural similarity)\n");
     printf("        AC (autocorrelation)\n");
-
+    printf("    -C <anchor stride> : stride of anchor points.\n");
+    printf("    -B <sampling block size> : block size of sampled data block for auto-tuning.\n");
     printf("* dimensions: \n");
     printf("	-1 <nx> : dimension for 1D data such as data[nx]\n");
     printf("	-2 <nx> <ny> : dimensions for 2D data such as data[ny][nx]\n");
@@ -228,6 +229,8 @@ int main(int argc, char *argv[]) {
     char *psnrErrorBound = nullptr;
     char *normErrorBound = nullptr;
     char *tuningTarget = nullptr;
+    int maxStep=0;
+    int sampleBlockSize=0;
 
     bool sz2mode = false;
     bool qoz=false;
@@ -396,6 +399,14 @@ int main(int argc, char *argv[]) {
                     usage();
                 tuningTarget = argv[i];
                 break;
+            case 'C':
+                if (++i == argc || sscanf(argv[i], "%d", &maxStep) != 1)
+                        usage();
+                break;
+            case 'B':
+                if (++i == argc || sscanf(argv[i], "%d", &sampleBlockSize) != 1)
+                        usage();
+                break;
             default:
                 usage();
                 break;
@@ -449,6 +460,8 @@ int main(int argc, char *argv[]) {
     if (testLorenzo){
         conf.testLorenzo=1;
     }
+    conf.maxStep=maxStep;
+    conf.sampleBlockSize=sampleBlockSize;
 
     if (errBoundMode != nullptr) {
         {
