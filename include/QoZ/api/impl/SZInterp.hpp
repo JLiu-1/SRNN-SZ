@@ -1227,12 +1227,20 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
     double e2=1e-4;
     double e3=1e-3;
     //double e4=1e-1;
+    /*
     double f1=conf.sampleBlockSize>=64?2: 1;
     // double f2=1.1;old
     double f2=conf.sampleBlockSize>=64?3:1.2; 
     // double f3=1.2;//old need to raise 
     //double f3=1.3;
     double f3=conf.sampleBlockSize>=64?4:1.3;
+    */
+    double f1=conf.sampleBlockSize>=64?2: 1;
+    // double f2=1.1;old
+    double f2=conf.sampleBlockSize>=64?3:1.2; 
+    // double f3=1.2;//old need to raise 
+    //double f3=1.3;
+    double f3=conf.sampleBlockSize>=64?4:2;
     if(rel_bound<=e1)
         conf.lorenzoBrFix=f1;
     else if(rel_bound<=e2)
