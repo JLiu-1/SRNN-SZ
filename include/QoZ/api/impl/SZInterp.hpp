@@ -1299,7 +1299,7 @@ double Tuning(QoZ::Config &conf, T *data){
         if(conf.QoZ>=2){
             conf.multiDimInterp=1;
             conf.naturalSpline=1;
-            conf.adjInterp=1;
+            conf.fullAdjacentInterp=1;
             conf.freezeDimTest=1;
         }
         if(conf.QoZ>=3){
