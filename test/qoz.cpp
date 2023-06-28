@@ -457,9 +457,6 @@ int main(int argc, char *argv[]) {
     } else {
         conf = QoZ::Config(r4, r3, r2, r1);
     }
-    if (compression && conPath != nullptr) {
-        conf.loadcfg(conPath);
-    }
     if (qoz>=0){
         conf.QoZ=qoz;
     }
@@ -469,7 +466,11 @@ int main(int argc, char *argv[]) {
     if(maxStep>0)
         conf.maxStep=maxStep;
     if(conf.sampleBlockSize>0)
-    conf.sampleBlockSize=sampleBlockSize;
+        conf.sampleBlockSize=sampleBlockSize;
+    if (compression && conPath != nullptr) {
+        conf.loadcfg(conPath);
+    }
+
 
     if (errBoundMode != nullptr) {
         {
