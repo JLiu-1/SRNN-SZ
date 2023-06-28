@@ -1268,25 +1268,12 @@ double Tuning(QoZ::Config &conf, T *data){
    // QoZ::Timer timer(true);
     //timer.stop("")
     if(conf.QoZ>0){
-        if(conf.autoTuningRate<=0)
-            conf.autoTuningRate = (N==2?0.01:0.005);
-        if(conf.predictorTuningRate<=0)
-            conf.predictorTuningRate = (N==2?0.01:0.005);
-        if (conf.maxStep<=0)
-            conf.maxStep = (N==2?64:32);
-        if (conf.levelwisePredictionSelection<=0)
-            conf.levelwisePredictionSelection = (N==2?6:4);
-        if (conf.sampleBlockSize<=0){
-            if(conf.waveletAutoTuning>=2)
-                conf.sampleBlockSize = 64;
-            else
-                conf.sampleBlockSize = (N==2?64:32);
-        }
+        
         //testLorenzo?
         //deactivate FZ-related parts.
         //conf.profiling=0;
         //conf.var_first=0;
-        conf.testLorenzo=0;
+        //conf.testLorenzo=0;
         conf.waveletAutoTuning=0;
         conf.waveletTest=0;
         //conf.waveAutoFix=1;
@@ -1296,11 +1283,28 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.fixWave=-1;
         conf.sperrWithoutWave=false;
 
+
+        if(conf.autoTuningRate<=0)
+            conf.autoTuningRate = (N==2?0.01:0.005);
+        if(conf.predictorTuningRate<=0)
+            conf.predictorTuningRate = (N==2?0.01:0.005);
+        if (conf.maxStep<=0)
+            conf.maxStep = (N==2?64:32);
+        if (conf.levelwisePredictionSelection<=0)
+            conf.levelwisePredictionSelection = (N==2?6:4);
+        if (conf.sampleBlockSize<=0){
+            
+            conf.sampleBlockSize = (N==2?64:32);
+        }
+
         if(conf.QoZ>=2){
             conf.multiDimInterp=1;
             conf.naturalSpline=1;
             conf.fullAdjacentInterp=1;
             conf.freezeDimTest=1;
+            conf.dynamicDimCoeff=0;
+            conf.crossBlock=0;
+            conf.blockwiseTuning=0;
         }
         if(conf.QoZ>=3){
             conf.dynamicDimCoeff=1;
