@@ -1313,6 +1313,8 @@ double Tuning(QoZ::Config &conf, T *data){
         if(conf.QoZ>=4){
             conf.crossBlock=1;
             conf.blockwiseTuning=1;
+            if(conf.blockwiseSampleRate<1.0)
+                conf.blockwiseSampleRate=3.0;
         }
     }   
     //Add conf.FZ

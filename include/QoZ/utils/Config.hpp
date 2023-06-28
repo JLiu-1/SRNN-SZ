@@ -511,7 +511,7 @@ namespace QoZ {
         int profiling=0;//since there may be multiple ways of profiling set it to int
         int SSIMBlockSize=8;
         int fixBlockSize=0;
-        double blockwiseSampleRate=2.0;
+        double blockwiseSampleRate=3.0;
         bool dynamicDimCoeff=false;
         bool freezeDimTest=false;
         int adaptiveMultiDimStride=8;
