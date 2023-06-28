@@ -55,7 +55,12 @@ void usage() {
 //    printf("		-P <point-wise relative error bound>: specifying point-wise relative error bound\n");
     printf("		-S <PSNR>: specifying PSNR\n");
     printf("		-N <normErr>: specifying normErr\n");
-    printf("    -q: activate qoz features or not (default activated. set -q 0 to use sz3 based compression.)");
+    printf("    -q <level>: level for activation of qoz features.\n");
+    printf("        Level 0: SZ3.1 (No QoZ features).\n");
+    printf("        Level 1: QoZ1 (Anchor-point-based level-wise interpolation tuning).\n");
+    printf("        Level 2: QoZ2 (level 1 plus multi-dim interp, natural cubic spline, interpolation re-ordering and dynamic dimension freezing).\n");
+    printf("        Level 3: QoZ2 (level 2 plus dynamic dimension weights).\n");
+    printf("        Level 4: QoZ2 (level 3 plus block-wise interpolation tuning).\n");
     printf("    -T <QoZ tuning target> \n");
     printf("    tuning targets as follows: \n");
     printf("        PSNR (peak signal-to-noise ratio)\n");
@@ -233,7 +238,7 @@ int main(int argc, char *argv[]) {
     int sampleBlockSize=0;
 
     bool sz2mode = false;
-    bool qoz=false;
+    int qoz=0;
     bool testLorenzo=false;
 
     size_t r4 = 0;
@@ -317,7 +322,8 @@ int main(int argc, char *argv[]) {
                 inPath = argv[i];
                 break;
             case 'q':
-                qoz = true;
+                if (++i == argc || sscanf(argv[i], "%d", &qoz) != 1)
+                    usage();
                 break;
             case 'l':
                 testLorenzo = true;
@@ -454,8 +460,8 @@ int main(int argc, char *argv[]) {
     if (compression && conPath != nullptr) {
         conf.loadcfg(conPath);
     }
-    if (qoz){
-        conf.QoZ=1;
+    if (qoz>=0){
+        conf.QoZ=qoz;
     }
     if (testLorenzo){
         conf.testLorenzo=1;
