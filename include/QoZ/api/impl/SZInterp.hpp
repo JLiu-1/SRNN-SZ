@@ -1271,7 +1271,7 @@ double Tuning(QoZ::Config &conf, T *data){
         
         //testLorenzo?
         //deactivate FZ-related parts.
-        //conf.profiling=0;
+        conf.profiling=1;
         //conf.var_first=0;
         conf.testLorenzo=0;
         conf.waveletAutoTuning=0;
