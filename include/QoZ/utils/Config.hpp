@@ -186,7 +186,7 @@ namespace QoZ {
             regression2 = cfg.GetBoolean("AlgoSettings", "Regression2ndOrder", regression2);
             
             naturalSpline = cfg.GetBoolean("AlgoSettings", "naturalSpline", naturalSpline);
-            QoZ=cfg.GetBoolean("AlgoSettings", "QoZ", QoZ);
+            
             FZ=cfg.GetBoolean("AlgoSettings", "FZ", FZ);
             sperrWithoutWave=cfg.GetBoolean("AlgoSettings", "sperrWithoutWave",sperrWithoutWave);
             pyBind=cfg.GetBoolean("AlgoSettings", "pyBind",pyBind);
@@ -211,6 +211,7 @@ namespace QoZ {
             else if (interpAlgoStr == INTERP_ALGO_STR[INTERP_ALGO_QUAD]) {
                 interpMeta.interpAlgo = INTERP_ALGO_QUAD;
             }
+            QoZ=cfg.GetInteger("AlgoSettings", "QoZ", QoZ);
             interpMeta.interpParadigm = cfg.GetInteger("AlgoSettings", "interpParadigm", interpMeta.interpParadigm);
             interpMeta.cubicSplineType = cfg.GetInteger("AlgoSettings", "cubicSplineType", interpMeta.cubicSplineType);
             interpMeta.interpDirection = cfg.GetInteger("AlgoSettings", "InterpDirection", interpMeta.interpDirection);
@@ -517,7 +518,7 @@ namespace QoZ {
         //std::vector<double> lorenzo1_coeffs;
         //std::vector<double> lorenzo2_coeffs;
         bool verbose=1;
-        bool QoZ=0;
+        int QoZ=0;
         bool pdTuningRealComp=0;
         int pdTuningAbConf=0;
         //double pdAlpha=-1;
