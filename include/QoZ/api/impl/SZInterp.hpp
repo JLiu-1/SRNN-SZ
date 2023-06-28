@@ -1270,10 +1270,10 @@ double Tuning(QoZ::Config &conf, T *data){
     if(conf.QoZ>0){
         
         //testLorenzo?
-        //deactivate FZ-related parts.
-        conf.profiling=1;
+        //deactivate FZ-related features.
+        
         //conf.var_first=0;
-        conf.testLorenzo=0;
+       
         conf.waveletAutoTuning=0;
         conf.waveletTest=0;
         //conf.waveAutoFix=1;
@@ -1282,8 +1282,21 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.pyBind=0;
         conf.fixWave=-1;
         conf.sperrWithoutWave=false;
+         /*
+        //deactivate high-level qoz features;
 
+        conf.dynamicDimCoeff=0;
+        conf.crossBlock=0;
+        conf.blockwiseTuning=0;
+        conf.testLorenzo=0;
+        conf.multiDimInterp=0;
+        conf.naturalSpline=0;
+        conf.fullAdjacentInterp=0;
+        conf.freezeDimTest=0;
+        */
 
+        //activate
+        conf.profiling=1;
         if(conf.autoTuningRate<=0)
             conf.autoTuningRate = (N==2?0.01:0.005);
         if(conf.predictorTuningRate<=0)
@@ -1303,9 +1316,7 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.naturalSpline=1;
             conf.fullAdjacentInterp=1;
             conf.freezeDimTest=1;
-            conf.dynamicDimCoeff=0;
-            conf.crossBlock=0;
-            conf.blockwiseTuning=0;
+            
         }
         if(conf.QoZ>=3){
             conf.dynamicDimCoeff=1;
