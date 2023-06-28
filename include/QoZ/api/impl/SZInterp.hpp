@@ -1240,7 +1240,7 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
     double f2=conf.sampleBlockSize>=64?3:1.2; 
     // double f3=1.2;//old need to raise 
     //double f3=1.3;
-    double f3=conf.sampleBlockSize>=64?4:2;
+    double f3=conf.sampleBlockSize>=64?4:1.3;
     if(rel_bound<=e1)
         conf.lorenzoBrFix=f1;
     else if(rel_bound<=e2)
@@ -1286,7 +1286,7 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.testLorenzo=0;
         conf.waveletAutoTuning=0;
         conf.waveletTest=0;
-        conf.waveAutoFix=0;
+        //conf.waveAutoFix=1;
         conf.sperr=-1;
         conf.conditioning=0;
         conf.pyBind=0;
