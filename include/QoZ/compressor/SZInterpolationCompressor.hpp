@@ -434,7 +434,7 @@ namespace QoZ {
 
                         else */
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,tuning,cross_block,0);//,cross_block,regressiveInterp);
+                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,tuning,cross_block);//,cross_block,regressiveInterp);
 
                     }
 
