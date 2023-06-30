@@ -75,7 +75,7 @@ namespace QoZ {
 
             multi_dimensional_iterator &operator--() {
 
-
+                /*
                 if(order>0){//mhtd first
                     if(local_index[0]==range->dimensions[0]){
                         global_offset=0;
@@ -118,8 +118,8 @@ namespace QoZ {
 
 
 
-                }
-                else{
+                }*/
+               // else{
                     size_t i = N - 1;
                     local_index[i]--;
                     ptrdiff_t offset = -range->global_dim_strides[i];
@@ -130,7 +130,7 @@ namespace QoZ {
                         local_index[i]--;
                     }
                     global_offset += offset;
-                }
+                //}
                 return *this;
             }
 
@@ -141,6 +141,7 @@ namespace QoZ {
             }
 
             inline multi_dimensional_iterator &operator++() {
+                /*
                 if(order>0){//mhtd
                     //this->print();
                    //std::cout<<cur_level<<std::endl;
@@ -197,9 +198,9 @@ namespace QoZ {
 
 
 
-                }
+                }*/
 
-                else{
+               // else{
                     size_t i = N - 1;
                     local_index[i]++;
                     ptrdiff_t offset = range->global_dim_strides[i];
@@ -210,7 +211,7 @@ namespace QoZ {
                         local_index[i]++;
                     }
                     global_offset += offset;
-                }
+                //}
                 // std::cout << "offset=" << offset << ", current_offset=" << current_offset << std::endl;
                 return *this;
             }

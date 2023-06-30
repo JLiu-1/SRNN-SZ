@@ -47,7 +47,7 @@ namespace QoZ {
 //            timer.stop("Prediction & Quantization");
             encoder.preprocess_encode(quant_inds, 0);
             //std::cout<<"general2.1"<<std::endl;
-            size_t bufferSize = 1.5 * (frontend.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
+            size_t bufferSize = 1.5 * (frontend.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());//todo: lower the 1.5.
             uchar *buffer = new uchar[bufferSize];
             //std::cout<<"general2.2"<<std::endl;
             uchar *buffer_pos = buffer;

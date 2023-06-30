@@ -151,6 +151,7 @@ namespace QoZ {
                 free(reg_params);
                 reg_params = nullptr;
             }
+             quantizer.clear();
         }
 
         size_t size_est() {
