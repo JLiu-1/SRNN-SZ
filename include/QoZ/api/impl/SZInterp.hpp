@@ -1263,7 +1263,7 @@ double Tuning(QoZ::Config &conf, T *data){
    
     T rng=conf.rng;
     double rel_bound = conf.relErrorBound>0?conf.relErrorBound:conf.absErrorBound/rng;
-    if((conf.waveAutoFix==1 and  rel_bound>1e-3) or (conf.waveAutoFix==1 and conf.tuningTarget==QoZ::TUNING_TARGET_SSIM))//rencently changed, need to fix later
+    if(rel_bound>1e-3 or conf.tuningTarget==QoZ::TUNING_TARGET_SSIM)//rencently changed, need to fix later
         conf.testLorenzo=0;
    // QoZ::Timer timer(true);
     //timer.stop("")
