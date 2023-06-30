@@ -661,7 +661,7 @@ namespace QoZ {
                                                                           interpolators[cur_meta.interpAlgo],cur_meta, stride,2,cross_block,1,coeffs);//,cross_block,regressiveInterp);
                                             else*/
                                                 cur_loss=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
-                                                                          interpolators[cur_meta.interpAlgo],cur_meta, stride,2,cross_block,0);//,cross_block,regressiveInterp);
+                                                                          interpolators[cur_meta.interpAlgo],cur_meta, stride,2,cross_block);//,cross_block,regressiveInterp);
                                            // std::cout<<"a5"<<std::endl;
 
                                             //double cur_loss=0.0;
@@ -715,7 +715,7 @@ namespace QoZ {
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block,1,coeffs);//,cross_block,regressiveInterp);
                         else*/
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                        interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block,0);//,cross_block,regressiveInterp);
+                                        interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block);//,cross_block,regressiveInterp);
                     }
                     //std::cout<<"a block fin"<<std::endl;
 
@@ -8687,7 +8687,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 4, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0,int regressive=0) {
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             uint8_t paradigm=meta.interpParadigm;
