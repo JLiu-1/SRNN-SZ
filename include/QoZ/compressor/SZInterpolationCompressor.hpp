@@ -90,7 +90,7 @@ namespace QoZ {
             //read(blockOrder,buffer_pos, remaining_length); 
             int regressiveInterp;   
             read(regressiveInterp,buffer_pos, remaining_length);     
-            std::vector<float>interp_coeffs;
+          //  std::vector<float>interp_coeffs;
             
            
             if(blockwiseTuning){
@@ -99,6 +99,7 @@ namespace QoZ {
                 //std::cout<<meta_num<<std::endl;
                 interpMeta_list.resize(meta_num);
                 read(interpMeta_list.data(),meta_num,buffer_pos, remaining_length);
+                /*
                 if(regressiveInterp){
                     size_t coeff_num;
                     read(coeff_num,buffer_pos, remaining_length);
@@ -106,6 +107,7 @@ namespace QoZ {
                     interp_coeffs.resize(coeff_num);
                     read(interp_coeffs.data(),coeff_num,buffer_pos, remaining_length);
                 }
+                */
             }
 
             else if(levelwise_predictor_levels>0){
@@ -239,6 +241,7 @@ namespace QoZ {
                         }
                     }
                     //std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.adjInterp<<std::endl; 
+                    /*
                     if(blockwiseTuning and regressiveInterp and cur_meta.interpAlgo==1){
                         std::vector<float> coeffs;
                         for(size_t i=0;i<4;i++)
@@ -249,9 +252,9 @@ namespace QoZ {
                     }
 
                     else
-
+                    */
                      block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
-                                        interpolators[cur_meta.interpAlgo], cur_meta, stride,0,cross_block,0);//,cross_block,regressiveInterp);
+                                        interpolators[cur_meta.interpAlgo], cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
                 
                         
 
@@ -292,7 +295,7 @@ namespace QoZ {
             alpha=conf.alpha;
             beta=conf.beta;
             std::vector<Interp_Meta>interp_metas;
-            std::vector<float> interp_coeffs;
+           // std::vector<float> interp_coeffs;
             int cross_block=conf.crossBlock;
             //int regressiveInterp=conf.regressiveInterp;
             init();
@@ -596,7 +599,7 @@ namespace QoZ {
                         */
 
                         //std::vector<T> cur_block;
-                        
+                        /*
                         std::vector<float> coeffs;
                         //std::cout<<"a2"<<std::endl;
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp){
@@ -618,6 +621,7 @@ namespace QoZ {
                             interp_coeffs.insert(interp_coeffs.end(),coeffs.begin(),coeffs.end());
 
                         }
+                        */
                        // std::cout<<"a3"<<std::endl;
 
                         for (auto &interp_op: interpAlgo_Candidates) {
@@ -651,11 +655,11 @@ namespace QoZ {
                                            // std::cout<<std::endl;
                                             //cur_block=orig_sampled_block;
                                             double cur_loss=std::numeric_limits<double>::max();
-
+                                            /*
                                             if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp)
                                                 cur_loss=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
                                                                           interpolators[cur_meta.interpAlgo],cur_meta, stride,2,cross_block,1,coeffs);//,cross_block,regressiveInterp);
-                                            else
+                                            else*/
                                                 cur_loss=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
                                                                           interpolators[cur_meta.interpAlgo],cur_meta, stride,2,cross_block,0);//,cross_block,regressiveInterp);
                                            // std::cout<<"a5"<<std::endl;
@@ -705,10 +709,11 @@ namespace QoZ {
                         interp_metas.push_back(best_meta);
                         //dimension_offsets=global_dimension_offsets;
                         //global_dimensions=global_dimensions_temp;
+                        /*
                         if(cur_level_meta.interpAlgo==1 and conf.regressiveInterp)
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block,1,coeffs);//,cross_block,regressiveInterp);
-                        else
+                        else*/
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block,0);//,cross_block,regressiveInterp);
                     }
@@ -798,12 +803,13 @@ namespace QoZ {
                 //std::cout<<meta_num<<std::endl;
                 write(meta_num,buffer_pos);
                 write(interp_metas.data(),meta_num,buffer_pos);
+                /*
                 if(conf.regressiveInterp){
                     size_t coeff_num=interp_coeffs.size();
                     write(coeff_num,buffer_pos);
                     write(interp_coeffs.data(),coeff_num,buffer_pos);
 
-                }
+                }*/
 
             }
             else if(levelwise_predictor_levels>0){
@@ -7676,7 +7682,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 1, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0,int regressive=0,const std::vector<float> &coeffs=std::vector<float>{}) {//regressive to reduce into meta.
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0) {//regressive to reduce into meta.
             if(!cross_block)
                 return block_interpolation_1d(data, begin[0], end[0], stride, interp_func, pb,meta,tuning);
             else
@@ -7688,7 +7694,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 2, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0,int regressive=0,const std::vector<float> &coeffs=std::vector<float>{}) {
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             //bool full_adjacent_interp=false;
@@ -7852,7 +7858,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 3, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0,int regressive=0,const std::vector<float> &coeffs=std::vector<float>{}) {//cross block: 0 or conf.num
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
@@ -8681,7 +8687,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 4, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0,int regressive=0,const std::vector<float> &coeffs=std::vector<float>{}) {
+                            const std::string &interp_func,const QoZ::Interp_Meta & meta, size_t stride = 1,int tuning=0,int cross_block=0,int regressive=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             uint8_t paradigm=meta.interpParadigm;
