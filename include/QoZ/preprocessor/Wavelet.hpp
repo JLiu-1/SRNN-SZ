@@ -11,6 +11,7 @@
 #include <pybind11/embed.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
+#include <cstdlib>
 namespace py = pybind11;
 namespace QoZ {
 
@@ -150,7 +151,7 @@ namespace QoZ {
             }
 
            // QoZ::Timer temptimer(true);
-            std::string HOME = "/home/jinyang.liu";
+            std::string HOME = getenv("HOME");
             py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
             auto pyModule=py::module_::import("pywt_wrapper");
             //if(conf.verbose)
@@ -225,7 +226,7 @@ namespace QoZ {
                 py::initialize_interpreter();
             }
             //QoZ::Timer temptimer(true);
-            std::string HOME = "/home/jinyang.liu";
+            std::string HOME = getenv("HOME");
             py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
             auto pyModule=py::module_::import("pywt_wrapper");
             //if(conf.verbose)
