@@ -2220,7 +2220,7 @@ double Tuning(QoZ::Config &conf, T *data){
         lorenzo_config.openmp = false;
         lorenzo_config.blockSize = 5;//why?
         if (sampling_num == conf.num) {
-            conf.cmprAlgo = SZ::ALGO_INTERP;
+            conf.cmprAlgo = QoZ::ALGO_INTERP;
        
         }
         //lorenzo_config.quantbinCnt = 65536 * 2;
@@ -2978,7 +2978,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         double ratio;  
             //size_t sampling_num, sampling_block;
             
-        sampling_data = QoZ::sampling<T, N>(data, conf.dims, sampling_num, sample_dims, sampling_block);        
+        sampling_data = QoZ::sampling<T, N>(data, conf.dims, sampling_num, sample_dims, sampling_block);    
         lorenzo_config.cmprAlgo = QoZ::ALGO_LORENZO_REG;
         
         lorenzo_config.lorenzo = true;
