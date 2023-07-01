@@ -2210,22 +2210,24 @@ double Tuning(QoZ::Config &conf, T *data){
         //size_t sampling_num, sampling_block;
         //std::vector<size_t> sample_dims(N);         
         sampling_data = QoZ::sampling<T, N>(data, conf.dims, sampling_num, sample_dims, sampling_block);
-        QoZ::Config lorenzo_config = conf;
-        lorenzo_config.cmprAlgo = QoZ::ALGO_LORENZO_REG;
-        lorenzo_config.setDims(sample_dims.begin(), sample_dims.end());
-        lorenzo_config.lorenzo = true;
-        lorenzo_config.lorenzo2 = true;
-        lorenzo_config.regression = false;
-        lorenzo_config.regression2 = false;
-        lorenzo_config.openmp = false;
-        lorenzo_config.blockSize = 5;//why?
         if (sampling_num == conf.num) {
             conf.cmprAlgo = QoZ::ALGO_INTERP;
        
         }
+        
+        
         //lorenzo_config.quantbinCnt = 65536 * 2;
         //QoZ::writeTextFile<T>("sampled_data.dat", sampling_data.data(), lorenzo_config.num);
         else{
+            QoZ::Config lorenzo_config = conf;
+            lorenzo_config.cmprAlgo = QoZ::ALGO_LORENZO_REG;
+            lorenzo_config.setDims(sample_dims.begin(), sample_dims.end());
+            lorenzo_config.lorenzo = true;
+            lorenzo_config.lorenzo2 = true;
+            lorenzo_config.regression = false;
+            lorenzo_config.regression2 = false;
+            lorenzo_config.openmp = false;
+            lorenzo_config.blockSize = 5;//why?
             size_t sampleOutSize;
             std::vector<T> cur_sampling_data=sampling_data;
             auto cmprData = SZ_compress_LorenzoReg<T, N>(lorenzo_config, cur_sampling_data.data(), sampleOutSize);
