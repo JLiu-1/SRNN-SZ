@@ -38,32 +38,32 @@ make_lorenzo_regression_compressor(const QoZ::Config &conf, Quantizer quantizer,
     }
     if (conf.lorenzo) {
         
-        std::vector<double> coeffs;
+       // std::vector<double> coeffs;
         /*
         if(conf.useCoeff)
             coeffs=conf.lorenzo1_coeffs;
         */
         if (use_single_predictor) {
             return QoZ::make_sz_general_compressor<T, N>(
-                    QoZ::make_sz_general_frontend<T, N>(conf, QoZ::LorenzoPredictor<T, N, 1>(conf.absErrorBound,coeffs), quantizer),
+                    QoZ::make_sz_general_frontend<T, N>(conf, QoZ::LorenzoPredictor<T, N, 1>(conf.absErrorBound), quantizer),
                     encoder, lossless);
         } else {
-            predictors.push_back(std::make_shared<QoZ::LorenzoPredictor<T, N, 1>>(conf.absErrorBound,coeffs));
+            predictors.push_back(std::make_shared<QoZ::LorenzoPredictor<T, N, 1>>(conf.absErrorBound));
         }
     }
     if (conf.lorenzo2) {
        
-        std::vector<double> coeffs;
+        //std::vector<double> coeffs;
          /*
         if(conf.useCoeff)
             coeffs=conf.lorenzo2_coeffs;
         */
         if (use_single_predictor) {
             return QoZ::make_sz_general_compressor<T, N>(
-                    QoZ::make_sz_general_frontend<T, N>(conf, QoZ::LorenzoPredictor<T, N, 2>(conf.absErrorBound,coeffs), quantizer),
+                    QoZ::make_sz_general_frontend<T, N>(conf, QoZ::LorenzoPredictor<T, N, 2>(conf.absErrorBound), quantizer),
                     encoder, lossless);
         } else {
-            predictors.push_back(std::make_shared<QoZ::LorenzoPredictor<T, N, 2>>(conf.absErrorBound,coeffs));
+            predictors.push_back(std::make_shared<QoZ::LorenzoPredictor<T, N, 2>>(conf.absErrorBound));
         }
     }
     if (conf.regression) {

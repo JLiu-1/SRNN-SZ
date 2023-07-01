@@ -17,34 +17,14 @@ namespace QoZ {
         using Range = multi_dimensional_range<T, N>;
         using iterator = typename multi_dimensional_range<T, N>::iterator;
 
-        LorenzoPredictor(const std::vector<double> &the_coeffs=std::vector<double>()) {
+        LorenzoPredictor() {
             this->noise = 0;
-            if(the_coeffs.size()>0){
-                useCoeff=true;
-                this->coeffs=the_coeffs;
-
-            }
+            
         }
 
-        LorenzoPredictor(double eb,const std::vector<double> &the_coeffs=std::vector<double>()) {
+        LorenzoPredictor(double eb) {
             this->noise = 0;
-            if(the_coeffs.size()>0){
-                this->coeffs=the_coeffs;
-                useCoeff=true;
-                //std::cout<<"Coeffs:"<<std::endl;
-                for(int i=0;i<this->coeffs.size();i++)
-
-                    std::cout<<this->coeffs[i]<<std::endl;
-                /*
-                if(coeffs.size()==3){
-                    coeffs={-1.0,1,1};
-
-                }
-                else if (coeffs.size()==8){
-                    coeffs={-1.0,2,-1,2,-4,2,-1,2};
-                }
-                */
-            }
+            
             if (L == 1) {
                 if (N == 1) {
                     this->noise = 0.5 * eb;
@@ -92,11 +72,7 @@ namespace QoZ {
             //c[0] = predictor_id;
             //c += sizeof(uint8_t);
             write(predictor_id, c);
-            write(useCoeff,c);
-            if(useCoeff){
-                write(coeffs.data(),coeffs.size(),c);
-
-            }
+            
         }
 
         /*
@@ -109,26 +85,14 @@ namespace QoZ {
         //   return LorenzoPredictor<T,N>{};
         // }
         void load(const uchar *&c, size_t &remaining_length) {
-            std::cout << "load Lorenzo predictor" << std::endl;
+            //std::cout << "load Lorenzo predictor" << std::endl;
 
             //read(predictor_id, c,remaining_length);
             c += sizeof(uint8_t);
             remaining_length-=sizeof(uint8_t);
 
             
-            read(useCoeff,c,remaining_length);
-            //std::cout<<useCoeff<<std::endl;
-            if (useCoeff){
-                int coeff_num=int(pow(L+1,N)-1);
-
-                coeffs=std::vector<double>(coeff_num,0.0);
-                read(coeffs.data(),coeff_num,c,remaining_length);
-               // std::cout<<"Coeffs:"<<std::endl;
-                for(int i=0;i<coeffs.size();i++)
-
-                    std::cout<<coeffs[i]<<std::endl;
-
-            }
+            
         }
 
         void print() const {
@@ -147,8 +111,7 @@ namespace QoZ {
 
     protected:
         T noise = 0;
-        bool useCoeff=false;
-        std::vector<double> coeffs;
+       
 
     private:
         template<uint NN = N, uint LL = L>
