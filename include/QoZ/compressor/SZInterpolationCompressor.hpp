@@ -674,7 +674,7 @@ namespace QoZ {
                                             if(N==2){
                                                 for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
                                                     
-                                                    for(size_t y=sample_starts[1];y<=sample_ends[0];y+=stride){
+                                                    for(size_t y=sample_starts[1];y<=sample_ends[1];y+=stride){
                                                        
                                                         size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
                                                         data[global_idx]=orig_sampled_block[local_idx++];
