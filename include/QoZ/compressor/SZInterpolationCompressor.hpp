@@ -8244,7 +8244,7 @@ namespace QoZ {
             
             else{// if(paradigm<3){//md or hd
                 const std::array<int, N> dims = dimension_sequences[0];
-                std::array<float,2>dim_coeffs=meta.dimCoeffs;
+                std::array<float,2>dim_coeffs={meta.dimCoeffs[0],meta.dimCoeffs[1]};
 
                 std::array<size_t, N>steps;
                 std::array<size_t, N> begin_idx=begin,end_idx=end;
