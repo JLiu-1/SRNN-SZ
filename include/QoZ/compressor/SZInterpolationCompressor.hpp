@@ -1828,7 +1828,7 @@ namespace QoZ {
                         for(size_t j=begins[1];j<ends[1];j+=steps[1]){
                             
                     
-                            d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
+                            d = data + begin + i * strides[0]+j*strides[1];
                          
                             predict_error+=quantize_integrated(quant_idx++, *d,
                                         interp_cubic(meta.cubicSplineType,*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
@@ -8243,7 +8243,7 @@ namespace QoZ {
             }
             
             else{// if(paradigm<3){//md or hd
-                //const std::array<int, N> dims = dimension_sequences[0];
+                const std::array<int, N> dims = dimension_sequences[0];
                 std::array<float,2>dim_coeffs=meta.dimCoeffs;
 
                 std::array<size_t, N>steps;
