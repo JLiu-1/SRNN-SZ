@@ -1577,7 +1577,446 @@ namespace QoZ {
             quant_index=quant_idx;
             return predict_error;
         } 
+        double block_interpolation_1d_crossblock_2d(T *data, const std::array<size_t,N> &begin_idx, const std::array<size_t,N> &end_idx,const size_t &direction, std::array<size_t,N> &steps,const size_t &math_stride, const std::string &interp_func, const PredictorBehavior pb,const QoZ::Interp_Meta &meta,int cross_block=1,int tuning=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
+            
+            for(size_t i=0;i<N;i++){
+                if(end_idx[i]<begin_idx[i])
+                    return 0;
+            }
 
+            size_t math_begin_idx=begin_idx[direction],math_end_idx=end_idx[direction];
+            size_t n = (math_end_idx - math_begin_idx) / math_stride + 1;
+           
+         
+            
+
+            /*
+            if(n==2 and begin_idx[1]==0 and begin_idx[2]==0){
+                for(size_t i=0;i<N;i++)
+                    std::cout<<begin_idx[i]<<" ";
+                std::cout<<std::endl;
+                for(size_t i=0;i<N;i++)
+                    std::cout<<end_idx[i]<<" ";
+                std::cout<<std::endl;
+                for(size_t i=0;i<N;i++)
+                    std::cout<<steps[i]<<" ";
+                std::cout<<std::endl;
+            }
+            */
+
+            
+           // std::cout<<n<<std::endl;
+            if (n <= 1) {
+                return 0;
+            }
+            size_t quant_idx=quant_index;
+
+            double predict_error = 0;
+            bool cross_back=cross_block>0;
+            ///
+            bool global_cross_front=cross_block>0;
+            
+            
+            
+            size_t begin=0,global_end_idx=global_dimensions[direction];
+            for(size_t i=0;i<N;i++)
+                begin+=dimension_offsets[i]*begin_idx[i];
+
+            //uint8_t cubicSplineType=meta.cubicSplineType;
+            size_t stride=math_stride*dimension_offsets[direction];
+            std::array<size_t,N>begins,ends,strides;
+            for(size_t i=0;i<N;i++){
+                begins[i]=0;
+                ends[i]=end_idx[i]-begin_idx[i]+1;
+                strides[i]=dimension_offsets[i];
+            }
+            strides[direction]=stride;
+            
+
+            size_t stride2x = 2 * stride;
+            
+
+            int mode=(pb == PB_predict_overwrite)?tuning:-1;
+            
+
+            if (interp_func == "linear") {
+                begins[direction]=1;
+                ends[direction]=n-1;
+                steps[direction]=2;
+                for(size_t i=begins[0];i<ends[0];i+=steps[0]){
+                    for(size_t j=begins[1];j<ends[1];j+=steps[1]){
+                        T *d = data + begin + i * strides[0]+j*strides[1];
+                        predict_error+=quantize_integrated(quant_idx++, *d, interp_linear(*(d - stride), *(d + stride)),mode);
+
+
+                    }
+
+                }
+                if (n % 2 == 0) {
+                    begins[direction]=n-1;
+                    ends[direction]=n;
+                    for(size_t i=begins[0];i<ends[0];i+=steps[0]){
+                        for(size_t j=begins[1];j<ends[1];j+=steps[1]){
+                            bool cross_front=global_cross_front;
+                            if(cross_front){
+                                std::array<size_t,N>idxs{begin_idx[0]+i,begin_idx[1]+j};
+                                for(size_t t=0;t<N;t++){
+                                    if(t!=direction and idxs[t]%(2*math_stride)!=0){
+                                        cross_front=false;
+                                        break;
+                                    }
+                                }
+                            }
+                            T *d = data + begin + i * strides[0]+j*strides[1];
+                            
+                            if(cross_front and math_end_idx+math_stride<global_end_idx)
+                                predict_error+=quantize_integrated(quant_idx++, *d, interp_linear(*(d - stride), *(d + stride)),mode);
+                            else if (n < 3) {                              
+                                predict_error+=quantize_integrated(quant_idx++, *d, *(d - stride),mode);
+                                } else {
+                                predict_error+=quantize_integrated(quant_idx++, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
+                            }
+                        
+                        }
+                    }
+                    
+                }
+
+            } 
+            /*
+            else if (interp_func == "quad"){
+                T *d= data + begin +  stride;
+                predict_error+=quantize_integrated(quant_idx++, *d, interp_linear(*(d - stride), *(d + stride)),mode);
+                for (size_t i = 3; i + 1 < n; i += 2) {
+                    T *d = data + begin + i * stride;
+                    predict_error+=quantize_integrated(quant_idx++, *d, interp_quad_2_adj(*(d - stride2x),*(d - stride), *(d + stride)),mode);
+                }
+                if (n % 2 == 0) {
+                    T *d = data + begin + (n - 1) * stride;
+                    predict_error+=quantize_integrated(quant_idx++, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
+                }
+
+
+            }*/
+            else {
+                //auto interp_cubic=meta.cubicSplineType==0?interp_cubic_1<T>:interp_cubic_2<T>;
+                //const bool cst=meta.cubicSplineType>0;
+                size_t stride3x = 3 * stride;
+                //size_t stride5x = 5 * stride;
+                size_t math_stride2x=2*math_stride;
+                size_t math_stride3x=3*math_stride;
+                //size_t math_stride5x=5*math_stride;
+                T *d;
+                size_t i;
+
+                if(!meta.adjInterp){
+                    size_t i_start= (cross_back and math_begin_idx>=math_stride2x)?1:3;
+
+                    begins[direction]=i_start;
+                    ends[direction]=(n>=3)?(n-3):0;
+                    steps[direction]=2;
+                  
+                    for(size_t i=begins[0];i<ends[0];i+=steps[0]){
+                        for(size_t j=begins[1];j<ends[1];j+=steps[1]){
+                            
+                            //if(n==2 and begin_idx[1]==0 and begin_idx[2]==0)
+                               // std::cout<<i<<" "<<j<<" "<<k<<std::endl;
+
+                            d = data + begin + i * strides[0]+j*strides[1];
+                            predict_error+=quantize_integrated(quant_idx++, *d,
+                                        interp_cubic(meta.cubicSplineType,*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                            
+                        }
+                        
+                    }
+
+                  
+                    std::vector<size_t> boundary;
+                    if(i_start==3 or n<=4)
+                        boundary.push_back(1);
+
+                    if(n%2==1){
+                        if(n>3)
+                            boundary.push_back(n-2);
+                    }
+                    else{
+                        if(n>4)
+                            boundary.push_back(n-3);
+                        if (n>2)
+                            boundary.push_back(n-1);
+                    }
+
+                    for(auto ii:boundary){
+                       // std::cout<<ii<<std::endl;
+
+                        begins[direction]=ii;
+                        ends[direction]=ii+1;
+
+                        for(size_t i=begins[0];i<ends[0];i+=steps[0]){
+                            for(size_t j=begins[1];j<ends[1];j+=steps[1]){
+                                
+                                bool cross_front=global_cross_front;
+                                if(cross_front){
+                                    std::array<size_t,N>idxs{begin_idx[0]+i,begin_idx[1]+j};
+                                    for(size_t t=0;t<N;t++){
+                                        if(t!=direction and idxs[t]%(2*math_stride)!=0){
+                                            cross_front=false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                d = data + begin + i * strides[0]+j*strides[1];
+                                size_t main_idx=ii;
+                                size_t math_cur_idx=math_begin_idx+main_idx*math_stride;
+                                if( main_idx>=3 or (cross_back and math_cur_idx>=math_stride3x) ){
+                                    if(main_idx+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) ){
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_cubic(meta.cubicSplineType,*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                                        
+                                    }
+                                    else if(main_idx+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx )){
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
+                                        
+                                    }
+                                    else {
+                                        //if(mode==0)
+                                        //std::cout<<"n-1 "<<main_idx<<std::endl;
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_linear1(*(d - stride3x), *(d - stride)),mode);
+                                        
+                                    }
+                                }
+                                else{
+                                    if(main_idx+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) ){
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_quad_1( *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                                        
+                                    }
+                                    else if(main_idx+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx ) ){
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_linear( *(d - stride), *(d + stride)),mode);
+                                        
+                                    }
+                                    else {
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                *(d - stride),mode);
+                                        
+                                    }
+                                }
+                                
+                            }
+                            
+                        }
+                    }
+                }
+                else{// if(meta.adjInterp==1){
+                   // auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_2<T>:interp_cubic_adj_1<T>;
+                    //auto interp_cubic_adj2=meta.cubicSplineType==0?interp_cubic_adj_4<T>:interp_cubic_adj_3<T>;
+                    //i=1
+
+
+                   
+                    //predict_error+=quantize_integrated(quant_idx++, *d, interp_cubic_front_adj(*(d -stride),*(d + stride), *(d+stride2x), *(d + stride3x)),mode);
+                    //if(end_idx[0]==503 )
+                    //    std::cout<<"r1"<<std::endl;
+                    size_t i_start= (cross_back and math_begin_idx>=math_stride2x)?1:5;
+                    begins[direction]=i_start;
+                    ends[direction]=(n>=3)?(n-3):0;
+                    steps[direction]=4;
+                    for(size_t i=begins[0];i<ends[0];i+=steps[0]){
+                        for(size_t j=begins[1];j<ends[1];j+=steps[1]){
+                            
+                    
+                            d = data + begin + i * strides[0]+j*strides[1]+k*strides[2];
+                         
+                            predict_error+=quantize_integrated(quant_idx++, *d,
+                                        interp_cubic(meta.cubicSplineType,*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                            
+                        }
+                    }
+
+
+                    std::vector<size_t> boundary;
+                    if(n<=4){
+                        boundary.push_back(1);
+                    }
+                    else{
+                        if(i_start==5)
+                            boundary.push_back(1);
+                        int temp=n%4;
+                        if(temp==0)
+                            temp=4;
+                        if(temp!=1){
+                            boundary.push_back(n+1-temp);
+                        }
+                    }
+
+                    
+                   
+                    //if(end_idx[0]==503 )
+                    //    std::cout<<"r2"<<std::endl;
+                    for(auto ii:boundary){
+
+                        begins[direction]=ii;
+                        ends[direction]=ii+1;
+
+                        for(size_t i=begins[0];i<ends[0];i+=steps[0]){
+                            for(size_t j=begins[1];j<ends[1];j+=steps[1]){
+                                
+                                bool cross_front=global_cross_front;
+                                if(cross_front){
+                                    std::array<size_t,N>idxs{begin_idx[0]+i,begin_idx[1]+j};
+                                    for(size_t t=0;t<N;t++){
+                                        if(t!=direction and idxs[t]%(2*math_stride)!=0){
+                                            cross_front=false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                d = data + begin + i * strides[0]+j*strides[1];
+                                size_t main_idx=ii;
+                   
+                                size_t math_cur_idx=math_begin_idx+ main_idx*math_stride;
+                                if(main_idx>3 or (cross_back and math_cur_idx>=math_stride3x)){
+                                    if(main_idx+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) )
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_cubic(meta.cubicSplineType,*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                                    else if(main_idx+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx ) )
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),mode);
+                                    else{
+                                        //std::cout<<"dwa"<<i<<std::endl;
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_linear1(*(d - stride3x), *(d - stride)),mode);
+                                    }
+                                }
+                                else{
+                                    if(main_idx+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx) )
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_quad_1( *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                                    else if(main_idx+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx ) )
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_linear( *(d - stride), *(d + stride)),mode);
+                                    else 
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                *(d - stride),mode);
+                                }
+                                
+                            }
+                        }
+                    }
+                    //if(end_idx[0]==503 )
+                     //   std::cout<<"r3"<<std::endl;
+
+                    begins[direction]=3;
+                    ends[direction]=(n>=3)?(n-3):0;
+                    for(size_t i=begins[0];i<ends[0];i+=steps[0]){
+                        for(size_t j=begins[1];j<ends[1];j+=steps[1]){
+                          
+                    
+                            d = data + begin + i * strides[0]+j*strides[1];
+
+                            predict_error+=quantize_integrated(quant_idx++, *d,
+                                       interp_cubic_adj(meta.cubicSplineType,*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x),*(d + stride3x)),mode);
+                            //predict_error+=quantize_integrated(quant_idx++, *d,
+                             //           interp_cubic_3(*(d - stride2x), *(d - stride), *(d + stride), *(d+stride2x)),mode);
+                            
+                        }
+                    }
+                    //if(end_idx[0]==503 )
+                     //   std::cout<<"r4"<<std::endl;
+
+                    size_t temp=n%4;
+                    if(temp!=3 and n>temp+1){
+
+                        size_t ii =n-1-temp;
+                        begins[direction]=n-1-temp;
+                        ends[direction]=begins[direction]+1;
+                        
+                        //std::cout<<"dwdwa"<<i<<std::endl;
+                        for(size_t i=begins[0];i<ends[0];i+=steps[0]){
+                            for(size_t j=begins[1];j<ends[1];j+=steps[1]){
+                                
+                                bool cross_front=global_cross_front;
+                                if(cross_front){
+                                    std::array<size_t,N>idxs{begin_idx[0]+i,begin_idx[1]+j};
+                                    for(size_t t=0;t<N;t++){
+                                        if(t!=direction and idxs[t]%(2*math_stride)!=0){
+                                            cross_front=false;
+                                            break;
+                                        }
+                                    }
+                                }
+                
+                                d = data + begin + i * strides[0]+j*strides[1];
+                                size_t main_idx=ii;
+                                size_t math_cur_idx=math_begin_idx+main_idx*math_stride;
+                                //if(end_idx[0]==503 )
+                                 //   std::cout<<i<<" "<<n<<" "<<math_cur_idx<<" "<<math_stride3x<<" "<<global_end_idx<<std::endl;
+                                if(main_idx>3 or (cross_back and math_cur_idx>=math_stride3x)){
+                                    if(main_idx+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx)   )
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_cubic_adj2(meta.cubicSplineType,*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d + stride3x)),mode);//to determine,another choice is noadj cubic.
+                                    else if(main_idx+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx )  )
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_quad_2_adj(*(d - stride2x), *(d - stride), *(d + stride)),mode);
+                                    else {
+                                        //if(end_idx[0]==503 )
+                                        //    std::cout<<"dwad"<<std::endl;
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
+                                    }
+                                }
+                                else{
+                                    if(main_idx+3<n or (cross_front and math_cur_idx+math_stride3x<global_end_idx)  )
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_quad_1( *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                                    else if(main_idx+1<n or (cross_front and math_cur_idx+math_stride<global_end_idx ) )
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                interp_linear( *(d - stride), *(d + stride)),mode);
+                                    else 
+                                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                                *(d - stride),mode);
+                                }
+                                
+                            }
+                        }      
+                    
+                    }
+                }
+                /*
+                else if(meta.adjInterp==2){
+                    auto interp_cubic_adj=meta.cubicSplineType==0?interp_cubic_adj_4<T>:interp_cubic_adj_3<T>;
+                    d = data + begin + stride;
+
+                    predict_error+=quantize_integrated(quant_idx++, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    for (i = 3; i + 3 < n; i += 2) {
+                        d = data + begin + i * stride;
+                        predict_error+=quantize_integrated(quant_idx++, *d,
+                                    interp_cubic_adj(meta.cubicSplineType,*(d - stride3x),*(d - stride2x), *(d - stride), *(d + stride), *(d + stride3x)),mode);
+                    }
+
+                    
+                    d = data + begin + i * stride;
+                    predict_error+=quantize_integrated(quant_idx++, *d, interp_quad_2_adj(*(d - stride2x), *(d - stride), *(d + stride)),mode);
+                    if (n % 2 == 0) {
+                        d = data + begin + (n - 1) * stride;
+                        predict_error+=
+                        quantize_integrated(quant_idx++, *d, lorenzo_1d(*(d - stride2x), *(d - stride)),mode);
+                    }
+
+                }
+                */
+
+            
+                
+                
+            }
+
+            quant_index=quant_idx;
+            return predict_error;
+        }
         double block_interpolation_1d_crossblock_3d(T *data, const std::array<size_t,N> &begin_idx, const std::array<size_t,N> &end_idx,const size_t &direction, std::array<size_t,N> &steps,const size_t &math_stride, const std::string &interp_func, const PredictorBehavior pb,const QoZ::Interp_Meta &meta,int cross_block=1,int tuning=0) {//cross block: 0: no cross 1: only front-cross 2: all cross
             
             for(size_t i=0;i<N;i++){
@@ -7706,7 +8145,7 @@ namespace QoZ {
                 
                 
                 //if(!regressive){
-                    if(!cross_block){
+                 /*   if(!cross_block){
                     
                         for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                             size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
@@ -7743,7 +8182,40 @@ namespace QoZ {
                                                                     stride , interp_func, pb,meta,1,tuning);
                         }
 
-                    }
+                    }*/
+
+
+                std::array<size_t, N>steps;
+                std::array<size_t, N> begin_idx=begin,end_idx=end;
+                steps[dims[0]]=1;
+                begin_idx[dims[1]]=(begin[dims[1]] ? begin[dims[1]] + stride2x : 0);
+                steps[dims[1]]=stride2x;
+                
+                
+                predict_error += block_interpolation_1d_crossblock_2d(data, begin_idx,
+                                                                    end_idx,dims[0],steps,
+                                                                    stride , interp_func, pb,meta,cross_block,tuning);
+                
+
+                begin_idx[dims[1]]=begin[dims[1]];
+
+                begin_idx[dims[0]]=(begin[dims[0]] ? begin[dims[0]] + stride : 0);
+              
+                steps[dims[0]]=stride;
+               
+
+                predict_error += block_interpolation_1d_crossblock_2d(data, begin_idx,
+                                                                    end_idx,dims[1],steps,
+                                                                    stride , interp_func, pb,meta,cross_block,tuning);
+
+                
+              
+
+
+
+               
+
+
                 //}
 
                         /*
@@ -7770,9 +8242,41 @@ namespace QoZ {
                 */
             }
             
-            else if(paradigm<3){//md or hd
-                const std::array<int, N> dims = dimension_sequences[0];
-                std::array<float,3>dim_coeffs=meta.dimCoeffs;
+            else{// if(paradigm<3){//md or hd
+                //const std::array<int, N> dims = dimension_sequences[0];
+                std::array<float,2>dim_coeffs=meta.dimCoeffs;
+
+                std::array<size_t, N>steps;
+                std::array<size_t, N> begin_idx=begin,end_idx=end;
+                steps[dims[0]]=1;
+                begin_idx[dims[1]]=(begin[dims[1]] ? begin[dims[1]] + stride2x : 0);
+                steps[dims[1]]=stride2x;
+
+                predict_error += block_interpolation_1d_crossblock_2d(data, begin_idx,
+                                                                    end_idx,dims[0],steps,
+                                                                    stride , interp_func, pb,meta,cross_block,tuning);
+                
+            
+                begin_idx[dims[1]]=begin[dims[1]];
+
+                begin_idx[dims[0]]=(begin[dims[0]] ? begin[dims[0]] + stride2x : 0);
+           
+                steps[dims[0]]=stride2x;
+             
+
+                predict_error += block_interpolation_1d_crossblock_2d(data, begin_idx,
+                                                                    end_idx,dims[1],steps,
+                                                                    stride , interp_func, pb,meta,cross_block,tuning);
+              
+            
+             
+                begin_idx=begin,end_idx=end;
+                
+                predict_error += block_interpolation_2d_crossblock(data, begin_idx,
+                                                            end_idx,dim_coeffs,
+                                                            stride , interp_func, pb,dim_coeffs,meta,cross_block,tuning);
+
+                /*
                 if(!cross_block){
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]];
@@ -7824,9 +8328,10 @@ namespace QoZ {
                     predict_error += block_interpolation_2d_crossblock(data, begin_idx,
                                                                 end_idx,std::array<size_t,2>{dims[0],dims[1]},
                                                                 stride , interp_func, pb,std::array<float,2>{dim_coeffs[0],dim_coeffs[1]},meta,1,tuning);
-                }
+                }*/
+
             }
-           
+            /*
             else if(paradigm==3){//cross
                 const std::array<int, N> dims = dimension_sequences[0];
                 size_t begin_offset1=begin[dims[0]]*dimension_offsets[dims[0]];
@@ -7847,7 +8352,7 @@ namespace QoZ {
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
                                                             stride * dimension_offsets[dims[0]],
                                                             stride * dimension_offsets[dims[1]], interp_func, pb,meta,tuning);
-            }
+            }*/
 
             return predict_error;
         }
@@ -8168,7 +8673,7 @@ namespace QoZ {
                  
             }
             
-            else if (paradigm==1){
+            else {//if (paradigm==1){
                 std::array<float,3>dim_coeffs=meta.dimCoeffs;
                 if(!fallback_2d){
                     const std::array<int, N> dims = dimension_sequences[0];
@@ -8381,7 +8886,7 @@ namespace QoZ {
                         */
                         predict_error += block_interpolation_2d_crossblock_3d(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[0],dims[1]},steps,
-                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]},meta,1,tuning);
+                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[0]],dim_coeffs[dims[1]]},meta,cross_block,tuning);
                        
                         
                        //std::cout<<"2d1 fin"<<std::endl;
@@ -8396,7 +8901,7 @@ namespace QoZ {
                         //    end_idx[dims[1]]=begin_idx[dims[1]]=j;     
                             predict_error += block_interpolation_2d_crossblock_3d(data, begin_idx,
                                                                     end_idx,std::array<size_t,2>{dims[0],dims[2]},steps,
-                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[0]],dim_coeffs[dims[2]]},meta,1,tuning);
+                                                                    stride , interp_func, pb,std::array<float,2>{dim_coeffs[dims[0]],dim_coeffs[dims[2]]},meta,cross_block,tuning);
                        // }
                         //std::cout<<"2d2 fin"<<std::endl;
                         //begin_idx=begin,end_idx=end;
@@ -8573,6 +9078,7 @@ namespace QoZ {
 
                 
             }
+            /*
             else if (paradigm==2){
                 const std::array<int, N> dims = dimension_sequences[direction];
                 std::array<float,3>dim_coeffs=meta.dimCoeffs;
@@ -8678,7 +9184,7 @@ namespace QoZ {
 
                 }
                     
-            }
+            }*/
             return predict_error;
             
         }
