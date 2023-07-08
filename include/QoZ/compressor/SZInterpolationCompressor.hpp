@@ -8273,8 +8273,10 @@ namespace QoZ {
                 begin_idx=begin,end_idx=end;
                 
                 predict_error += block_interpolation_2d_crossblock(data, begin_idx,
-                                                            end_idx,dim_coeffs,
+                                                            end_idx,std::array<size_t,2>{dims[0],dims[1]},
                                                             stride , interp_func, pb,dim_coeffs,meta,cross_block,tuning);
+
+                 
 
                 /*
                 if(!cross_block){
