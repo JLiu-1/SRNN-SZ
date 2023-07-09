@@ -38,7 +38,7 @@ namespace QoZ {
         QoZ::readfile<T>(HR_path.c_str(), hr_num,hr_data);
 
         std::string Clean_command="rm -f "+Datafile_path+";rm -rf "+Result_folder;
-        system(Clean_command.c_str());
+        //system(Clean_command.c_str());
 
         return hr_data;
     }

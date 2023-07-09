@@ -279,6 +279,8 @@ namespace QoZ {
                         for(size_t i=0;i<hr_dims[0];i++){
                             for(size_t j=0;j<hr_dims[1];j++){
                                 for(size_t k=0;k<hr_dims[2];k++){
+                                    if(i%scale==0 and j%scale==0 and k%scale==0)
+                                        continue;
                                     size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
                                     recover(quant_idx++,*(decData+idx),hr_data[hr_idx]);
 
@@ -553,6 +555,8 @@ namespace QoZ {
                         for(size_t i=0;i<hr_dims[0];i++){
                             for(size_t j=0;j<hr_dims[1];j++){
                                 for(size_t k=0;k<hr_dims[2];k++){
+                                    if(i%scale==0 and j%scale==0 and k%scale==0)
+                                        continue;
                                     size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
                                     quantize(0,*(data+idx),hr_data[hr_idx]);
 
