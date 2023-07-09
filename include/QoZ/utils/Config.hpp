@@ -197,6 +197,7 @@ namespace QoZ {
             freezeDimTest = cfg.GetBoolean("AlgoSettings", "freezeDimTest", freezeDimTest);
             dynamicDimCoeff = cfg.GetBoolean("AlgoSettings", "dynamicDimCoeff", dynamicDimCoeff);
             fineGrainTuning = cfg.GetBoolean("AlgoSettings", "fineGrainTuning", fineGrainTuning);
+            SRNet = cfg.GetBoolean("AlgoSettings", "SRNet", SRNet);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -574,6 +575,7 @@ namespace QoZ {
         bool naturalSpline=0;
         bool quadInterp=false;
         bool fineGrainTuning=false;
+        bool SRNet=false;
         //bool profilingFix=true;//only for test
 
        // double anchorThreshold=0.0;
