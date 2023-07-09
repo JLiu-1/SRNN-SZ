@@ -32,7 +32,7 @@ namespace QoZ {
         std::string SRNet_command="cd "+HAT_root+"&& python hat/test.py -opt "+YML_file_path;
         system(SRNet_command.c_str());
         std::string Result_folder=HAT_root+"/results/qoz";
-        std::string HR_path=Result_folder+"/visualization/qoz/qoz_HAT_SRx2_4QoZ.dat";
+        std::string HR_path=Result_folder+"/visualization/qoz/qoz_qoz.dat";
         size_t hr_num=lr_num*pow(scale,N);
         T* hr_data=new T[hr_num];
         QoZ::readfile<T>(HR_path.c_str(), hr_num,hr_data);
