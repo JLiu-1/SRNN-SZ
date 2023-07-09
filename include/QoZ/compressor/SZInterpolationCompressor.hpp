@@ -16,6 +16,7 @@
 #include "QoZ/utils/Config.hpp"
 #include "QoZ/utils/CoeffRegression.hpp"
 #include "QoZ/utils/Sample.hpp"
+#include "QoZ/preprocessor/SRNet.hpp"
 #include <cstring>
 #include <cmath>
 #include <limits>
@@ -62,7 +63,7 @@ namespace QoZ {
             std::vector <QoZ::Interp_Meta> interpMeta_list;
             int fixBlockSize;
             int trimToZero;
-           
+            bool SRNet=false;
             read(global_dimensions.data(), N, buffer_pos, remaining_length);        
             read(blocksize, buffer_pos, remaining_length);
             /*
@@ -90,6 +91,7 @@ namespace QoZ {
             //read(blockOrder,buffer_pos, remaining_length); 
             int regressiveInterp;   
             read(regressiveInterp,buffer_pos, remaining_length);     
+            read(SRNet,buffer_pos, remaining_length);     
           //  std::vector<float>interp_coeffs;
             
            
@@ -216,6 +218,88 @@ namespace QoZ {
                 else{
                     cur_blocksize=blocksize*stride;
                 }
+
+
+                if(SRNet and level==1){
+                    size_t scale=2;
+                    size_t lr_scale=pow(2,level);//2 becuase it is the current predicted grid size, irr with the sr scale.
+                    std::array<size_t,N> lr_dims=global_dimensions;
+                    size_t lr_num=1;
+                    for(uint i=0;i<N;i++){
+                        lr_dims[i]/=lr_scale;
+                        lr_num*=lr_dims[i];
+                    }
+                    T*lr_data=new T[lr_num];
+
+
+                    if(N==2){
+                        for(size_t i=0;i<lr_dims[0];i++){
+                            for(size_t j=0;j<lr_dims[1];j++){
+                                size_t lr_idx=i*lr_dims[1]+j,hr_idx=i*lr_scale*global_dimension_offsets[0]+j*lr_scale*global_dimension_offsets[1];
+                                lr_data[lr_idx]=data[hr_idx];
+
+                            }
+                        }
+                    }
+                    else if(N==3){
+                        for(size_t i=0;i<lr_dims[0];i++){
+                            for(size_t j=0;j<lr_dims[1];j++){
+                                for(size_t k=0;k<lr_dims[2];k++){
+                                    size_t lr_idx=i*lr_dims[1]*lr_dims[2]+j*lr_dims[2]+k,hr_idx=i*lr_scale*global_dimension_offsets[0]+j*lr_scale*global_dimension_offsets[1]+k*lr_scale*global_dimension_offsets[2];
+                                    lr_data[lr_idx]=data[hr_idx];
+                                }
+
+                            }
+                        }
+                    }
+
+                    T* hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
+                    delete []lr_data;
+                    size_t hr_scale=lr_scale/scale;
+                    std::array<size_t,N> hr_dims=lr_dims;
+                    for(uint i=0;i<N;i++){
+                        hr_dims[i]*=scale;
+                    }
+
+                    size_t hr_num=lr_num*pow(scale,N);
+                    size_t quant_idx=quant_index;
+                    if(N==2){
+                        for(size_t i=0;i<hr_dims[0];i++){
+                            for(size_t j=0;j<hr_dims[1];j++){
+                                if(i%scale==0 and j%scale==0)
+                                    continue;
+
+                                size_t hr_idx=i*hr_dims[1]+j,idx=i*hr_scale*global_dimension_offsets[0]+j*hr_scale*global_dimension_offsets[1];
+                                recover(quant_idx++,*(data+idx),hr_data[hr_idx]);
+
+                            }
+                        }
+                    }
+                    else if(N==3){
+                        for(size_t i=0;i<hr_dims[0];i++){
+                            for(size_t j=0;j<hr_dims[1];j++){
+                                for(size_t k=0;k<hr_dims[2];k++){
+                                    size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*global_dimension_offsets[0]+j*hr_scale*global_dimension_offsets[1]+k*hr_scale*global_dimension_offsets[2];
+                                    recover(quant_idx++,*(data+idx),hr_data[hr_idx]);
+
+                                }
+
+                            }
+                        }
+                    }
+                    quant_index=quant_idx;
+
+
+
+                    delete []hr_data;
+                    while(scale>2){
+                        scale/=2;
+                        level--;   
+                    }
+                    continue;
+                }
+
+
                 
                 auto inter_block_range = std::make_shared<QoZ::multi_dimensional_range<T, N>>(decData,std::begin(global_dimensions), std::end(global_dimensions),
                                                            cur_blocksize, 0,0);//blockOrder);
@@ -407,6 +491,88 @@ namespace QoZ {
                 else{
                     cur_blocksize=blocksize*stride;
                 }       
+
+
+
+                if(conf.SRNet and level==1 and tuning==0){
+                    size_t scale=2;
+                    size_t lr_scale=pow(2,level);//2 becuase it is the current predicted grid size, irr with the sr scale.
+                    std::array<size_t,N> lr_dims=global_dimensions;
+                    size_t lr_num=1;
+                    for(uint i=0;i<N;i++){
+                        lr_dims[i]/=lr_scale;
+                        lr_num*=lr_dims[i];
+                    }
+                    T*lr_data=new T[lr_num];
+
+
+                    if(N==2){
+                        for(size_t i=0;i<lr_dims[0];i++){
+                            for(size_t j=0;j<lr_dims[1];j++){
+                                size_t lr_idx=i*lr_dims[1]+j,hr_idx=i*lr_scale*global_dimension_offsets[0]+j*lr_scale*global_dimension_offsets[1];
+                                lr_data[lr_idx]=data[hr_idx];
+
+                            }
+                        }
+                    }
+                    else if(N==3){
+                        for(size_t i=0;i<lr_dims[0];i++){
+                            for(size_t j=0;j<lr_dims[1];j++){
+                                for(size_t k=0;k<lr_dims[2];k++){
+                                    size_t lr_idx=i*lr_dims[1]*lr_dims[2]+j*lr_dims[2]+k,hr_idx=i*lr_scale*global_dimension_offsets[0]+j*lr_scale*global_dimension_offsets[1]+k*lr_scale*global_dimension_offsets[2];
+                                    lr_data[lr_idx]=data[hr_idx];
+                                }
+
+                            }
+                        }
+                    }
+
+                    T* hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
+                    delete []lr_data;
+                    size_t hr_scale=lr_scale/scale;
+                    std::array<size_t,N> hr_dims=lr_dims;
+                    for(uint i=0;i<N;i++){
+                        hr_dims[i]*=scale;
+                    }
+
+                    size_t hr_num=lr_num*pow(scale,N);
+
+                    if(N==2){
+                        for(size_t i=0;i<hr_dims[0];i++){
+                            for(size_t j=0;j<hr_dims[1];j++){
+                                if(i%scale==0 and j%scale==0)
+                                    continue;
+
+                                size_t hr_idx=i*hr_dims[1]+j,idx=i*hr_scale*global_dimension_offsets[0]+j*hr_scale*global_dimension_offsets[1];
+                                quantize(0,*(data+idx),hr_data[hr_idx]);
+
+                            }
+                        }
+                    }
+                    else if(N==3){
+                        for(size_t i=0;i<hr_dims[0];i++){
+                            for(size_t j=0;j<hr_dims[1];j++){
+                                for(size_t k=0;k<hr_dims[2];k++){
+                                    size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*global_dimension_offsets[0]+j*hr_scale*global_dimension_offsets[1]+k*hr_scale*global_dimension_offsets[2];
+                                    quantize(0,*(data+idx),hr_data[hr_idx]);
+
+                                }
+
+                            }
+                        }
+                    }
+
+
+
+                    delete []hr_data;
+                    while(scale>2){
+                        scale/=2;
+                        level--;   
+                    }
+                    continue;
+                }
+
+
                 auto inter_block_range = std::make_shared<
                         QoZ::multi_dimensional_range<T, N>>(data, std::begin(global_dimensions),
                                                            std::end(global_dimensions),
@@ -808,6 +974,7 @@ namespace QoZ {
             //write(conf.trimToZero,buffer_pos);
             //write(conf.blockOrder,buffer_pos);
             write(conf.regressiveInterp,buffer_pos);
+            write(conf.SRNet,buffer_pos);
             if(conf.blockwiseTuning){
                 size_t meta_num=interp_metas.size();
                 //std::cout<<meta_num<<std::endl;

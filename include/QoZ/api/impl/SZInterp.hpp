@@ -2783,6 +2783,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.fixWave=-1;
 
     }//merge this part to other branches
+    if(conf.SRNet){
+        conf.blockwiseTuning=0;
+    }
    
     double prewave_absErrorBound=conf.absErrorBound;
     
