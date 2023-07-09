@@ -29,7 +29,7 @@ namespace QoZ {
         system(yml_generation_command.c_str());
         QoZ::writefile<T>(Datafile_path.c_str(), lr_data, lr_num);
 
-        std::string SRNet_command="cd "+HAT_root+"&& python hat/test.py -opt options/test/"+YML_file_path;
+        std::string SRNet_command="cd "+HAT_root+"&& python hat/test.py -opt "+YML_file_path;
         system(SRNet_command.c_str());
         std::string Result_folder=HAT_root+"/results/HAT_SRx2_4QoZ";
         std::string HR_path=Result_folder+"/visualization/qoz/qoz_HAT_SRx2_4QoZ.dat";
