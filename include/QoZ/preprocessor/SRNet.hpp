@@ -24,8 +24,8 @@ namespace QoZ {
         std::string Dataset_path=HAT_root+"/datasets/qoz";
         std::string Datafile_path=Dataset_path+"/qoz.dat";
 
-        std::string yml_generation_command="sed \'s/size_x/size_x: "+ std::to_string(lr_dims[0]) + "/g\' "+ YML_template_path +">" + YML_file_path + 
-                                            "&&sed -i \'s/size_y/size_y: " + std::to_string(lr_dims[1]) + "/g\' "+YML_file_path;
+        std::string yml_generation_command="sed \'s/size_x:/size_x: "+ std::to_string(lr_dims[0]) + "/g\' "+ YML_template_path +">" + YML_file_path + 
+                                            "&&sed -i \'s/size_y:/size_y: " + std::to_string(lr_dims[1]) + "/g\' "+YML_file_path;
         system(yml_generation_command.c_str());
         QoZ::writefile<T>(Datafile_path.c_str(), lr_data, lr_num);
 
