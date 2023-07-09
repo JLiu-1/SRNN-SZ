@@ -3,8 +3,9 @@
 #include "QoZ/utils/FileUtil.hpp"
 #include <cstdlib>
 #include<cmath>
-template<class T, QoZ::uint N>
+
 namespace QoZ {
+    template<class T, QoZ::uint N>
     T * super_resolution(T *lr_data, const std::array<size_t,N> &lr_dims,int scale=2){
         size_t lr_num=1;
         for(uint i=0;i<N;i++)
