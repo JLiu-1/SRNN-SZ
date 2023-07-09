@@ -235,8 +235,8 @@ namespace QoZ {
                     if(N==2){
                         for(size_t i=0;i<lr_dims[0];i++){
                             for(size_t j=0;j<lr_dims[1];j++){
-                                size_t lr_idx=i*lr_dims[1]+j,hr_idx=i*lr_scale*global_dimension_offsets[0]+j*lr_scale*global_dimension_offsets[1];
-                                lr_data[lr_idx]=data[hr_idx];
+                                size_t lr_idx=i*lr_dims[1]+j,hr_idx=i*lr_scale*dimension_offsets[0]+j*lr_scale*dimension_offsets[1];
+                                lr_data[lr_idx]=decData[hr_idx];
 
                             }
                         }
@@ -245,8 +245,8 @@ namespace QoZ {
                         for(size_t i=0;i<lr_dims[0];i++){
                             for(size_t j=0;j<lr_dims[1];j++){
                                 for(size_t k=0;k<lr_dims[2];k++){
-                                    size_t lr_idx=i*lr_dims[1]*lr_dims[2]+j*lr_dims[2]+k,hr_idx=i*lr_scale*global_dimension_offsets[0]+j*lr_scale*global_dimension_offsets[1]+k*lr_scale*global_dimension_offsets[2];
-                                    lr_data[lr_idx]=data[hr_idx];
+                                    size_t lr_idx=i*lr_dims[1]*lr_dims[2]+j*lr_dims[2]+k,hr_idx=i*lr_scale*dimension_offsets[0]+j*lr_scale*dimension_offsets[1]+k*lr_scale*dimension_offsets[2];
+                                    lr_data[lr_idx]=decData[hr_idx];
                                 }
 
                             }
@@ -270,7 +270,7 @@ namespace QoZ {
                                     continue;
 
                                 size_t hr_idx=i*hr_dims[1]+j,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1];
-                                recover(quant_idx++,*(data+idx),hr_data[hr_idx]);
+                                recover(quant_idx++,*(decData+idx),hr_data[hr_idx]);
 
                             }
                         }
@@ -280,7 +280,7 @@ namespace QoZ {
                             for(size_t j=0;j<hr_dims[1];j++){
                                 for(size_t k=0;k<hr_dims[2];k++){
                                     size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
-                                    recover(quant_idx++,*(data+idx),hr_data[hr_idx]);
+                                    recover(quant_idx++,*(decData+idx),hr_data[hr_idx]);
 
                                 }
 
