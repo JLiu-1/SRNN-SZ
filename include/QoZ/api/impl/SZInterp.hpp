@@ -2785,6 +2785,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     }//merge this part to other branches
     if(conf.SRNet){
         conf.blockwiseTuning=0;
+        conf.freezeDimTest=0;//todo: add dimfreeze support (use 2D model) for SRNet
     }
    
     double prewave_absErrorBound=conf.absErrorBound;
