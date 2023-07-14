@@ -2704,7 +2704,7 @@ double Tuning(QoZ::Config &conf, T *data){
         if(conf.tuningTarget==QoZ::TUNING_TARGET_AC){
             bestm=1-bestm;
         }
-        std::string metric_name="no";
+        std::string metric_name="Quality";
         if (conf.tuningTarget==QoZ::TUNING_TARGET_RD ){
             metric_name="PSNR";
         }
@@ -2716,9 +2716,9 @@ double Tuning(QoZ::Config &conf, T *data){
         }
         if(conf.verbose){
             printf("Autotuning finished.\n");
-            printf("Selected wavelet: %d\n",bestWave);
+           // printf("Selected wavelet: %d\n",bestWave);
             if (useInterp)
-                printf("Interp/SPECK selected. Selected gamma: %f. Selected alpha: %f. Selected beta: %f. Best bitrate: %f. Best %s: %f.\n",bestgamma,bestalpha,bestbeta,bestb, const_cast<char*>(metric_name.c_str()),bestm);
+                printf("Interp selected. Selected gamma: %f. Selected alpha: %f. Selected beta: %f. Best bitrate: %f. Best %s: %f.\n",bestgamma,bestalpha,bestbeta,bestb, const_cast<char*>(metric_name.c_str()),bestm);
             else
                 printf("Lorenzo selected. Best bitrate: %f. Best %s: %f.\n",bestb, const_cast<char*>(metric_name.c_str()),bestm);
 
@@ -2783,6 +2783,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.fixWave=-1;
 
     }//merge this part to other branches
+
     if(conf.SRNet){
         conf.blockwiseTuning=0;
         conf.freezeDimTest=0;//todo: add dimfreeze support (use 2D model) for SRNet
