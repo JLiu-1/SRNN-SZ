@@ -300,8 +300,8 @@ namespace QoZ {
                         std::array<size_t,N> begin,end=global_dimensions;
                         for (size_t i=0;i<N;i++)
                             begin[i]=0;
-                        predict_error+=block_interpolation(decData, begin, end, PB_recover,
-                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,tuning,cross_block);//,cross_block,regressiveInterp);
+                        block_interpolation(decData, begin, end, PB_recover,
+                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
                     }
                     
 
@@ -586,7 +586,7 @@ namespace QoZ {
                         for (size_t i=0;i<N;i++)
                             begin[i]=0;
                         predict_error+=block_interpolation(data, begin, end, PB_predict_overwrite,
-                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,tuning,cross_block);//,cross_block,regressiveInterp);
+                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
 
 
                     }
