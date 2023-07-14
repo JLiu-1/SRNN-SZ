@@ -49,6 +49,52 @@ namespace QoZ {
 
         return hr_data;
     }
+
+    template<class T, QoZ::uint N>
+    T * super_resolution_2dslices(T *lr_data, const std::array<size_t,N> &lr_dims,int scale=2){
+        size_t lr_num=1;
+        for(uint i=0;i<N;i++)
+            lr_num*=lr_dims[i];
+
+
+        std::string HOME = getenv("HOME");
+
+        std::string HAT_root=HOME+"/lossycompression/HAT";
+
+        std::string YML_path=HAT_root+"/options/test";
+        std::string YML_template_path=YML_path+"/qoz_2dslices_template.yml";
+        
+        std::string YML_file_path=YML_path+"/qoz.yml";
+
+        std::string Dataset_path=HAT_root+"/datasets/qoz";
+        //std::string Datafile_path=Dataset_path+"/qoz.dat";
+        std::string yml_generation_command;
+        
+        
+        yml_generation_command="sed \'s/size_x:/size_x: "+ std::to_string(lr_dims[0]) + "/g\' "+ YML_template_path +">" + YML_file_path + 
+                                "&&sed -i \'s/size_y:/size_y: " + std::to_string(lr_dims[1]) + "/g\' "+YML_file_path+"&&sed -i \'s/size_z:/size_z: " + std::to_string(lr_dims[2]) + "/g\' "+YML_file_path;
+        system(yml_generation_command.c_str());
+        QoZ::writefile<T>("lr.test", lr_data, lr_num);
+        std::string slice_command="python "+HAT_root+"/hat/slicing.py lr.test "+Dataset_path+" "+std::to_string(lr_dims[0])+" "+std::to_string(lr_dims[1])+" "+std::to_string(lr_dims[2])+" "+std::to_string(scale);
+        system(slice_command.c_str());
+
+
+        std::string SRNet_command="cd "+HAT_root+"&& python hat/test.py -opt "+YML_file_path;
+        system(SRNet_command.c_str());
+        std::string Result_folder=HAT_root+"/results/HAT_SRx2_4QoZ";
+        std::string HR_folder=Result_folder+"/visualization/qoz";
+
+        std::string build_command="python "+HAT_root+"/hat/building.py "+HR_folder+" hr.test "+std::to_string(lr_dims[0]*scale)+" "+std::to_string(lr_dims[1]*scale)+" "+std::to_string(lr_dims[2]*scale);
+
+        size_t hr_num=lr_num*pow(scale,N);
+        T* hr_data=new T[hr_num];
+        QoZ::readfile<T>("hr.test", hr_num,hr_data);
+
+        std::string Clean_command="rm -rf "+Dataset_path+";rm -rf "+Result_folder;
+        //system(Clean_command.c_str());
+
+        return hr_data;
+    }
 }
 
 

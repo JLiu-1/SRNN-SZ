@@ -253,7 +253,11 @@ namespace QoZ {
                         }
                     }
 
-                    T* hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
+                    T *hr_data;
+                    if(N==2)
+                        hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
+                    else 
+                        hr_data= QoZ::super_resolution_2dslices<T,N>(lr_data,lr_dims,scale);
                     delete []lr_data;
                     size_t hr_scale=lr_scale/scale;
                     std::array<size_t,N> hr_dims=lr_dims;
@@ -274,12 +278,13 @@ namespace QoZ {
 
                             }
                         }
+                        quant_index=quant_idx;
                     }
                     else if(N==3){
                         for(size_t i=0;i<hr_dims[0];i++){
                             for(size_t j=0;j<hr_dims[1];j++){
                                 for(size_t k=0;k<hr_dims[2];k++){
-                                    if(i%scale==0 and j%scale==0 and k%scale==0)
+                                    if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
                                         continue;
                                     size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
                                     recover(quant_idx++,*(decData+idx),hr_data[hr_idx]);
@@ -288,8 +293,15 @@ namespace QoZ {
 
                             }
                         }
+                        quant_index=quant_idx;
+
+
+                        begin_idx=std::array<size_t,3>{0,0,0},end_idx=global_dimensions;
+                        block_interpolation_3d_crossblock(data, begin_idx,
+                                                                    end_idx,std::array<size_t,3>{0,1,2},
+                                                                    stride , cur_meta.interp_func, PB_recover,cur_meta.dimCoeffs,cur_meta,cross_block,0);
                     }
-                    quant_index=quant_idx;
+                    
 
 
 
@@ -528,8 +540,11 @@ namespace QoZ {
                             }
                         }
                     }
-
-                    T* hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
+                    T *hr_data;
+                    if(N==2)
+                        hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
+                    else 
+                        hr_data= QoZ::super_resolution_2dslices<T,N>(lr_data,lr_dims,scale);
                     delete []lr_data;
                     size_t hr_scale=lr_scale/scale;
                     std::array<size_t,N> hr_dims=lr_dims;
@@ -555,7 +570,7 @@ namespace QoZ {
                         for(size_t i=0;i<hr_dims[0];i++){
                             for(size_t j=0;j<hr_dims[1];j++){
                                 for(size_t k=0;k<hr_dims[2];k++){
-                                    if(i%scale==0 and j%scale==0 and k%scale==0)
+                                    if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
                                         continue;
                                     size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
                                     quantize(0,*(data+idx),hr_data[hr_idx]);
@@ -564,6 +579,13 @@ namespace QoZ {
 
                             }
                         }
+
+                        begin_idx=std::array<size_t,3>{0,0,0},end_idx=global_dimensions;
+                        block_interpolation_3d_crossblock(data, begin_idx,
+                                                                    end_idx,std::array<size_t,3>{0,1,2},
+                                                                    stride , cur_meta.interp_func, PB_predict_overwrite,cur_meta.dimCoeffs,cur_meta,cross_block,0);
+
+
                     }
 
 
