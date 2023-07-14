@@ -26,6 +26,13 @@ namespace QoZ {
 
         std::string Dataset_path=HAT_root+"/datasets/qoz";
         std::string Datafile_path=Dataset_path+"/qoz.dat";
+
+        std::string Result_folder=HAT_root+"/results/HAT_SRx2_4QoZ";
+
+        std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder;
+        system(Clean_command.c_str());
+
+
         std::string yml_generation_command;
         if (N==2)
             yml_generation_command="sed \'s/size_x:/size_x: "+ std::to_string(lr_dims[0]) + "/g\' "+ YML_template_path +">" + YML_file_path + 
@@ -38,14 +45,14 @@ namespace QoZ {
 
         std::string SRNet_command="cd "+HAT_root+"&& python hat/test.py -opt "+YML_file_path;
         system(SRNet_command.c_str());
-        std::string Result_folder=HAT_root+"/results/HAT_SRx2_4QoZ";
+        
         std::string HR_path=Result_folder+"/visualization/qoz/qoz_HAT_SRx2_4QoZ.dat";
         size_t hr_num=lr_num*pow(scale,N);
         T* hr_data=new T[hr_num];
         QoZ::readfile<T>(HR_path.c_str(), hr_num,hr_data);
 
-        std::string Clean_command="rm -f "+Datafile_path+";rm -rf "+Result_folder;
-        //system(Clean_command.c_str());
+        //std::string Clean_command="rm -f "+Datafile_path+";rm -rf "+Result_folder;
+        system(Clean_command.c_str());
 
         return hr_data;
     }
@@ -69,6 +76,9 @@ namespace QoZ {
         std::string Dataset_path=HAT_root+"/datasets/qoz";
         //std::string Datafile_path=Dataset_path+"/qoz.dat";
         std::string yml_generation_command;
+        std::string Result_folder=HAT_root+"/results/HAT_SRx2_4QoZ";
+        std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder;
+        system(Clean_command.c_str());
         
         
         yml_generation_command="sed \'s/size_x:/size_x: "+ std::to_string(lr_dims[0]) + "/g\' "+ YML_template_path +">" + YML_file_path + 
@@ -81,17 +91,17 @@ namespace QoZ {
 
         std::string SRNet_command="cd "+HAT_root+"&& python hat/test.py -opt "+YML_file_path;
         system(SRNet_command.c_str());
-        std::string Result_folder=HAT_root+"/results/HAT_SRx2_4QoZ";
+        
         std::string HR_folder=Result_folder+"/visualization/qoz";
 
         std::string build_command="python "+HAT_root+"/hat/building.py "+HR_folder+" hr.test "+std::to_string(lr_dims[0]*scale)+" "+std::to_string(lr_dims[1]*scale)+" "+std::to_string(lr_dims[2]*scale);
-
+        system(build_command.c_str());
         size_t hr_num=lr_num*pow(scale,N);
         T* hr_data=new T[hr_num];
         QoZ::readfile<T>("hr.test", hr_num,hr_data);
 
-        std::string Clean_command="rm -rf "+Dataset_path+";rm -rf "+Result_folder;
-        //system(Clean_command.c_str());
+        //std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder;
+        system(Clean_command.c_str());
 
         return hr_data;
     }
