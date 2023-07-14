@@ -95,6 +95,7 @@ namespace QoZ {
         std::string HR_folder=Result_folder+"/visualization/qoz";
 
         std::string build_command="python "+HAT_root+"/hat/building.py "+HR_folder+" hr.test "+std::to_string(lr_dims[0]*scale)+" "+std::to_string(lr_dims[1]*scale)+" "+std::to_string(lr_dims[2]*scale);
+        std::cout<<build_command<<std::endl;
         system(build_command.c_str());
         size_t hr_num=lr_num*pow(scale,N);
         T* hr_data=new T[hr_num];
