@@ -296,7 +296,7 @@ namespace QoZ {
                         quant_index=quant_idx;
 
 
-                        auto begin_idx=std::array<size_t,3>{0,0,0},end_idx=global_dimensions;
+                        auto begin_idx=std::array<size_t,3>{0,0,0},end_idx=std::array<size_t,3>{global_dimensions[0],global_dimensions[1],global_dimensions[2]};
                         block_interpolation_3d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,3>{0,1,2},
                                                                     stride , interpolators[cur_meta.interpAlgo], PB_recover,cur_meta.dimCoeffs,cur_meta,cross_block,0);
@@ -580,7 +580,7 @@ namespace QoZ {
                             }
                         }
 
-                        auto begin_idx=std::array<size_t,3>{0,0,0},end_idx=begin_idx=std::array<size_t,3>{global_dimensions[0],global_dimensions[1],global_dimensions[2]};
+                        auto begin_idx=std::array<size_t,3>{0,0,0},end_idx=std::array<size_t,3>{global_dimensions[0],global_dimensions[1],global_dimensions[2]};
                         block_interpolation_3d_crossblock(data, begin_idx,
                                                                     end_idx,std::array<size_t,3>{0,1,2},
                                                                     stride , interpolators[cur_meta.interpAlgo], PB_predict_overwrite,cur_meta.dimCoeffs,cur_meta,cross_block,0);
