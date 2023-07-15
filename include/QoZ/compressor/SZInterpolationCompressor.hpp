@@ -7561,6 +7561,8 @@ namespace QoZ {
                             //k=p-1
                             else if(k<p){
                                 d = data + begin + (n-1)*stride1+(m-1)*stride2+(p-1)*stride3;
+                                std::cout<<"lorenzo"<<" "<<lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3))<<std::endl;
+
                                 predict_error+=quantize_integrated(quant_idx++, *d,  lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3)),mode);
                             }
                         }
