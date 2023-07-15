@@ -298,10 +298,11 @@ namespace QoZ {
 
 
                         cur_meta.interpParadigm=2;
-                        std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;                    
+                      //  std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;                    
                         std::array<size_t,N> begin,end=global_dimensions;
                         for (size_t i=0;i<N;i++){
                             begin[i]=0;
+                            end[i]--;
                            
                         }
                         block_interpolation(decData, begin, end, PB_recover,
@@ -590,9 +591,10 @@ namespace QoZ {
                         for (size_t i=0;i<N;i++){
 
                             begin[i]=0;
+                            end[i]--;
 
                         }
-                        std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;
+                    //    std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;
                         predict_error+=block_interpolation(data, begin, end, PB_predict_overwrite,
                                         interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
 
@@ -962,7 +964,7 @@ namespace QoZ {
 
             }
             */
-              QoZ::writefile<T>("decomp.test", data,num_elements);//added.
+             // QoZ::writefile<T>("decomp.test", data,num_elements);//added.
             if(conf.verbose)
                 timer.stop("prediction");
             /*
@@ -976,7 +978,7 @@ namespace QoZ {
             //timer.start();
             assert(quant_inds.size() == num_elements);
             
-            std::cout<<quant_inds.size()<<std::endl;
+            //std::cout<<quant_inds.size()<<std::endl;
             /*
             for(size_t i=0;i<num_elements;i++){
                 if(!mark[i]){
@@ -6564,10 +6566,10 @@ namespace QoZ {
                 return 0;
             }
             size_t real_n=cross_back?(math_end_idx1 / math_stride + 1):n,real_m=cross_back?(math_end_idx2 / math_stride + 1):m,real_p=cross_back?(math_end_idx3 / math_stride + 1):p;
-            std::cout<<math_begin_idx1<<" "<<math_begin_idx2<<" "<<math_begin_idx3<<std::endl;
-            std::cout<<math_end_idx1<<" "<<math_end_idx2<<" "<<math_end_idx3<<std::endl;
-            std::cout<<n<<" "<<m<<" "<<p<<std::endl;
-            std::cout<<real_n<<" "<<real_m<<" "<<real_p<<std::endl;
+            //std::cout<<math_begin_idx1<<" "<<math_begin_idx2<<" "<<math_begin_idx3<<std::endl;
+            //std::cout<<math_end_idx1<<" "<<math_end_idx2<<" "<<math_end_idx3<<std::endl;
+            //std::cout<<n<<" "<<m<<" "<<p<<std::endl;
+            //std::cout<<real_n<<" "<<real_m<<" "<<real_p<<std::endl;
             
             
             double predict_error = 0;
@@ -6642,7 +6644,7 @@ namespace QoZ {
                         }
                         if(p%2==0){
                             T *d = data + begin + (n-1)* stride1+(m-1)*stride2+(p-1)*stride3;
-                                                            std::cout<<"lorenzolin"<<" "<<lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3))<<std::endl;
+                                                           // std::cout<<"lorenzolin"<<" "<<lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3))<<std::endl;
 
                             predict_error+=quantize_integrated(quant_idx++, *d, lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3)),mode);
                         }
@@ -7155,7 +7157,7 @@ namespace QoZ {
                             //k=p-1
                             if(p%2==0){
                                 d = data + begin + (n-1)*stride1+(m-1)*stride2+(p-1)*stride3;
-                                std::cout<<"lorenzonoadj"<<" "<<lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3))<<std::endl;
+                               // std::cout<<"lorenzonoadj"<<" "<<lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3))<<std::endl;
 
                                 predict_error+=quantize_integrated(quant_idx++, *d, lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3)),mode);
                             }
@@ -7566,7 +7568,7 @@ namespace QoZ {
                             //k=p-1
                             else if(k<p){
                                 d = data + begin + (n-1)*stride1+(m-1)*stride2+(p-1)*stride3;
-                                std::cout<<"lorenzo"<<" "<<lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3))<<std::endl;
+                               // std::cout<<"lorenzo"<<" "<<lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3))<<std::endl;
 
                                 predict_error+=quantize_integrated(quant_idx++, *d,  lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3)),mode);
                             }
@@ -7974,7 +7976,7 @@ namespace QoZ {
                             //k=p-1
                             else if(k<p){
                                 d = data + begin + (n-1)*stride1 +(m-1)*stride2 +(p-1)*stride3;
-                                std::cout<<"lorenzo"<<" "<<lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3))<<std::endl;
+                                //std::cout<<"lorenzo"<<" "<<lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3))<<std::endl;
                                 predict_error+=quantize_integrated(quant_idx++, *d,  lorenzo_3d(*(d-stride1-stride2-stride3),*(d-stride1-stride2),*(d-stride1-stride3),*(d-stride1),*(d-stride2-stride3),*(d-stride2),*(d-stride3)),mode);
                             }
                         }
