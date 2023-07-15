@@ -204,12 +204,11 @@ namespace QoZ {
                             cur_direction=interpDirection_list[levelwise_predictor_levels-1];
                             cur_splinetype=cubicSplineType_list[levelwise_predictor_levels-1];
                             */
-                            std::cout<<"dec load from levelwise"<<std::endl;
+                            //std::cout<<"dec load from levelwise"<<std::endl;
                             cur_meta=interpMeta_list[levelwise_predictor_levels-1];
                         }
                     }
                 }
-                                        std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;                        std::array<size_t,N> begin,end=global_dimensions;
 
                 size_t stride = 1U << (level - 1);
                 size_t cur_blocksize;
