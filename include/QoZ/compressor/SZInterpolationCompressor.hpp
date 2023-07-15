@@ -587,8 +587,11 @@ namespace QoZ {
                         }
                         cur_meta.interpParadigm=2;
                         std::array<size_t,N> begin,end=global_dimensions;
-                        for (size_t i=0;i<N;i++)
+                        for (size_t i=0;i<N;i++){
+
                             begin[i]=0;
+                            std::cout<<end[i]<std::endl;
+                        }
                         std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;
                         predict_error+=block_interpolation(data, begin, end, PB_predict_overwrite,
                                         interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
