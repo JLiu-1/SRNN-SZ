@@ -285,17 +285,21 @@ namespace QoZ {
                         for(size_t i=0;i<hr_dims[0];i++){
                             for(size_t j=0;j<hr_dims[1];j++){
                                 for(size_t k=0;k<hr_dims[2];k++){
-                                    if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
+                                    if((i%scale==0 and j%scale==0 and k%scale==0)  ) 
                                         continue;
-                                    size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
-                                    recover(quant_idx++,*(decData+idx),hr_data[hr_idx]);
+                                    if (i%scale!=0 and j%scale!=0 and k%scale!=0) 
+                                        recover(quant_idx++,*(decData+idx),0);
+                                    else{
+                                        size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
+                                        recover(quant_idx++,*(decData+idx),hr_data[hr_idx]);
+                                    }
 
                                 }
 
                             }
                         }
                         quant_index=quant_idx;
-
+                        /*
 
                         cur_meta.interpParadigm=2;
                         std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;                    
@@ -305,7 +309,8 @@ namespace QoZ {
                            
                         }
                         block_interpolation(decData, begin, end, PB_recover,
-                                        interpolators[0],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
+                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
+                        */
                     }
                     
 
@@ -576,15 +581,21 @@ namespace QoZ {
                         for(size_t i=0;i<hr_dims[0];i++){
                             for(size_t j=0;j<hr_dims[1];j++){
                                 for(size_t k=0;k<hr_dims[2];k++){
-                                    if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
+                                    if((i%scale==0 and j%scale==0 and k%scale==0) ) 
                                         continue;
-                                    size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
-                                    quantize(0,*(data+idx),hr_data[hr_idx]);
+                                    if (i%scale!=0 and j%scale!=0 and k%scale!=0) 
+                                        quantize(0,*(data+idx),0);
+                                    else{
+                                        size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
+                                        
+                                        quantize(0,*(data+idx),hr_data[hr_idx]);
+                                    }
 
                                 }
 
                             }
                         }
+                        /*
                         cur_meta.interpParadigm=2;
                         std::array<size_t,N> begin,end=global_dimensions;
                         for (size_t i=0;i<N;i++){
@@ -594,9 +605,9 @@ namespace QoZ {
                         }
                         std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;
                         predict_error+=block_interpolation(data, begin, end, PB_predict_overwrite,
-                                        interpolators[0],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
+                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
 
-
+                        */
                     }
 
 
@@ -9133,7 +9144,7 @@ namespace QoZ {
                     
                     std::array<size_t, N> begin_idx=begin,end_idx=end;
                     predict_error += block_interpolation_3d_crossblock(data, begin_idx,
-                                                                end_idx,std::array<size_t,3>{dims[0],dims[1],dims[2]},
+                                                                end_idx,dims,
                                                                 stride , interp_func, pb,dim_coeffs,meta,cross_block,tuning);
                                                                 
 
