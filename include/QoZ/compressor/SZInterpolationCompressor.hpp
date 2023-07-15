@@ -365,7 +365,7 @@ namespace QoZ {
                
             }
             quantizer.postdecompress_data();
-            //std::cout<<quant_index<<std::endl;
+            std::cout<<quant_index<<std::endl;
             return decData;
         }
         
