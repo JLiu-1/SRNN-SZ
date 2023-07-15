@@ -6564,9 +6564,10 @@ namespace QoZ {
                 return 0;
             }
             size_t real_n=cross_back?(math_end_idx1 / math_stride + 1):n,real_m=cross_back?(math_end_idx2 / math_stride + 1):m,real_p=cross_back?(math_end_idx3 / math_stride + 1):p;
-            //std::cout<<math_begin_idx1<<" "<<math_begin_idx2<<" "<<math_begin_idx3<<std::endl;
-           // std::cout<<n<<" "<<m<<" "<<p<<std::endl;
-            //std::cout<<real_n<<" "<<real_m<<" "<<real_p<<std::endl;
+            std::cout<<math_begin_idx1<<" "<<math_begin_idx2<<" "<<math_begin_idx3<<std::endl;
+            std::cout<<math_end_idx1<<" "<<math_end_idx2<<" "<<math_end_idx3<<std::endl;
+            std::cout<<n<<" "<<m<<" "<<p<<std::endl;
+            std::cout<<real_n<<" "<<real_m<<" "<<real_p<<std::endl;
             
             
             double predict_error = 0;
