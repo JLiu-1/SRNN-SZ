@@ -365,7 +365,7 @@ namespace QoZ {
                
             }
             quantizer.postdecompress_data();
-            std::cout<<quant_index<<std::endl;
+            //std::cout<<quant_index<<std::endl;
             return decData;
         }
         
@@ -966,8 +966,9 @@ namespace QoZ {
             
             //timer.start();
             assert(quant_inds.size() == num_elements);
-            /*
+            
             std::cout<<quant_inds.size()<<std::endl;
+            /*
             for(size_t i=0;i<num_elements;i++){
                 if(!mark[i]){
                     size_t z=i%global_dimensions[2];
