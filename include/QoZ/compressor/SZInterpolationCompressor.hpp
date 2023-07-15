@@ -954,6 +954,7 @@ namespace QoZ {
 
             }
             */
+              QoZ::writefile<T>("decomp.test", data,num_elements);//added.
             if(conf.verbose)
                 timer.stop("prediction");
             /*
