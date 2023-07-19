@@ -979,7 +979,7 @@ namespace QoZ {
                             double SR_loss=0;
                             size_t scale=2;
                             
-                            std::cout<<"sr1"<<hr_scale<<" "<<hr_dims[0]<<std::endl;
+                            //std::cout<<"sr1"<<hr_scale<<" "<<hr_dims[0]<<std::endl;
                             if(N==2){
                                 for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=sample_strides[0]){
                                     
@@ -1013,6 +1013,7 @@ namespace QoZ {
                                         }
                                     }
                                 }
+                                std::cout<<"sr1.5"<<std::endl;
                                 uint8_t temp_p=best_meta.interpParadigm;
                                 best_meta.interpParadigm=2;
                                 SR_loss+=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
