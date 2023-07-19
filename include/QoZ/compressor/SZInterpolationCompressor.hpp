@@ -369,6 +369,7 @@ namespace QoZ {
 
                     if(SRNet and cur_meta.interpParadigm==2){
                         size_t quant_idx=quant_index;
+                        std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<std::endl;
 
                         if(N==2){
                             for(size_t i=start_idx[0];i<=end_idx[0];i+=stride){
@@ -387,13 +388,17 @@ namespace QoZ {
                              for(size_t i=start_idx[0];i<=end_idx[0];i+=stride){
                                 for(size_t j=start_idx[1];j<=end_idx[1];j+=stride){
                                     for(size_t k=start_idx[2];k<=end_idx[2];k+=stride){
+                                        
                                         if((i%stride2x==0 and j%stride2x==0 and k%stride2x==0) or (i%stride2x!=0 and j%stride2x!=0 and k%stride2x!=0) ) 
                                             continue;
                                         size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1]+k*dimension_offsets[2];
                                         size_t hr_idx=(i/hr_scale)*hr_dims[1]*hr_dims[2]+(j/hr_scale)*hr_dims[2]+(k/hr_scale);
-                                        if(i==127 and j==127 and k==126)
-                                            std::cout<<hr_idx<<" "<<hr_data[hr_idx];
+                                        //if(i==127 and j==127 and k==126)
+                                         //   std::cout<<hr_idx<<" "<<hr_data[hr_idx]<<std::endl;
                                         recover(quant_idx++,*(decData+global_idx),hr_data[hr_idx]);
+
+                                        if(i==127 and j==127 and k==126)
+                                            std::cout<<hr_idx<<" "<<hr_data[hr_idx]<<" "<<global_idx<<" "<<decData[global_idx]<<std::endl;
 
                                     }
 
