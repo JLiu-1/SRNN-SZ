@@ -87,7 +87,7 @@ namespace QoZ {
                                     "&&sed -i \'s/size_y:/size_y: " + std::to_string(lr_dims[1]) + "/g\' "+YML_file_path+"&&sed -i \'s/size_z:/size_z: " + std::to_string(lr_dims[2]) + "/g\' "+YML_file_path;
             system(yml_generation_command.c_str());
             std::string lrFile="lr.test.l"+std::to_string(level);
-            QoZ::writefile<T>(lrFile, lr_data, lr_num);
+            QoZ::writefile<T>(lrFile.c_str(), lr_data, lr_num);
             std::string slice_command="python "+HAT_root+"/hat/slicing.py "+lrFile+" "+Dataset_path+" "+std::to_string(lr_dims[0])+" "+std::to_string(lr_dims[1])+" "+std::to_string(lr_dims[2])+" "+std::to_string(scale);
             system(slice_command.c_str());
 
@@ -104,7 +104,7 @@ namespace QoZ {
         size_t hr_num=lr_num*pow(scale,N);
         T* hr_data=new T[hr_num];
         
-        QoZ::readfile<T>(hrFile, hr_num,hr_data);
+        QoZ::readfile<T>(hrFile.c_str(), hr_num,hr_data);
 
         //std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder;
         system(Clean_command.c_str());
