@@ -352,8 +352,8 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                    std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<std::endl;
-                    std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.adjInterp<<std::endl; 
+                   // std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<std::endl;
+                   // std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.adjInterp<<std::endl; 
                     /*
                     if(blockwiseTuning and regressiveInterp and cur_meta.interpAlgo==1){
                         std::vector<float> coeffs;
@@ -372,7 +372,7 @@ namespace QoZ {
 
                         if(N==2){
                             for(size_t i=start_idx[0];i<=end_idx[0];i+=stride){
-                                for(size_t j=start_idx[1];j<end_idx[1];j+=stride){
+                                for(size_t j=start_idx[1];j<=end_idx[1];j+=stride){
                                     if(i%stride2x==0 and j%stride2x==0)
                                         continue;
 
@@ -385,8 +385,8 @@ namespace QoZ {
                         }
                         else if(N==3){
                              for(size_t i=start_idx[0];i<=end_idx[0];i+=stride){
-                                for(size_t j=start_idx[1];j<end_idx[1];j+=stride){
-                                    for(size_t k=start_idx[2];k<end_idx[2];k+=stride){
+                                for(size_t j=start_idx[1];j<=end_idx[1];j+=stride){
+                                    for(size_t k=start_idx[2];k<=end_idx[2];k+=stride){
                                         if((i%stride2x==0 and j%stride2x==0 and k%stride2x==0) or (i%stride2x!=0 and j%stride2x!=0 and k%stride2x!=0) ) 
                                             continue;
                                         size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1]+k*dimension_offsets[2];
@@ -688,7 +688,7 @@ namespace QoZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                    std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<std::endl;
+                    //std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<std::endl;
                     /*
                     if(N==2){
                         std::cout<<"a block"<<std::endl;
@@ -1054,7 +1054,7 @@ namespace QoZ {
                               //  std::cout<<"sr3"<<std::endl;
                                 if(N==2){
                                     for(size_t i=start_idx[0];i<=end_idx[0];i+=sample_strides[0]){
-                                        for(size_t j=start_idx[1];j<end_idx[1];j+=sample_strides[1]){
+                                        for(size_t j=start_idx[1];j<=end_idx[1];j+=sample_strides[1]){
                                             if(i%stride2x==0 and j%stride2x==0)
                                                 continue;
 
@@ -1068,8 +1068,8 @@ namespace QoZ {
                                 
                                 else if(N==3){
                                      for(size_t i=start_idx[0];i<=end_idx[0];i+=sample_strides[0]){
-                                        for(size_t j=start_idx[1];j<end_idx[1];j+=sample_strides[1]){
-                                            for(size_t k=start_idx[2];k<end_idx[2];k+=sample_strides[2]){
+                                        for(size_t j=start_idx[1];j<=end_idx[1];j+=sample_strides[1]){
+                                            for(size_t k=start_idx[2];k<=end_idx[2];k+=sample_strides[2]){
                                                 if((i%stride2x==0 and j%stride2x==0 and k%stride2x==0) or (i%stride2x!=0 and j%stride2x!=0 and k%stride2x!=0) ) 
                                                     continue;
                                                 size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1]+k*dimension_offsets[2];
@@ -1089,7 +1089,7 @@ namespace QoZ {
 
                         }
                        // if(N==2)
-                            std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
+                          //  std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
                        // std::cout<<"sr5"<<std::endl;
                         interp_metas.push_back(best_meta);
                         //dimension_offsets=global_dimension_offsets;
