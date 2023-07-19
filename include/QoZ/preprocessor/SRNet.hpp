@@ -58,7 +58,7 @@ namespace QoZ {
     }
 
     template<class T, QoZ::uint N>
-    T * super_resolution_2dslices(T *lr_data, const std::array<size_t,N> &lr_dims,int scale=2,decomp=false){
+    T * super_resolution_2dslices(T *lr_data, const std::array<size_t,N> &lr_dims,int scale=2,int level=1, bool decomp=false){
         size_t lr_num=1;
         for(uint i=0;i<N;i++)
             lr_num*=lr_dims[i];
@@ -78,6 +78,7 @@ namespace QoZ {
         std::string yml_generation_command;
         std::string Result_folder=HAT_root+"/results/HAT_SRx2_4QoZ";
         std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder;
+        std::string hrFile="hr.test.l"+std::to_string(level);
         if(!decomp){
             system(Clean_command.c_str());
             
@@ -85,8 +86,9 @@ namespace QoZ {
             yml_generation_command="sed \'s/size_x:/size_x: "+ std::to_string(lr_dims[0]) + "/g\' "+ YML_template_path +">" + YML_file_path + 
                                     "&&sed -i \'s/size_y:/size_y: " + std::to_string(lr_dims[1]) + "/g\' "+YML_file_path+"&&sed -i \'s/size_z:/size_z: " + std::to_string(lr_dims[2]) + "/g\' "+YML_file_path;
             system(yml_generation_command.c_str());
-            QoZ::writefile<T>("lr.test", lr_data, lr_num);
-            std::string slice_command="python "+HAT_root+"/hat/slicing.py lr.test "+Dataset_path+" "+std::to_string(lr_dims[0])+" "+std::to_string(lr_dims[1])+" "+std::to_string(lr_dims[2])+" "+std::to_string(scale);
+            std::string lrFile="lr.test.l"+std::to_string(level);
+            QoZ::writefile<T>(lrFile, lr_data, lr_num);
+            std::string slice_command="python "+HAT_root+"/hat/slicing.py "+lrFile+" "+Dataset_path+" "+std::to_string(lr_dims[0])+" "+std::to_string(lr_dims[1])+" "+std::to_string(lr_dims[2])+" "+std::to_string(scale);
             system(slice_command.c_str());
 
 
@@ -95,13 +97,14 @@ namespace QoZ {
             
             std::string HR_folder=Result_folder+"/visualization/qoz";
 
-            std::string build_command="python "+HAT_root+"/hat/building.py "+HR_folder+" hr.test "+std::to_string(lr_dims[0]*scale)+" "+std::to_string(lr_dims[1]*scale)+" "+std::to_string(lr_dims[2]*scale);
+            std::string build_command="python "+HAT_root+"/hat/building.py "+HR_folder+" "+hrFile+" "+std::to_string(lr_dims[0]*scale)+" "+std::to_string(lr_dims[1]*scale)+" "+std::to_string(lr_dims[2]*scale);
             //std::cout<<build_command<<std::endl;
             system(build_command.c_str());
         }
         size_t hr_num=lr_num*pow(scale,N);
         T* hr_data=new T[hr_num];
-        QoZ::readfile<T>("hr.test", hr_num,hr_data);
+        
+        QoZ::readfile<T>(hrFile, hr_num,hr_data);
 
         //std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder;
         system(Clean_command.c_str());
