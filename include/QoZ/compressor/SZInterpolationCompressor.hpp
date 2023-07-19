@@ -275,6 +275,8 @@ namespace QoZ {
                     hr_num=lr_num*pow(scale,N);
                     if (level==1)
                         QoZ::writefile<T>("hr_dcmp_l1.test", hr_data,hr_num);//added.
+                    else if (level==2)
+                        QoZ::writefile<T>("hr_dcmp_l2.test", hr_data,hr_num);//added.
 
 
                     if(!blockwiseTuning){
@@ -636,6 +638,8 @@ namespace QoZ {
                     hr_num=lr_num*pow(scale,N);
                     if (level==1)
                         QoZ::writefile<T>("hr_cmp_l1.test", hr_data,hr_num);//added.
+                    else if (level==2)
+                        QoZ::writefile<T>("hr_cmp_l2.test", hr_data,hr_num);//added.
                     if(!conf.blockwiseTuning){
                         if(N==2){
                             for(size_t i=0;i<hr_dims[0];i++){
