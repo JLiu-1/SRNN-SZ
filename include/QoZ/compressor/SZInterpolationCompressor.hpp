@@ -273,11 +273,10 @@ namespace QoZ {
                     }
 
                     hr_num=lr_num*pow(scale,N);
+                    if (level==1)
+                        QoZ::writefile<T>("hr_dcmp_l1.test", hr_data,hr_num);//added.
 
-                    if (level==2){
-                        std::cout<<hr_dims[0]<<" "<<hr_scale<<std::endl;
-                        QoZ::writefile<T>("hr_dcmp_l2.test", hr_data,hr_num);//added.
-                    }
+
                     if(!blockwiseTuning){
                         size_t quant_idx=quant_index;
                         if(N==2){
@@ -325,6 +324,7 @@ namespace QoZ {
 
 
                         delete []hr_data;
+                        hr_data=NULL;
                         while(scale>2){
                             scale/=2;
                             level--;   
@@ -429,8 +429,10 @@ namespace QoZ {
                 
 
                 }
-                if(SRNet and level<=max_sr_level)
+                if(SRNet and level<=max_sr_level){
                     delete []hr_data;
+                    hr_data=NULL;
+                }
                
             }
             quantizer.postdecompress_data();
@@ -632,8 +634,8 @@ namespace QoZ {
 
 
                     hr_num=lr_num*pow(scale,N);
-                    if (level==2)
-                        QoZ::writefile<T>("hr_cmp_l2.test", hr_data,hr_num);//added.
+                    if (level==1)
+                        QoZ::writefile<T>("hr_cmp_l1.test", hr_data,hr_num);//added.
                     if(!conf.blockwiseTuning){
                         if(N==2){
                             for(size_t i=0;i<hr_dims[0];i++){
@@ -678,6 +680,7 @@ namespace QoZ {
 
 
                         delete []hr_data;
+                        hr_data=NULL;
                         while(scale>2){
                             scale/=2;
                             level--;   
@@ -1123,8 +1126,10 @@ namespace QoZ {
                     
                         
                 }
-                if(conf.SRNet and level<=max_sr_level and tuning==0)
+                if(conf.SRNet and level<=max_sr_level and tuning==0){
                     delete []hr_data;
+                    hr_data=NULL;
+                }
                 if(tuning){
                     conf.quant_bin_counts[level-1]=quant_inds.size();
                 }
