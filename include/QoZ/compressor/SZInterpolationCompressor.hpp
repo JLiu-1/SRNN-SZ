@@ -1040,7 +1040,7 @@ namespace QoZ {
                                 best_meta.interpParadigm=2;
 
 
-
+                                std::cout<<"sr3"<<std::endl;
                                 if(N==2){
                                     for(size_t i=start_idx[0];i<=end_idx[0];i+=sample_strides[0]){
                                         for(size_t j=start_idx[1];j<end_idx[1];j+=sample_strides[1]){
@@ -1054,7 +1054,7 @@ namespace QoZ {
                                         }
                                     }
                                 }
-                                std::cout<<"sr3"<<std::endl;
+                                
                                 else if(N==3){
                                      for(size_t i=start_idx[0];i<=end_idx[0];i+=sample_strides[0]){
                                         for(size_t j=start_idx[1];j<end_idx[1];j+=sample_strides[1]){
