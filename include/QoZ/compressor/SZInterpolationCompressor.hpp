@@ -390,6 +390,8 @@ namespace QoZ {
                                             continue;
                                         size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1]+k*dimension_offsets[2];
                                         size_t hr_idx=(i/hr_scale)*hr_dims[1]*hr_dims[2]+(j/hr_scale)*hr_dims[2]+(k/hr_scale);
+                                        if(i==127 and j==127 and k==126)
+                                            std::cout<<hr_idx<<" "<<hr_data[hr_idx];
                                         recover(quant_idx++,*(decData+global_idx),hr_data[hr_idx]);
 
                                     }
@@ -981,7 +983,7 @@ namespace QoZ {
                             double SR_loss=0;
                             size_t scale=2;
                             
-                            std::cout<<"sr1"<<hr_scale<<" "<<hr_dims[0]<<std::endl;
+                           // std::cout<<"sr1"<<hr_scale<<" "<<hr_dims[0]<<std::endl;
                             if(N==2){
                                 for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=sample_strides[0]){
                                     
@@ -1019,13 +1021,13 @@ namespace QoZ {
                                         }
                                     }
                                 }
-                                std::cout<<"sr1.5"<<std::endl;
+                                //std::cout<<"sr1.5"<<std::endl;
                                 uint8_t temp_p=best_meta.interpParadigm;
                                 best_meta.interpParadigm=2;
                                 SR_loss+=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
                                                 interpolators[best_meta.interpAlgo],best_meta, stride,2,cross_block);
                                 best_meta.interpParadigm=temp_p;
-                                std::cout<<"sr2"<<std::endl;
+                                //std::cout<<"sr2"<<std::endl;
                                 size_t local_idx=0;
 
                                 for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=sample_strides[0]){
@@ -1047,7 +1049,7 @@ namespace QoZ {
                                 best_meta.interpParadigm=2;
 
 
-                                std::cout<<"sr3"<<std::endl;
+                              //  std::cout<<"sr3"<<std::endl;
                                 if(N==2){
                                     for(size_t i=start_idx[0];i<=end_idx[0];i+=sample_strides[0]){
                                         for(size_t j=start_idx[1];j<end_idx[1];j+=sample_strides[1]){
@@ -1080,13 +1082,13 @@ namespace QoZ {
                                 }
                             }
                             
-                            std::cout<<"sr4"<<std::endl;
+                          //  std::cout<<"sr4"<<std::endl;
 
 
                         }
                        // if(N==2)
                         //    std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
-                        std::cout<<"sr5"<<std::endl;
+                       // std::cout<<"sr5"<<std::endl;
                         interp_metas.push_back(best_meta);
                         //dimension_offsets=global_dimension_offsets;
                         //global_dimensions=global_dimensions_temp;
@@ -1097,7 +1099,7 @@ namespace QoZ {
                         else*/
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block);//,cross_block,regressiveInterp);
-                        std::cout<<"sr6"<<std::endl;
+                       // std::cout<<"sr6"<<std::endl;
                     }
                     //if(N==2)
                     //std::cout<<"a block fin"<<std::endl;
@@ -1134,7 +1136,7 @@ namespace QoZ {
 
             }
             */
-             // QoZ::writefile<T>("decomp.test", data,num_elements);//added.
+              QoZ::writefile<T>("decomp.test", data,num_elements);//added.
             if(conf.verbose)
                 timer.stop("prediction");
             /*
