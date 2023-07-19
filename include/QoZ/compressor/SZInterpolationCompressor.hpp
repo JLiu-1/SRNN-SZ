@@ -979,7 +979,7 @@ namespace QoZ {
                             double SR_loss=0;
                             size_t scale=2;
                             
-                            //std::cout<<"sr1"<<hr_scale<<" "<<hr_dims[0]<<std::endl;
+                            std::cout<<"sr1"<<hr_scale<<" "<<hr_dims[0]<<std::endl;
                             if(N==2){
                                 for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=sample_strides[0]){
                                     
@@ -1091,6 +1091,7 @@ namespace QoZ {
                         else*/
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                         interpolators[best_meta.interpAlgo],best_meta, stride,tuning,cross_block);//,cross_block,regressiveInterp);
+                        std::cout<<"sr6"<<std::endl;
                     }
                     //if(N==2)
                     //std::cout<<"a block fin"<<std::endl;
