@@ -210,7 +210,7 @@ namespace QoZ {
                     }
                 }
 
-                size_t stride = 1U << (level - 1);
+                size_t stride = 1U << (level - 1),stride2x=2*stride;
                 size_t cur_blocksize;
                 
                 if (fixBlockSize>0){
@@ -372,7 +372,7 @@ namespace QoZ {
                         if(N==2){
                             for(size_t i=start_idx[0];i<=end_idx[0];i+=stride){
                                 for(size_t j=start_idx[1];j<end_idx[1];j+=stride){
-                                    if(i%stride==0 and j%stride==0)
+                                    if(i%stride2x==0 and j%stride2x==0)
                                         continue;
 
                                     size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1];
@@ -386,10 +386,10 @@ namespace QoZ {
                              for(size_t i=start_idx[0];i<=end_idx[0];i+=stride){
                                 for(size_t j=start_idx[1];j<end_idx[1];j+=stride){
                                     for(size_t k=start_idx[2];k<end_idx[2];k+=stride){
-                                        if((i%stride==0 and j%stride==0 and k%stride==0) or (i%stride!=0 and j%stride!=0 and k%stride!=0) ) 
+                                        if((i%stride2x==0 and j%stride2x==0 and k%stride2x==0) or (i%stride2x!=0 and j%stride2x!=0 and k%stride2x!=0) ) 
                                             continue;
                                         size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1]+k*dimension_offsets[2];
-                                        size_t hr_idx=(i/hr_scale)*hr_dims[1]*hr_dims[2]+(j/hr_scale)*hr_dims[1]+(k/hr_scale);
+                                        size_t hr_idx=(i/hr_scale)*hr_dims[1]*hr_dims[2]+(j/hr_scale)*hr_dims[2]+(k/hr_scale);
                                         recover(quant_idx++,*(decData+global_idx),hr_data[hr_idx]);
 
                                     }
@@ -552,7 +552,7 @@ namespace QoZ {
                 QoZ::Interp_Meta cur_level_meta;
                 if(conf.blockwiseTuning)
                     cur_level_meta=cur_meta;
-                size_t stride = 1U << (level - 1);
+                size_t stride = 1U << (level - 1),stride2x=2*stride;
                 size_t cur_blocksize;
                 if (conf.fixBlockSize>0){
                     cur_blocksize=conf.fixBlockSize;
@@ -632,7 +632,7 @@ namespace QoZ {
                             for(size_t i=0;i<hr_dims[0];i++){
                                 for(size_t j=0;j<hr_dims[1];j++){
                                     for(size_t k=0;k<hr_dims[2];k++){
-                                        if((i%stride==0 and j%stride==0 and k%stride==0) or (i%stride!=0 and j%stride!=0 and k%stride!=0) ) 
+                                        if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
                                             continue;
                                         size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
                                         quantize(0,*(data+idx),hr_data[hr_idx]);
@@ -996,6 +996,7 @@ namespace QoZ {
                                     }
                                 }
                             }
+                            std::cout<<"sr1"<<hr_scale<<" "<<hr_dims[0]<<std::endl;
                             else if(N==3){
                                 
                                 for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=sample_strides[0]){
@@ -1003,11 +1004,11 @@ namespace QoZ {
                                     for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=sample_strides[1]){
                                       
                                         for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=sample_strides[2]){
-                                            if((x%stride==0 and y%stride==0 and z%stride==0) or (x%stride!=0 and y%stride!=0 and z%stride!=0))
+                                            if((x%stride2x==0 and y%stride2x==0 and z%stride2x==0) or (x%stride2x!=0 and y%stride2x!=0 and z%stride2x!=0))
                                                 continue;
                                           
                                             size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
-                                            size_t hr_idx=(x/hr_scale)*hr_dims[1]*hr_dims[2]+(y/hr_scale)*hr_dims[1]+(z/hr_scale);
+                                            size_t hr_idx=(x/hr_scale)*hr_dims[1]*hr_dims[2]+(y/hr_scale)*hr_dims[2]+(z/hr_scale);
                                             SR_loss+=fabs(data[global_idx]-hr_data[hr_idx]);
                                         }
                                     }
@@ -1017,6 +1018,7 @@ namespace QoZ {
                                 SR_loss+=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
                                                 interpolators[best_meta.interpAlgo],best_meta, stride,2,cross_block);
                                 best_meta.interpParadigm=temp_p;
+                                std::cout<<"sr2"<<std::endl;
                                 size_t local_idx=0;
 
                                 for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=sample_strides[0]){
@@ -1024,7 +1026,7 @@ namespace QoZ {
                                     for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=sample_strides[1]){
                                       
                                         for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=sample_strides[2]){
-                                            if( x%stride!=0 and y%stride!=0 and z%stride!=0){
+                                            if( x%stride2x!=0 and y%stride2x!=0 and z%stride2x!=0){
                                                 size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                                 data[global_idx]=orig_sampled_block[local_idx];
                                             }
@@ -1042,7 +1044,7 @@ namespace QoZ {
                                 if(N==2){
                                     for(size_t i=start_idx[0];i<=end_idx[0];i+=sample_strides[0]){
                                         for(size_t j=start_idx[1];j<end_idx[1];j+=sample_strides[1]){
-                                            if(i%stride==0 and j%stride==0)
+                                            if(i%stride2x==0 and j%stride2x==0)
                                                 continue;
 
                                             size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1];
@@ -1052,14 +1054,15 @@ namespace QoZ {
                                         }
                                     }
                                 }
+                                std::cout<<"sr3"<<std::endl;
                                 else if(N==3){
                                      for(size_t i=start_idx[0];i<=end_idx[0];i+=sample_strides[0]){
                                         for(size_t j=start_idx[1];j<end_idx[1];j+=sample_strides[1]){
                                             for(size_t k=start_idx[2];k<end_idx[2];k+=sample_strides[2]){
-                                                if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
+                                                if((i%stride2x==0 and j%stride2x==0 and k%stride2x==0) or (i%stride2x!=0 and j%stride2x!=0 and k%stride2x!=0) ) 
                                                     continue;
                                                 size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1]+k*dimension_offsets[2];
-                                                size_t hr_idx=(i/hr_scale)*hr_dims[1]*hr_dims[2]+(j/hr_scale)*hr_dims[1]+(k/hr_scale);
+                                                size_t hr_idx=(i/hr_scale)*hr_dims[1]*hr_dims[2]+(j/hr_scale)*hr_dims[2]+(k/hr_scale);
                                                 quantize(0,*(data+global_idx),hr_data[hr_idx]);
 
                                             }
@@ -1070,11 +1073,13 @@ namespace QoZ {
                                 }
                             }
                             delete []hr_data;
+                            std::cout<<"sr4"<<std::endl;
 
 
                         }
                        // if(N==2)
                         //    std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
+                        std::cout<<"sr5"<<std::endl;
                         interp_metas.push_back(best_meta);
                         //dimension_offsets=global_dimension_offsets;
                         //global_dimensions=global_dimensions_temp;
