@@ -226,7 +226,7 @@ namespace QoZ {
                 std::array<size_t,N> hr_dims;
                 size_t hr_num;
 
-                if(SRNet and level==1){
+                if(SRNet and level<=2){
                     size_t scale=2;
                     size_t lr_scale=pow(2,level);//2 becuase it is the current predicted grid size, irr with the sr scale.
                     std::array<size_t,N> lr_dims=global_dimensions;
@@ -372,8 +372,8 @@ namespace QoZ {
                         //std::cout<<start_idx[0]<<" "<<start_idx[1]<<" "<<start_idx[2]<<std::endl;
 
                         if(N==2){
-                            for(size_t i=start_idx[0]+(start_idx[0]>0);i<=end_idx[0];i+=stride){
-                                for(size_t j=start_idx[1]+(start_idx[1]>0);j<=end_idx[1];j+=stride){
+                            for(size_t i=start_idx[0]+(start_idx[0]>0)*stride;i<=end_idx[0];i+=stride){
+                                for(size_t j=start_idx[1]+(start_idx[1]>0)*stride;j<=end_idx[1];j+=stride){
                                     if(i%stride2x==0 and j%stride2x==0)
                                         continue;
 
@@ -385,9 +385,9 @@ namespace QoZ {
                             }
                         }
                         else if(N==3){
-                             for(size_t i=start_idx[0]+(start_idx[0]>0);i<=end_idx[0];i+=stride){
-                                for(size_t j=start_idx[1]+(start_idx[1]>0);j<=end_idx[1];j+=stride){
-                                    for(size_t k=start_idx[2]+(start_idx[2]>0);k<=end_idx[2];k+=stride){
+                             for(size_t i=start_idx[0]+(start_idx[0]>0)*stride;i<=end_idx[0];i+=stride){
+                                for(size_t j=start_idx[1]+(start_idx[1]>0)*stride;j<=end_idx[1];j+=stride){
+                                    for(size_t k=start_idx[2]+(start_idx[2]>0)*stride;k<=end_idx[2];k+=stride){
                                         
                                         if((i%stride2x==0 and j%stride2x==0 and k%stride2x==0) or (i%stride2x!=0 and j%stride2x!=0 and k%stride2x!=0) ) 
                                             continue;
@@ -423,7 +423,7 @@ namespace QoZ {
                 
 
                 }
-                if(SRNet and level==1)
+                if(SRNet and level<=2)
                     delete []hr_data;
                
             }
@@ -580,7 +580,7 @@ namespace QoZ {
 
 
 
-                if(conf.SRNet and level==1 and tuning==0){
+                if(conf.SRNet and level<=2 and tuning==0){
                     size_t scale=2;
                     size_t lr_scale=pow(2,level);//2 becuase it is the current predicted grid size, irr with the sr scale.
                     std::array<size_t,N> lr_dims=global_dimensions;
@@ -986,7 +986,7 @@ namespace QoZ {
                             }
                         }
 
-                        if(conf.SRNet and level==1 and tuning==0){
+                        if(conf.SRNet and level<=2 and tuning==0){
                             double SR_loss=0;
                             size_t scale=2;
                             
@@ -1058,8 +1058,8 @@ namespace QoZ {
 
                               //  std::cout<<"sr3"<<std::endl;
                                 if(N==2){
-                                    for(size_t i=start_idx[0]+(start_idx[0]>0);i<=end_idx[0];i+=sample_strides[0]){
-                                        for(size_t j=start_idx[1]+(start_idx[1]>0);j<=end_idx[1];j+=sample_strides[1]){
+                                    for(size_t i=start_idx[0]+(start_idx[0]>0)*sample_strides[0];i<=end_idx[0];i+=sample_strides[0]){
+                                        for(size_t j=start_idx[1]+(start_idx[1]>0)*sample_strides[1];j<=end_idx[1];j+=sample_strides[1]){
                                             if(i%stride2x==0 and j%stride2x==0)
                                                 continue;
 
@@ -1072,9 +1072,9 @@ namespace QoZ {
                                 }
                                 
                                 else if(N==3){
-                                     for(size_t i=start_idx[0]+(start_idx[0]>0);i<=end_idx[0];i+=sample_strides[0]){
-                                        for(size_t j=start_idx[1]+(start_idx[1]>0);j<=end_idx[1];j+=sample_strides[1]){
-                                            for(size_t k=start_idx[2]+(start_idx[2]>0);k<=end_idx[2];k+=sample_strides[2]){
+                                     for(size_t i=start_idx[0]+(start_idx[0]>0)*sample_strides[0];i<=end_idx[0];i+=sample_strides[0]){
+                                        for(size_t j=start_idx[1]+(start_idx[1]>0)*sample_strides[1];j<=end_idx[1];j+=sample_strides[1]){
+                                            for(size_t k=start_idx[2]+(start_idx[2]>0)*sample_strides[2];k<=end_idx[2];k+=sample_strides[2]){
                                                 if((i%stride2x==0 and j%stride2x==0 and k%stride2x==0) or (i%stride2x!=0 and j%stride2x!=0 and k%stride2x!=0) ) 
                                                     continue;
                                                 size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1]+k*dimension_offsets[2];
@@ -1114,7 +1114,7 @@ namespace QoZ {
                     
                         
                 }
-                if(conf.SRNet and level==1 and tuning==0)
+                if(conf.SRNet and level<=2 and tuning==0)
                     delete []hr_data;
                 if(tuning){
                     conf.quant_bin_counts[level-1]=quant_inds.size();
