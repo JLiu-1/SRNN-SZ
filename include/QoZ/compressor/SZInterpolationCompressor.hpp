@@ -259,7 +259,10 @@ namespace QoZ {
                             }
                         }
                     }
-
+                    if (level==1)
+                        QoZ::writefile<T>("lr_dcmp_l1.test", lr_data,lr_num);//added.
+                    else if (level==2)
+                        QoZ::writefile<T>("lr_dcmp_l2.test", lr_data,lr_num);//added.
                     //T *hr_data;
                     if(N==2)
                         hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
@@ -622,6 +625,11 @@ namespace QoZ {
                             }
                         }
                     }
+
+                    if (level==1)
+                        QoZ::writefile<T>("lr_cmp_l1.test", lr_data,lr_num);//added.
+                    else if (level==2)
+                        QoZ::writefile<T>("lr_cmp_l2.test", lr_data,lr_num);//added.
                     //T *hr_data;
                     if(N==2)
                         hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
