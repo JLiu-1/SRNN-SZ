@@ -415,6 +415,8 @@ namespace QoZ {
                 
 
                 }
+                if(SRNet and level==1)
+                    delete []hr_data;
                
             }
             quantizer.postdecompress_data();
@@ -1009,9 +1011,9 @@ namespace QoZ {
                                           
                                             size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                             size_t hr_idx=(x/hr_scale)*hr_dims[1]*hr_dims[2]+(y/hr_scale)*hr_dims[2]+(z/hr_scale);
-                                            std::cout<<x<<" "<<y<<" "<<z<<" "<<global_idx<<" "<<hr_idx<<std::endl;
-                                            std::cout<<data[global_idx]<<std::endl;
-                                            std::cout<<hr_data[hr_idx]<<std::endl;
+                                            //std::cout<<x<<" "<<y<<" "<<z<<" "<<global_idx<<" "<<hr_idx<<std::endl;
+                                            //std::cout<<data[global_idx]<<std::endl;
+                                            //std::cout<<hr_data[hr_idx]<<std::endl;
                                         
                                             SR_loss+=fabs(data[global_idx]-hr_data[hr_idx]);
                                         }
@@ -1077,7 +1079,7 @@ namespace QoZ {
 
                                 }
                             }
-                            delete []hr_data;
+                            
                             std::cout<<"sr4"<<std::endl;
 
 
@@ -1103,6 +1105,8 @@ namespace QoZ {
                     
                         
                 }
+                if(conf.SRNet and level==1 and tuning==0)
+                    delete []hr_data;
                 if(tuning){
                     conf.quant_bin_counts[level-1]=quant_inds.size();
                 }
