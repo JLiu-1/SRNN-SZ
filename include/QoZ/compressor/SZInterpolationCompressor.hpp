@@ -148,6 +148,7 @@ namespace QoZ {
                 interpolation_level--;           
             }
             size_t meta_index=0,coeff_idx=0;
+            size_t max_sr_level=2;
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
 
                 if (alpha<0) {
@@ -226,7 +227,7 @@ namespace QoZ {
                 std::array<size_t,N> hr_dims;
                 size_t hr_num;
 
-                if(SRNet and level<=2){
+                if(SRNet and level<=max_sr_level){
                     size_t scale=2;
                     size_t lr_scale=pow(2,level);//2 becuase it is the current predicted grid size, irr with the sr scale.
                     std::array<size_t,N> lr_dims=global_dimensions;
@@ -272,6 +273,11 @@ namespace QoZ {
                     }
 
                     hr_num=lr_num*pow(scale,N);
+
+                    if (level==2){
+                        std::cout<<hr_dims[0]<<" "<<hr_scale<<std::endl;
+                        QoZ::writefile<T>("hr_dcmp_l2.test", hr_data,hr_num);//added.
+                    }
                     if(!blockwiseTuning){
                         size_t quant_idx=quant_index;
                         if(N==2){
@@ -423,7 +429,7 @@ namespace QoZ {
                 
 
                 }
-                if(SRNet and level<=2)
+                if(SRNet and level<=max_sr_level)
                     delete []hr_data;
                
             }
@@ -578,9 +584,9 @@ namespace QoZ {
                 std::array<size_t,N> hr_dims;
                 size_t hr_num;
 
+                size_t max_sr_level=2;
 
-
-                if(conf.SRNet and level<=2 and tuning==0){
+                if(conf.SRNet and level<=max_sr_level and tuning==0){
                     size_t scale=2;
                     size_t lr_scale=pow(2,level);//2 becuase it is the current predicted grid size, irr with the sr scale.
                     std::array<size_t,N> lr_dims=global_dimensions;
@@ -624,7 +630,10 @@ namespace QoZ {
                         hr_dims[i]*=scale;
                     }
 
+
                     hr_num=lr_num*pow(scale,N);
+                    if (level==2)
+                        QoZ::writefile<T>("hr_cmp_l2.test", hr_data,hr_num);//added.
                     if(!conf.blockwiseTuning){
                         if(N==2){
                             for(size_t i=0;i<hr_dims[0];i++){
@@ -986,7 +995,7 @@ namespace QoZ {
                             }
                         }
 
-                        if(conf.SRNet and level<=2 and tuning==0){
+                        if(conf.SRNet and level<=max_sr_level and tuning==0){
                             double SR_loss=0;
                             size_t scale=2;
                             
@@ -1114,7 +1123,7 @@ namespace QoZ {
                     
                         
                 }
-                if(conf.SRNet and level<=2 and tuning==0)
+                if(conf.SRNet and level<=max_sr_level and tuning==0)
                     delete []hr_data;
                 if(tuning){
                     conf.quant_bin_counts[level-1]=quant_inds.size();
