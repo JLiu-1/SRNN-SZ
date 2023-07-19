@@ -267,7 +267,7 @@ namespace QoZ {
                     */
                     //T *hr_data;
                     if(N==2)
-                        hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale,level,true);
+                        hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
                     else 
                         hr_data= QoZ::super_resolution_2dslices<T,N>(lr_data,lr_dims,scale,level,true);
                     delete []lr_data;
@@ -636,7 +636,7 @@ namespace QoZ {
                     */
                     //T *hr_data;
                     if(N==2)
-                        hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale,level,false);
+                        hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
                     else 
                         hr_data= QoZ::super_resolution_2dslices<T,N>(lr_data,lr_dims,scale,level,false);
                     delete []lr_data;
