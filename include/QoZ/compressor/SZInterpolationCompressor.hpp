@@ -148,7 +148,7 @@ namespace QoZ {
                 interpolation_level--;           
             }
             size_t meta_index=0,coeff_idx=0;
-            size_t max_sr_level=2;
+            size_t max_sr_level=1;
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
 
                 if (alpha<0) {
@@ -594,7 +594,7 @@ namespace QoZ {
                 std::array<size_t,N> hr_dims;
                 size_t hr_num;
 
-                size_t max_sr_level=2;
+                size_t max_sr_level=1;
 
                 if(conf.SRNet and level<=max_sr_level and tuning==0){
                     size_t scale=2;
