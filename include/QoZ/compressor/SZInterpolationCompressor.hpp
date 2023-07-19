@@ -221,6 +221,11 @@ namespace QoZ {
                 }
 
 
+                T* hr_data;
+                size_t hr_scale;
+                std::array<size_t,N> hr_dims;
+                size_t hr_num;
+
                 if(SRNet and level==1){
                     size_t scale=2;
                     size_t lr_scale=pow(2,level);//2 becuase it is the current predicted grid size, irr with the sr scale.
@@ -254,70 +259,72 @@ namespace QoZ {
                         }
                     }
 
-                    T *hr_data;
+                    //T *hr_data;
                     if(N==2)
                         hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
                     else 
                         hr_data= QoZ::super_resolution_2dslices<T,N>(lr_data,lr_dims,scale);
                     delete []lr_data;
-                    size_t hr_scale=lr_scale/scale;
-                    std::array<size_t,N> hr_dims=lr_dims;
+                    hr_scale=lr_scale/scale;
+                    hr_dims=lr_dims;
                     for(uint i=0;i<N;i++){
                         hr_dims[i]*=scale;
                     }
 
-                    size_t hr_num=lr_num*pow(scale,N);
-                    size_t quant_idx=quant_index;
-                    if(N==2){
-                        for(size_t i=0;i<hr_dims[0];i++){
-                            for(size_t j=0;j<hr_dims[1];j++){
-                                if(i%scale==0 and j%scale==0)
-                                    continue;
-
-                                size_t hr_idx=i*hr_dims[1]+j,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1];
-                                recover(quant_idx++,*(decData+idx),hr_data[hr_idx]);
-
-                            }
-                        }
-                        quant_index=quant_idx;
-                    }
-                    else if(N==3){
-                        for(size_t i=0;i<hr_dims[0];i++){
-                            for(size_t j=0;j<hr_dims[1];j++){
-                                for(size_t k=0;k<hr_dims[2];k++){
-                                    if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
+                    hr_num=lr_num*pow(scale,N);
+                    if(!blockwiseTuning){
+                        size_t quant_idx=quant_index;
+                        if(N==2){
+                            for(size_t i=0;i<hr_dims[0];i++){
+                                for(size_t j=0;j<hr_dims[1];j++){
+                                    if(i%scale==0 and j%scale==0)
                                         continue;
-                                    size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
+
+                                    size_t hr_idx=i*hr_dims[1]+j,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1];
                                     recover(quant_idx++,*(decData+idx),hr_data[hr_idx]);
 
                                 }
-
                             }
+                            quant_index=quant_idx;
                         }
-                        quant_index=quant_idx;
+                        else if(N==3){
+                            for(size_t i=0;i<hr_dims[0];i++){
+                                for(size_t j=0;j<hr_dims[1];j++){
+                                    for(size_t k=0;k<hr_dims[2];k++){
+                                        if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
+                                            continue;
+                                        size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
+                                        recover(quant_idx++,*(decData+idx),hr_data[hr_idx]);
+
+                                    }
+
+                                }
+                            }
+                            quant_index=quant_idx;
 
 
-                        cur_meta.interpParadigm=2;
-                      //  std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;                    
-                        std::array<size_t,N> begin,end=global_dimensions;
-                        for (size_t i=0;i<N;i++){
-                            begin[i]=0;
-                            end[i]--;
-                           
+                            cur_meta.interpParadigm=2;
+                          //  std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;                    
+                            std::array<size_t,N> begin,end=global_dimensions;
+                            for (size_t i=0;i<N;i++){
+                                begin[i]=0;
+                                end[i]--;
+                               
+                            }
+                            block_interpolation(decData, begin, end, PB_recover,
+                                            interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
                         }
-                        block_interpolation(decData, begin, end, PB_recover,
-                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
+                        
+
+
+
+                        delete []hr_data;
+                        while(scale>2){
+                            scale/=2;
+                            level--;   
+                        }
+                        continue;
                     }
-                    
-
-
-
-                    delete []hr_data;
-                    while(scale>2){
-                        scale/=2;
-                        level--;   
-                    }
-                    continue;
                 }
 
 
@@ -358,6 +365,47 @@ namespace QoZ {
 
                     else
                     */
+
+                    if(SRNet and cur_meta.interpParadigm==2){
+                        size_t quant_idx=quant_index;
+
+                        if(N==2){
+                            for(size_t i=start_idx[0];i<=end_idx[0];i+=stride){
+                                for(size_t j=start_idx[1];j<end_idx[1];j+=stride){
+                                    if(i%stride==0 and j%stride==0)
+                                        continue;
+
+                                    size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
+                                    size_t hr_idx=(x/hr_scale)*hr_dims[1]+(y/hr_scale);
+                                    recover(quant_idx++,*(decData+global_idx),hr_data[hr_idx]);
+
+                                }
+                            }
+                        }
+                        else if(N==3){
+                             for(size_t i=start_idx[0];i<=end_idx[0];i+=stride){
+                                for(size_t j=start_idx[1];j<end_idx[1];j+=stride){
+                                    for(size_t k=start_idx[2];k<end_idx[2];k+=stride){
+                                        if((i%stride==0 and j%stride==0 and k%stride==0) or (i%stride!=0 and j%stride!=0 and k%stride!=0) ) 
+                                            continue;
+                                        size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
+                                        size_t hr_idx=(x/hr_scale)*hr_dims[1]*hr_dims[2]+(y/hr_scale)*hr_dims[1]+(z/hr_scale);
+                                        recover(quant_idx++,*(decData+global_idx),hr_data[hr_idx]);
+
+                                    }
+
+                                }
+                            }
+
+                        }
+
+
+
+
+                        quant_index=quant_idx;
+
+                    }
+
                      block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
                                         interpolators[cur_meta.interpAlgo], cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
                 
@@ -515,6 +563,13 @@ namespace QoZ {
 
 
 
+                T* hr_data;
+                size_t hr_scale;
+                std::array<size_t,N> hr_dims;
+                size_t hr_num;
+
+
+
                 if(conf.SRNet and level==1 and tuning==0){
                     size_t scale=2;
                     size_t lr_scale=pow(2,level);//2 becuase it is the current predicted grid size, irr with the sr scale.
@@ -547,68 +602,69 @@ namespace QoZ {
                             }
                         }
                     }
-                    T *hr_data;
+                    //T *hr_data;
                     if(N==2)
                         hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
                     else 
                         hr_data= QoZ::super_resolution_2dslices<T,N>(lr_data,lr_dims,scale);
                     delete []lr_data;
-                    size_t hr_scale=lr_scale/scale;
-                    std::array<size_t,N> hr_dims=lr_dims;
+                    hr_scale=lr_scale/scale;
+                    hr_dims=lr_dims;
                     for(uint i=0;i<N;i++){
                         hr_dims[i]*=scale;
                     }
 
-                    size_t hr_num=lr_num*pow(scale,N);
-
-                    if(N==2){
-                        for(size_t i=0;i<hr_dims[0];i++){
-                            for(size_t j=0;j<hr_dims[1];j++){
-                                if(i%scale==0 and j%scale==0)
-                                    continue;
-
-                                size_t hr_idx=i*hr_dims[1]+j,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1];
-                                quantize(0,*(data+idx),hr_data[hr_idx]);
-
-                            }
-                        }
-                    }
-                    else if(N==3){
-                        for(size_t i=0;i<hr_dims[0];i++){
-                            for(size_t j=0;j<hr_dims[1];j++){
-                                for(size_t k=0;k<hr_dims[2];k++){
-                                    if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
+                    hr_num=lr_num*pow(scale,N);
+                    if(!conf.blockwiseTuning){
+                        if(N==2){
+                            for(size_t i=0;i<hr_dims[0];i++){
+                                for(size_t j=0;j<hr_dims[1];j++){
+                                    if(i%scale==0 and j%scale==0)
                                         continue;
-                                    size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
+
+                                    size_t hr_idx=i*hr_dims[1]+j,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1];
                                     quantize(0,*(data+idx),hr_data[hr_idx]);
 
                                 }
-
                             }
                         }
-                        cur_meta.interpParadigm=2;
-                        std::array<size_t,N> begin,end=global_dimensions;
-                        for (size_t i=0;i<N;i++){
+                        else if(N==3){
+                            for(size_t i=0;i<hr_dims[0];i++){
+                                for(size_t j=0;j<hr_dims[1];j++){
+                                    for(size_t k=0;k<hr_dims[2];k++){
+                                        if((i%stride==0 and j%stride==0 and k%stride==0) or (i%stride!=0 and j%stride!=0 and k%stride!=0) ) 
+                                            continue;
+                                        size_t hr_idx=i*hr_dims[1]*hr_dims[2]+j*hr_dims[2]+k,idx=i*hr_scale*dimension_offsets[0]+j*hr_scale*dimension_offsets[1]+k*hr_scale*dimension_offsets[2];
+                                        quantize(0,*(data+idx),hr_data[hr_idx]);
 
-                            begin[i]=0;
-                            end[i]--;
+                                    }
+
+                                }
+                            }
+                            cur_meta.interpParadigm=2;
+                            std::array<size_t,N> begin,end=global_dimensions;
+                            for (size_t i=0;i<N;i++){
+
+                                begin[i]=0;
+                                end[i]--;
+
+                            }
+                        //    std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;
+                            predict_error+=block_interpolation(data, begin, end, PB_predict_overwrite,
+                                            interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
+
 
                         }
-                    //    std::cout<<(int)cur_meta.interpAlgo<<" "<<(int)cur_meta.interpParadigm<<" "<<(int)cur_meta.cubicSplineType<<" "<<(int)cur_meta.interpDirection<<" "<<(int)cur_meta.adjInterp<<" "<<(float)cur_meta.dimCoeffs[0]<<std::endl;
-                        predict_error+=block_interpolation(data, begin, end, PB_predict_overwrite,
-                                        interpolators[cur_meta.interpAlgo],cur_meta, stride,0,cross_block);//,cross_block,regressiveInterp);
 
 
+
+                        delete []hr_data;
+                        while(scale>2){
+                            scale/=2;
+                            level--;   
+                        }
+                        continue;
                     }
-
-
-
-                    delete []hr_data;
-                    while(scale>2){
-                        scale/=2;
-                        level--;   
-                    }
-                    continue;
                 }
 
 
@@ -885,9 +941,9 @@ namespace QoZ {
                                             size_t local_idx=0;
                                             
                                             if(N==2){
-                                                for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=stride){
+                                                for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=sample_strides[0]){
                                                     
-                                                    for(size_t y=sample_starts[1];y<=sample_ends[1];y+=stride){
+                                                    for(size_t y=sample_starts[1];y<=sample_ends[1];y+=sample_strides[1]){
                                                        
                                                         size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
                                                         data[global_idx]=orig_sampled_block[local_idx++];
@@ -917,6 +973,105 @@ namespace QoZ {
                                     }
                                 }
                             }
+                        }
+
+                        if(conf.SRNet and level==1 and tuning==0){
+                            double SR_loss=0;
+                            size_t scale=2;
+                            
+
+                            if(N==2){
+                                for(size_t x=sample_starts[0];x<=sample_ends[0] ;x+=sample_strides[0]){
+                                    
+                                    for(size_t y=sample_starts[1];y<=sample_ends[1];y+=sample_strides[1]){
+
+                                        if(x%stride==0 and y%stride==0 )
+                                            continue;
+                                       
+                                        size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
+                                        size_t hr_idx=(x/hr_scale)*hr_dims[1]+(y/hr_scale);
+                                        SR_loss+=fabs(data[global_idx]-hr_data[hr_idx])
+                    
+                                        
+                                    }
+                                }
+                            }
+                            else if(N==3){
+                                
+                                for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=sample_strides[0]){
+                                   
+                                    for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=sample_strides[1]){
+                                      
+                                        for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=sample_strides[2]){
+                                            if((x%stride==0 and y%stride==0 and z%stride==0) or (x%stride!=0 and y%stride!=0 and z%stride!=0))
+                                                continue;
+                                          
+                                            size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
+                                            size_t hr_idx=(x/hr_scale)*hr_dims[1]*hr_dims[2]+(y/hr_scale)*hr_dims[1]+(z/hr_scale);
+                                            SR_loss+=fabs(data[global_idx]-hr_data[hr_idx])
+                                        }
+                                    }
+                                }
+                                uint8_t temp_p=best_meta.interpParadigm;
+                                best_meta.interpParadigm=2;
+                                SR_loss+=block_interpolation(data, sample_starts, sample_ends, PB_predict_overwrite,
+                                                interpolators[best_meta.interpAlgo],best_meta, stride,2,cross_block);
+                                best_meta.interpParadigm=temp_p;
+                                size_t local_idx=0;
+
+                                for(size_t x=sample_starts[0];x<=sample_ends[0]  ;x+=sample_strides[0]){
+                                                   
+                                    for(size_t y=sample_starts[1];y<=sample_ends[1] ;y+=sample_strides[1]){
+                                      
+                                        for(size_t z=sample_starts[2];z<=sample_ends[2] ;z+=sample_strides[2]){
+                                            if( x%stride!=0 and y%stride!=0 and z%stride!=0){
+                                                size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
+                                                data[global_idx]=orig_sampled_block[local_idx];
+                                            }
+                                            local_idx++;
+                                        }
+                                    }
+                                }
+
+                            } 
+                            if(SR_loss<best_loss){
+                                best_meta.interpParadigm=2;
+
+
+
+                                if(N==2){
+                                    for(size_t i=start_idx[0];i<=end_idx[0];i+=sample_strides[0]){
+                                        for(size_t j=start_idx[1];j<end_idx[1];j+=sample_strides[1]){
+                                            if(i%stride==0 and j%stride==0)
+                                                continue;
+
+                                            size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
+                                            size_t hr_idx=(x/hr_scale)*hr_dims[1]+(y/hr_scale);
+                                            quantize(0,*(data+global_idx),hr_data[hr_idx]);
+
+                                        }
+                                    }
+                                }
+                                else if(N==3){
+                                     for(size_t i=start_idx[0];i<=end_idx[0];i+=sample_strides[0]){
+                                        for(size_t j=start_idx[1];j<end_idx[1];j+=sample_strides[1]){
+                                            for(size_t k=start_idx[2];k<end_idx[2];k+=sample_strides[2]){
+                                                if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
+                                                    continue;
+                                                size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
+                                                size_t hr_idx=(x/hr_scale)*hr_dims[1]*hr_dims[2]+(y/hr_scale)*hr_dims[1]+(z/hr_scale);
+                                                quantize(0,*(data+global_idx),hr_data[hr_idx]);
+
+                                            }
+
+                                        }
+                                    }
+
+                                }
+                            }
+                            delete []hr_data;
+
+
                         }
                        // if(N==2)
                         //    std::cout<<(int)best_meta.interpAlgo<<" "<<(int)best_meta.interpParadigm<<" "<<(int)best_meta.interpDirection<<" "<<(int)best_meta.cubicSplineType<<" "<<(int)best_meta.adjInterp<<std::endl; 
@@ -8468,7 +8623,7 @@ namespace QoZ {
                 */
             }
             
-            else{// if(paradigm<3){//md or hd
+            else if(paradigm==1){//md or hd
                 const std::array<int, N> dims = dimension_sequences[0];
                 std::array<float,2>dim_coeffs={meta.dimCoeffs[0],meta.dimCoeffs[1]};
 
