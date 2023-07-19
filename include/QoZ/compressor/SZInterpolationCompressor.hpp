@@ -375,8 +375,8 @@ namespace QoZ {
                                     if(i%stride==0 and j%stride==0)
                                         continue;
 
-                                    size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
-                                    size_t hr_idx=(x/hr_scale)*hr_dims[1]+(y/hr_scale);
+                                    size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1];
+                                    size_t hr_idx=(i/hr_scale)*hr_dims[1]+(j/hr_scale);
                                     recover(quant_idx++,*(decData+global_idx),hr_data[hr_idx]);
 
                                 }
@@ -388,8 +388,8 @@ namespace QoZ {
                                     for(size_t k=start_idx[2];k<end_idx[2];k+=stride){
                                         if((i%stride==0 and j%stride==0 and k%stride==0) or (i%stride!=0 and j%stride!=0 and k%stride!=0) ) 
                                             continue;
-                                        size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
-                                        size_t hr_idx=(x/hr_scale)*hr_dims[1]*hr_dims[2]+(y/hr_scale)*hr_dims[1]+(z/hr_scale);
+                                        size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1]+k*dimension_offsets[2];
+                                        size_t hr_idx=(i/hr_scale)*hr_dims[1]*hr_dims[2]+(j/hr_scale)*hr_dims[1]+(k/hr_scale);
                                         recover(quant_idx++,*(decData+global_idx),hr_data[hr_idx]);
 
                                     }
@@ -990,7 +990,7 @@ namespace QoZ {
                                        
                                         size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
                                         size_t hr_idx=(x/hr_scale)*hr_dims[1]+(y/hr_scale);
-                                        SR_loss+=fabs(data[global_idx]-hr_data[hr_idx])
+                                        SR_loss+=fabs(data[global_idx]-hr_data[hr_idx]);
                     
                                         
                                     }
@@ -1008,7 +1008,7 @@ namespace QoZ {
                                           
                                             size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                             size_t hr_idx=(x/hr_scale)*hr_dims[1]*hr_dims[2]+(y/hr_scale)*hr_dims[1]+(z/hr_scale);
-                                            SR_loss+=fabs(data[global_idx]-hr_data[hr_idx])
+                                            SR_loss+=fabs(data[global_idx]-hr_data[hr_idx]);
                                         }
                                     }
                                 }
@@ -1045,8 +1045,8 @@ namespace QoZ {
                                             if(i%stride==0 and j%stride==0)
                                                 continue;
 
-                                            size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
-                                            size_t hr_idx=(x/hr_scale)*hr_dims[1]+(y/hr_scale);
+                                            size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1];
+                                            size_t hr_idx=(i/hr_scale)*hr_dims[1]+(j/hr_scale);
                                             quantize(0,*(data+global_idx),hr_data[hr_idx]);
 
                                         }
@@ -1058,8 +1058,8 @@ namespace QoZ {
                                             for(size_t k=start_idx[2];k<end_idx[2];k+=sample_strides[2]){
                                                 if((i%scale==0 and j%scale==0 and k%scale==0) or (i%scale!=0 and j%scale!=0 and k%scale!=0) ) 
                                                     continue;
-                                                size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
-                                                size_t hr_idx=(x/hr_scale)*hr_dims[1]*hr_dims[2]+(y/hr_scale)*hr_dims[1]+(z/hr_scale);
+                                                size_t global_idx=i*dimension_offsets[0]+j*dimension_offsets[1]+k*dimension_offsets[2];
+                                                size_t hr_idx=(i/hr_scale)*hr_dims[1]*hr_dims[2]+(j/hr_scale)*hr_dims[1]+(k/hr_scale);
                                                 quantize(0,*(data+global_idx),hr_data[hr_idx]);
 
                                             }
