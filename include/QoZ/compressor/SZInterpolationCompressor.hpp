@@ -148,7 +148,7 @@ namespace QoZ {
                 interpolation_level--;           
             }
             size_t meta_index=0,coeff_idx=0;
-            size_t max_sr_level=2;
+            size_t max_sr_level=1;
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
 
                 if (alpha<0) {
@@ -259,10 +259,12 @@ namespace QoZ {
                             }
                         }
                     }
+                    /*
                     if (level==1)
                         QoZ::writefile<T>("lr_dcmp_l1.test", lr_data,lr_num);//added.
                     else if (level==2)
                         QoZ::writefile<T>("lr_dcmp_l2.test", lr_data,lr_num);//added.
+                        */
                     //T *hr_data;
                     if(N==2)
                         hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
@@ -276,10 +278,12 @@ namespace QoZ {
                     }
 
                     hr_num=lr_num*pow(scale,N);
+                    /*
                     if (level==1)
                         QoZ::writefile<T>("hr_dcmp_l1.test", hr_data,hr_num);//added.
                     else if (level==2)
                         QoZ::writefile<T>("hr_dcmp_l2.test", hr_data,hr_num);//added.
+                        */
 
 
                     if(!blockwiseTuning){
@@ -591,7 +595,7 @@ namespace QoZ {
                 std::array<size_t,N> hr_dims;
                 size_t hr_num;
 
-                size_t max_sr_level=2;
+                size_t max_sr_level=1;
 
                 if(conf.SRNet and level<=max_sr_level and tuning==0){
                     size_t scale=2;
@@ -625,11 +629,12 @@ namespace QoZ {
                             }
                         }
                     }
-
+                    /*
                     if (level==1)
                         QoZ::writefile<T>("lr_cmp_l1.test", lr_data,lr_num);//added.
                     else if (level==2)
                         QoZ::writefile<T>("lr_cmp_l2.test", lr_data,lr_num);//added.
+                    */
                     //T *hr_data;
                     if(N==2)
                         hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
@@ -644,10 +649,12 @@ namespace QoZ {
 
 
                     hr_num=lr_num*pow(scale,N);
+                    /*
                     if (level==1)
                         QoZ::writefile<T>("hr_cmp_l1.test", hr_data,hr_num);//added.
                     else if (level==2)
                         QoZ::writefile<T>("hr_cmp_l2.test", hr_data,hr_num);//added.
+                        */
                     if(!conf.blockwiseTuning){
                         if(N==2){
                             for(size_t i=0;i<hr_dims[0];i++){
@@ -1169,7 +1176,7 @@ namespace QoZ {
 
             }
             */
-              QoZ::writefile<T>("decomp.test", data,num_elements);//added.
+              //QoZ::writefile<T>("decomp.test", data,num_elements);//added.
             if(conf.verbose)
                 timer.stop("prediction");
             /*
