@@ -212,7 +212,7 @@ namespace QoZ {
             else if (interpAlgoStr == INTERP_ALGO_STR[INTERP_ALGO_QUAD]) {
                 interpMeta.interpAlgo = INTERP_ALGO_QUAD;
             }
-            ckpt_path = std::to_string( cfg.Get("AlgoSettings", "ckpt_path", "") );
+            ckpt_path =  cfg.Get("AlgoSettings", "ckpt_path", "") ;
             QoZ=cfg.GetInteger("AlgoSettings", "QoZ", QoZ);
             interpMeta.interpParadigm = cfg.GetInteger("AlgoSettings", "interpParadigm", interpMeta.interpParadigm);
             interpMeta.cubicSplineType = cfg.GetInteger("AlgoSettings", "cubicSplineType", interpMeta.cubicSplineType);
