@@ -6,7 +6,7 @@
 
 namespace QoZ {
     template<class T, QoZ::uint N>
-    T * super_resolution(T *lr_data, const std::array<size_t,N> &lr_dims,int scale=2){
+    T * super_resolution(T *lr_data, const std::array<size_t,N> &lr_dims,int scale=2,std::string ckpt_path=""){
         size_t lr_num=1;
         for(uint i=0;i<N;i++)
             lr_num*=lr_dims[i];
@@ -29,7 +29,7 @@ namespace QoZ {
 
         std::string Result_folder=HAT_root+"/results/HAT_SRx2_4QoZ";
 
-        std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder;
+        std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder+";rm -f "+YML_file_path;
         system(Clean_command.c_str());
 
 
@@ -40,6 +40,9 @@ namespace QoZ {
         else
             yml_generation_command="sed \'s/size_x:/size_x: "+ std::to_string(lr_dims[0]) + "/g\' "+ YML_template_path +">" + YML_file_path + 
                                             "&&sed -i \'s/size_y:/size_y: " + std::to_string(lr_dims[1]) + "/g\' "+YML_file_path+"&&sed -i \'s/size_z:/size_z: " + std::to_string(lr_dims[2]) + "/g\' "+YML_file_path;
+        if(ckpt_path!=""){
+            yml_generation_command+="&&sed -i \'s/pretrain_network_g:/pretrain_network_g:  "+ckpt_path+"/g\' "+YML_file_path;
+        }
         system(yml_generation_command.c_str());
         QoZ::writefile<T>(Datafile_path.c_str(), lr_data, lr_num);
 
@@ -58,7 +61,7 @@ namespace QoZ {
     }
 
     template<class T, QoZ::uint N>
-    T * super_resolution_2dslices(T *lr_data, const std::array<size_t,N> &lr_dims,int scale=2,int level=1, bool decomp=false){
+    T * super_resolution_2dslices(T *lr_data, const std::array<size_t,N> &lr_dims,int scale=2,int level=1, bool decomp=false,std::string ckpt_path=""){
         size_t lr_num=1;
         for(uint i=0;i<N;i++)
             lr_num*=lr_dims[i];
@@ -77,7 +80,7 @@ namespace QoZ {
         //std::string Datafile_path=Dataset_path+"/qoz.dat";
         std::string yml_generation_command;
         std::string Result_folder=HAT_root+"/results/HAT_SRx2_4QoZ";
-        std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder;
+        std::string Clean_command="rm -f "+Dataset_path+"/*;rm -rf "+Result_folder+";rm -f "+YML_file_path;
         std::string hrFile="hr.test.l"+std::to_string(level);
         if(!decomp){
             system(Clean_command.c_str());
@@ -85,6 +88,9 @@ namespace QoZ {
             
             yml_generation_command="sed \'s/size_x:/size_x: "+ std::to_string(lr_dims[0]) + "/g\' "+ YML_template_path +">" + YML_file_path + 
                                     "&&sed -i \'s/size_y:/size_y: " + std::to_string(lr_dims[1]) + "/g\' "+YML_file_path+"&&sed -i \'s/size_z:/size_z: " + std::to_string(lr_dims[2]) + "/g\' "+YML_file_path;
+            if(ckpt_path!=""){
+                yml_generation_command+="&&sed -i \'s/pretrain_network_g:/pretrain_network_g:  "+ckpt_path+"/g\' "+YML_file_path;
+            }
             system(yml_generation_command.c_str());
             std::string lrFile="lr.test.l"+std::to_string(level);
             QoZ::writefile<T>(lrFile.c_str(), lr_data, lr_num);
