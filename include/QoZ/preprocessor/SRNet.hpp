@@ -43,7 +43,7 @@ namespace QoZ {
         if(ckpt_path!=""){
             yml_generation_command+="&&sed -i \'s/pretrain_network_g:/pretrain_network_g:  "+ckpt_path+"/g\' "+YML_file_path;
         }
-        std::cout<<yml_generation_command<<std::endl;
+        //std::cout<<yml_generation_command<<std::endl;
         system(yml_generation_command.c_str());
         QoZ::writefile<T>(Datafile_path.c_str(), lr_data, lr_num);
 
