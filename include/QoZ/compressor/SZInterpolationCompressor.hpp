@@ -94,9 +94,9 @@ namespace QoZ {
             read(SRNet,buffer_pos, remaining_length); 
             size_t ckpt_len;
             std::string ckpt_path;
-            write(ckpt_len,buffer_pos);
+            read(ckpt_len,buffer_pos);
             ckpt_path.resize(ckpt_len);
-            write(ckpt_path.data(),ckpt_len,buffer_pos,remaining_length);    
+            read(ckpt_path.data(),ckpt_len,buffer_pos,remaining_length);    
           //  std::vector<float>interp_coeffs;
             
            
