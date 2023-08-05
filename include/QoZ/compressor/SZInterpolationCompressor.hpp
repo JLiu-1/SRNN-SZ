@@ -91,7 +91,12 @@ namespace QoZ {
             //read(blockOrder,buffer_pos, remaining_length); 
             int regressiveInterp;   
             read(regressiveInterp,buffer_pos, remaining_length);     
-            read(SRNet,buffer_pos, remaining_length);     
+            read(SRNet,buffer_pos, remaining_length); 
+            size_t ckpt_len;
+            std::string ckpt_path;
+            write(ckpt_len,buffer_pos);
+            ckpt_path.resize(ckpt_len);
+            write(ckpt_path.data(),ckpt_len,buffer_pos,remaining_length);    
           //  std::vector<float>interp_coeffs;
             
            
@@ -636,9 +641,9 @@ namespace QoZ {
                     */
                     //T *hr_data;
                     if(N==2)
-                        hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale);
+                        hr_data= QoZ::super_resolution<T,N>(lr_data,lr_dims,scale,conf.ckpt_path);
                     else 
-                        hr_data= QoZ::super_resolution_2dslices<T,N>(lr_data,lr_dims,scale,level,false);
+                        hr_data= QoZ::super_resolution_2dslices<T,N>(lr_data,lr_dims,scale,level,false,conf.ckpt_path);
                     delete []lr_data;
                     hr_scale=lr_scale/scale;
                     hr_dims=lr_dims;
@@ -1227,6 +1232,9 @@ namespace QoZ {
             //write(conf.blockOrder,buffer_pos);
             write(conf.regressiveInterp,buffer_pos);
             write(conf.SRNet,buffer_pos);
+            size_t ckpt_len=conf.ckpt_path.size();
+            write(ckpt_len,buffer_pos);
+            write(conf.ckpt_path.data(),ckpt_len,buffer_pos);
             if(conf.blockwiseTuning){
                 size_t meta_num=interp_metas.size();
                 //std::cout<<meta_num<<std::endl;

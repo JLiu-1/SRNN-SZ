@@ -1,6 +1,3 @@
-//
-// Created by Kai Zhao on 4/28/20.
-//
 
 #ifndef SZ_Config_HPP
 #define SZ_Config_HPP
@@ -162,6 +159,7 @@ namespace QoZ {
             psnrErrorBound = cfg.GetReal("GlobalSettings", "PSNRErrorBound", psnrErrorBound);
             l2normErrorBound = cfg.GetReal("GlobalSettings", "L2NormErrorBound", l2normErrorBound);
             //prewave_absErrorBound= cfg.GetReal("GlobalSettings", "prewave_absErrorBound", prewave_absErrorBound);
+            ckpt_path = std::to_string(cfg.Get("AlgoSettings", "ckpt_path", ""));
             alpha = cfg.GetReal("AlgoSettings", "alpha", alpha);
             beta = cfg.GetReal("AlgoSettings", "beta", beta);
             autoTuningRate = cfg.GetReal("AlgoSettings", "autoTuningRate", autoTuningRate);
@@ -197,7 +195,6 @@ namespace QoZ {
             freezeDimTest = cfg.GetBoolean("AlgoSettings", "freezeDimTest", freezeDimTest);
             dynamicDimCoeff = cfg.GetBoolean("AlgoSettings", "dynamicDimCoeff", dynamicDimCoeff);
             fineGrainTuning = cfg.GetBoolean("AlgoSettings", "fineGrainTuning", fineGrainTuning);
-            SRNet = cfg.GetBoolean("AlgoSettings", "SRNet", SRNet);
             //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
@@ -575,7 +572,7 @@ namespace QoZ {
         bool naturalSpline=0;
         bool quadInterp=false;
         bool fineGrainTuning=false;
-        bool SRNet=false;
+        std::string ckpt_path="";
         //bool profilingFix=true;//only for test
 
        // double anchorThreshold=0.0;
