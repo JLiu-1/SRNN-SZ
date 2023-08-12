@@ -1362,6 +1362,7 @@ double Tuning(QoZ::Config &conf, T *data){
     if(conf.SRNet){
         //conf.blockwiseTuning=0;
         conf.freezeDimTest=0;//todo: add dimfreeze support (use 2D model) for SRNet
+        conf.blockwiseSampleRate=1.0;
     }
     
     if(conf.multiDimInterp==0)
