@@ -35,13 +35,13 @@ The following is not mandatory:
 
 Then, you'll find all the executables in [INSTALL_DIR]/bin and header files in [INSTALL_DIR]/include.
 
-##Installation and deployment of HAT
+## Installation and deployment of HAT
 
 Please follow the readme here to install HAT: https://github.com/Meso272/HAT
 
 Important: please clone the HAT repository to the following path: your_home_path/lossycompression/HAT (check https://github.com/Meso272/SRNN-SZ/blob/sr/include/QoZ/preprocessor/SRNet.hpp 
 
-##Run SRNN-SZ
+## Run SRNN-SZ
 
 The executable name of SRNN-SZ is srnz. It is derived from QoZ so its usage is mostly similar with the QoZ command (run srnz with no arguments to check the help information)
 
@@ -51,7 +51,7 @@ Some important points:
 * use -k to pass the trained model checkpoint path.
 
 
-##Train and test the HAT network
+## Train and test the HAT network
 
 todo
 
