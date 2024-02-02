@@ -61,6 +61,7 @@ void usage() {
     printf("        Level 2: QoZ2 (level 1 plus multi-dim interp, natural cubic spline, interpolation re-ordering and dynamic dimension freezing).\n");
     printf("        Level 3: QoZ2 (level 2 plus dynamic dimension weights).\n");
     printf("        Level 4: QoZ2 (level 3 plus block-wise interpolation tuning).\n");
+    printf("    -k <ckpt_file_path>: Path of trained model.\n");
     printf("    -T <QoZ tuning target> \n");
     printf("    tuning targets as follows: \n");
     printf("        PSNR (peak signal-to-noise ratio)\n");
@@ -75,11 +76,11 @@ void usage() {
     printf("	-3 <nx> <ny> <nz> : dimensions for 3D data such as data[nz][ny][nx] \n");
     printf("	-4 <nx> <ny> <nz> <np>: dimensions for 4D data such as data[np][nz][ny][nx] \n");
     printf("* examples: \n");
-    printf("	qoz -f -i test.dat    -z test.dat.qoz     -3 8 8 128 -M ABS 1e-3 \n");
-    printf("	qoz -f -z test.dat.qoz -o test.dat.qoz.out -3 8 8 128 -M REL 1e-3 -a \n");
-    printf("	qoz -f -i test.dat    -o test.dat.qoz.out -3 8 8 128 -M ABS_AND_REL -A 1 -R 1e-3 -a \n");
-    printf("	qoz -f -i test.dat    -o test.dat.qoz.out -3 8 8 128 -c qoz.config \n");
-    printf("	qoz -f -i test.dat    -o test.dat.qoz.out -3 8 8 128 -c qoz.config -M ABS 1e-3 -a\n");
+    printf("	srnz -f -i test.dat    -z test.dat.srnz     -3 8 8 128 -M ABS 1e-3 -k models/trained.pt\n");
+    printf("	srnz -f -z test.dat.qoz -o test.dat.srnz.out -3 8 8 128 -M REL 1e-3 -a -k models/trained.pt\n");
+    printf("	srnz -f -i test.dat    -o test.dat.srnz.out -3 8 8 128 -M ABS_AND_REL -A 1 -R 1e-3 -a -k models/trained.pt\n");
+    printf("	srnz -f -i test.dat    -o test.dat.srnz.out -3 8 8 128 -c qoz.config -k models/trained.pt\n");
+    printf("	srnz -f -i test.dat    -o test.dat.srnz.out -3 8 8 128 -c qoz.config -M ABS 1e-3 -a -k models/trained.pt\n");
     exit(0);
 }
 
@@ -128,14 +129,15 @@ void usage_sz2() {
     printf("	-4 <nx> <ny> <nz> <np>: dimensions for 4D data such as data[np][nz][ny][nx] \n");
     printf("* print compression results: \n");
     printf("	-a : print compression results such as distortions\n");
+
     printf("* examples: \n");
-    printf("	qoz -z -f -c qoz.config -i testdata/x86/testfloat_8_8_128.dat -3 8 8 128\n");
-    printf("	qoz -z -f -c qoz.config -M ABS -A 1E-3 -i testdata/x86/testfloat_8_8_128.dat -3 8 8 128\n");
-    printf("	qoz -x -f -s testdata/x86/testfloat_8_8_128.dat.qoz -3 8 8 128\n");
-    printf("	qoz -x -f -s testdata/x86/testfloat_8_8_128.dat.qoz -i testdata/x86/testfloat_8_8_128.dat -3 8 8 128 -a\n");
-    printf("	qoz -z -d -c qoz.config -i testdata/x86/testdouble_8_8_128.dat -3 8 8 128\n");
-    printf("	qoz -x -d -s testdata/x86/testdouble_8_8_128.dat.qoz -3 8 8 128\n");
-    printf("	qoz -p -s testdata/x86/testdouble_8_8_128.dat.qoz\n");
+    printf("	srnz -z -f -c qoz.config -i testdata/x86/testfloat_8_8_128.dat -3 8 8 128\n");
+    printf("	srnz -z -f -c qoz.config -M ABS -A 1E-3 -i testdata/x86/testfloat_8_8_128.dat -3 8 8 128\n");
+    printf("	srnz -x -f -s testdata/x86/testfloat_8_8_128.dat.qoz -3 8 8 128\n");
+    printf("	srnz -x -f -s testdata/x86/testfloat_8_8_128.dat.qoz -i testdata/x86/testfloat_8_8_128.dat -3 8 8 128 -a\n");
+    printf("	srnz -z -d -c qoz.config -i testdata/x86/testdouble_8_8_128.dat -3 8 8 128\n");
+    printf("	srnz -x -d -s testdata/x86/testdouble_8_8_128.dat.qoz -3 8 8 128\n");
+    printf("	srnz -p -s testdata/x86/testdouble_8_8_128.dat.qoz\n");
     exit(0);
 }
 
@@ -152,7 +154,7 @@ void compress(char *inPath, char *cmpPath, QoZ::Config &conf) {//conf changed to
 
     char outputFilePath[1024];
     if (cmpPath == nullptr) {
-        sprintf(outputFilePath, "%s.qoz", inPath);
+        sprintf(outputFilePath, "%s.srnz", inPath);
     } else {
         strcpy(outputFilePath, cmpPath);
     }
@@ -234,11 +236,12 @@ int main(int argc, char *argv[]) {
     char *psnrErrorBound = nullptr;
     char *normErrorBound = nullptr;
     char *tuningTarget = nullptr;
+    char *ckptPath = nullptr;
     int maxStep=0;
     int sampleBlockSize=0;
 
     bool sz2mode = false;
-    int qoz=0;
+    int qoz=1;
     bool testLorenzo=false;
 
     size_t r4 = 0;
@@ -413,6 +416,10 @@ int main(int argc, char *argv[]) {
                 if (++i == argc || sscanf(argv[i], "%d", &sampleBlockSize) != 1)
                         usage();
                 break;
+            case 'k':
+                if (++i == argc)
+                    usage();
+                ckptPath = argv[i];
             default:
                 usage();
                 break;
@@ -539,6 +546,9 @@ int main(int argc, char *argv[]) {
             exit(0);
         }
         
+    }
+    if(ckptPath != nullptr){
+        conf.ckpt_path=ckptPath;
     }
 
     //if(conf.pyBind){

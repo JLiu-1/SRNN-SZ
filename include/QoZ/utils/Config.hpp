@@ -520,7 +520,7 @@ namespace QoZ {
         //std::vector<double> lorenzo1_coeffs;
         //std::vector<double> lorenzo2_coeffs;
         bool verbose=1;
-        int QoZ=0;
+        int QoZ=1;
         bool pdTuningRealComp=0;
         int pdTuningAbConf=0;
         //double pdAlpha=-1;
@@ -576,7 +576,7 @@ namespace QoZ {
         bool naturalSpline=0;
         bool quadInterp=false;
         bool fineGrainTuning=false;
-        bool SRNet=false;
+        bool SRNet=true;
         std::string ckpt_path="";
         //bool profilingFix=true;//only for test
 
