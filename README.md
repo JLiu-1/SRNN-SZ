@@ -43,17 +43,29 @@ Important: please clone the HAT repository to the following path: your_home_path
 
 ## Run SRNN-SZ
 
-The executable name of SRNN-SZ is srnz. It is derived from QoZ so its usage is mostly similar with the QoZ command (run srnz with no arguments to check the help information) (QoZ: https://github.com/szcompressor/QoZ)
+The executable name of SRNN-SZ is srnz. It is derived from QoZ so its usage is mostly similar to the QoZ command (run srnz with no arguments to check the help information) (QoZ: https://github.com/szcompressor/QoZ)
 
 Some important points:
 
-* use -q to specify interpolation optimization level. Default is 1, 3 or 4 recommended to test.
+* use -q to specify interpolation optimization level. The default is 1, 3, or 4 recommended to test.
 * use -k to pass the trained model checkpoint path.
 
 
-## Train and test the HAT network
+## Train the HAT network
 
-todo
+(This section is under construction)
+
+The training is done within the customized HAT code (so please make it installed before you perform the training).
+
+First, please collect the training data, and preprocess them to 2D-slice data files.
+
+Second, write an option file for the dataset path, network configuration, and training parameters (example: https://github.com/JLiu-1/HAT/blob/main/options/train/train_HAT_SRx2_2D_assorted.yml). 
+
+Then run the training script provided in the HAT code for generating the model checkpoint to be used in SRNN-SZ.
+
+
+
+
 
 
 
