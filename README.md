@@ -43,7 +43,7 @@ Important: please clone the HAT repository to the following path: your_home_path
 
 ## Run SRNN-SZ
 
-The executable name of SRNN-SZ is srnz. It is derived from QoZ so its usage is mostly similar with the QoZ command (run srnz with no arguments to check the help information)
+The executable name of SRNN-SZ is srnz. It is derived from QoZ so its usage is mostly similar with the QoZ command (run srnz with no arguments to check the help information) (QoZ: https://github.com/szcompressor/QoZ)
 
 Some important points:
 
