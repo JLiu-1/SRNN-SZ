@@ -2,7 +2,7 @@ Manual for SRNN-SZ
 
 ## Introduction
 
-Usage of SRNN-SZ need to deploy 1 repositories:
+Usage of SRNN-SZ need to deploy 2 code repositories:
 
 * This one (the compression framework): https://github.com/Meso272/SRNN-SZ
 * HAT (my customization):https://github.com/Meso272/HAT
@@ -23,7 +23,7 @@ The following ones are not used but need to get installed before compilation (wi
 
 The following is not mandatory:
 
-* Zstandard (https://facebook.github.io/zstd/). Not mandatory to be mannually installed as Zstandard v1.4.5 is included and will be used if libzstd can not be found by
+* Zstandard (https://facebook.github.io/zstd/). Not mandatory to be manually installed as Zstandard v1.4.5 is included and will be used if libzstd can not be found by
   pkg-config.
 
 ### Installation 
